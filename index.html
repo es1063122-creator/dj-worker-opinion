@@ -3,91 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>중대재해처벌법 안전의견 접수</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      color: #222;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Arial, sans-serif;
+      background: #f3f6f9;
+      color: #1f2937;
+    }
+
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      padding: 24px 14px;
     }
 
     .container {
+      width: 100%;
       max-width: 520px;
       margin: 0 auto;
-      padding: 20px;
     }
 
     .card {
-      background: #fff;
+      background: #ffffff;
       border-radius: 16px;
       padding: 22px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
     }
 
     h1 {
-      font-size: 22px;
-      margin: 0 0 10px;
-      color: #0f3b63;
+      margin: 0 0 12px;
+      color: #063b70;
+      font-size: 23px;
+      line-height: 1.35;
     }
 
     .desc {
+      margin: 0 0 20px;
+      color: #374151;
       font-size: 14px;
-      color: #555;
-      line-height: 1.5;
-      margin-bottom: 20px;
+      line-height: 1.65;
     }
 
     label {
       display: block;
-      font-weight: bold;
-      margin-top: 14px;
-      margin-bottom: 6px;
+      margin: 16px 0 7px;
+      font-weight: 700;
       font-size: 14px;
+      color: #111827;
     }
 
     input,
     select,
     textarea {
       width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      border: 1px solid #ccc;
+      border: 1px solid #cfd6df;
       border-radius: 10px;
+      padding: 13px 12px;
       font-size: 15px;
-      background: #fff;
+      background: #ffffff;
+      color: #111827;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.12);
     }
 
     textarea {
       min-height: 130px;
       resize: vertical;
+      line-height: 1.55;
     }
 
     .photo-box {
       margin-top: 8px;
       padding: 12px;
-      border: 1px dashed #aaa;
+      border: 1px dashed #b7c0cc;
       border-radius: 12px;
-      background: #fafafa;
+      background: #fbfcfe;
     }
 
     .photo-buttons {
       display: flex;
       gap: 8px;
-      margin-top: 8px;
     }
 
     .photo-buttons label {
       flex: 1;
-      text-align: center;
-      background: #e9f2ff;
-      color: #0f4c81;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 14px;
       margin: 0;
+      padding: 12px 8px;
+      border-radius: 10px;
+      background: #e8f2ff;
+      color: #064b8f;
+      text-align: center;
+      font-weight: 800;
       cursor: pointer;
+      font-size: 14px;
+    }
+
+    .photo-buttons label:active {
+      transform: scale(0.99);
     }
 
     input[type="file"] {
@@ -95,140 +120,446 @@
     }
 
     #preview {
-      width: 100%;
-      max-height: 260px;
-      object-fit: contain;
-      margin-top: 12px;
-      border-radius: 10px;
       display: none;
-      background: #eee;
+      width: 100%;
+      max-height: 280px;
+      margin-top: 12px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #eef2f7;
+      border: 1px solid #e5e7eb;
     }
 
-    button {
+    .file-info {
+      display: none;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #4b5563;
+      word-break: break-all;
+    }
+
+    .submit-btn,
+    .primary-btn,
+    .danger-btn,
+    .ghost-btn {
       width: 100%;
-      margin-top: 22px;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: #0f6fc6;
-      color: #fff;
-      font-size: 17px;
-      font-weight: bold;
+      border: 0;
+      border-radius: 11px;
+      padding: 14px 12px;
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 800;
       cursor: pointer;
     }
 
+    .submit-btn,
+    .primary-btn {
+      background: #1976d2;
+      color: #ffffff;
+    }
+
+    .danger-btn {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
+    .ghost-btn {
+      background: #eef2f7;
+      color: #1f2937;
+    }
+
     button:disabled {
-      background: #999;
+      opacity: 0.65;
       cursor: not-allowed;
     }
 
     .notice {
+      margin: 14px 0 0;
+      color: #4b5563;
       font-size: 13px;
-      color: #666;
-      line-height: 1.5;
-      margin-top: 14px;
+      line-height: 1.6;
     }
 
     .status {
-      margin-top: 14px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #0f4c81;
+      min-height: 22px;
+      margin-top: 13px;
       text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #0f4c81;
     }
 
-    .success {
+    .status.success {
       color: #0b8a34;
     }
 
-    .error {
+    .status.error {
       color: #d00000;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .admin-wrap {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .admin-header h1 {
+      margin: 0;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .admin-actions button {
+      width: auto;
+      margin: 0;
+      padding: 10px 12px;
+      font-size: 14px;
+      border-radius: 9px;
+    }
+
+    .admin-login {
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .report-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .report-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 5px 16px rgba(15, 23, 42, 0.05);
+    }
+
+    .report-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: #e8f2ff;
+      color: #064b8f;
+      font-weight: 800;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .report-title {
+      font-weight: 900;
+      font-size: 16px;
+      color: #111827;
+      line-height: 1.4;
+    }
+
+    .report-meta {
+      margin-top: 4px;
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .report-content {
+      margin-top: 10px;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 10px;
+      color: #111827;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .report-controls {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .report-controls select {
+      width: auto;
+      min-width: 120px;
+      padding: 9px;
+      font-size: 14px;
+    }
+
+    .small-btn {
+      border: 0;
+      border-radius: 9px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      background: #eef2f7;
+      color: #1f2937;
+    }
+
+    .small-btn.blue {
+      background: #1976d2;
+      color: white;
+    }
+
+    .small-btn.red {
+      background: #dc2626;
+      color: white;
+    }
+
+    .empty {
+      padding: 30px;
+      text-align: center;
+      color: #6b7280;
+      background: white;
+      border-radius: 14px;
+      border: 1px dashed #cbd5e1;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 920px;
+      max-height: 92vh;
+      background: white;
+      border-radius: 14px;
+      padding: 14px;
+      overflow: auto;
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .modal-top strong {
+      font-size: 15px;
+    }
+
+    .modal-content img {
+      width: 100%;
+      max-height: 75vh;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #f3f4f6;
+    }
+
+    .link-row {
+      margin-top: 8px;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .link-row a {
+      color: #1976d2;
+      font-weight: 700;
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        padding: 18px 10px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .report-top {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>중대재해처벌법 안전의견 접수</h1>
-      <p class="desc">
-        현장의 위험요인, 개선사항, 안전 관련 의견을 익명 또는 실명으로 접수할 수 있습니다.
-      </p>
+  <div id="formPage" class="page">
+    <div class="container">
+      <div class="card">
+        <h1>중대재해처벌법 안전의견 접수</h1>
+        <p class="desc">
+          현장의 위험요인, 개선사항, 안전 관련 의견을 익명 또는 실명으로 접수할 수 있습니다.
+        </p>
 
-      <form id="reportForm">
-        <label for="siteName">현장명</label>
-        <input id="siteName" type="text" placeholder="예: 동진토건 ○○현장" />
+        <form id="reportForm">
+          <label for="siteName">현장명</label>
+          <input id="siteName" type="text" placeholder="예: 동진토건 ○○현장" />
 
-        <label for="name">작성자</label>
-        <input id="name" type="text" placeholder="익명 가능" />
+          <label for="name">작성자</label>
+          <input id="name" type="text" placeholder="익명 가능" />
 
-        <label for="phone">연락처</label>
-        <input id="phone" type="tel" placeholder="선택 입력" />
+          <label for="phone">연락처</label>
+          <input id="phone" type="tel" placeholder="선택 입력" />
 
-        <label for="category">위험유형</label>
-        <select id="category">
-          <option value="">선택하세요</option>
-          <option value="추락위험">추락위험</option>
-          <option value="끼임위험">끼임위험</option>
-          <option value="장비위험">장비위험</option>
-          <option value="감전위험">감전위험</option>
-          <option value="붕괴위험">붕괴위험</option>
-          <option value="화재폭발위험">화재폭발위험</option>
-          <option value="보호구 미착용">보호구 미착용</option>
-          <option value="기타">기타</option>
-        </select>
+          <label for="category">위험유형</label>
+          <select id="category">
+            <option value="">선택하세요</option>
+            <option value="추락위험">추락위험</option>
+            <option value="끼임위험">끼임위험</option>
+            <option value="장비위험">장비위험</option>
+            <option value="감전위험">감전위험</option>
+            <option value="붕괴위험">붕괴위험</option>
+            <option value="화재폭발위험">화재폭발위험</option>
+            <option value="보호구 미착용">보호구 미착용</option>
+            <option value="통로/정리정돈">통로/정리정돈</option>
+            <option value="기타">기타</option>
+          </select>
 
-        <label for="content">의견 내용</label>
-        <textarea id="content" placeholder="위험 장소, 상황, 개선 요청사항을 입력하세요."></textarea>
+          <label for="content">의견 내용</label>
+          <textarea id="content" placeholder="위험 장소, 상황, 개선 요청사항을 입력하세요."></textarea>
 
-        <label>사진 첨부</label>
-        <div class="photo-box">
-          <div class="photo-buttons">
-            <label for="cameraInput">카메라 촬영</label>
-            <label for="galleryInput">사진 불러오기</label>
+          <label>사진 첨부</label>
+          <div class="photo-box">
+            <div class="photo-buttons">
+              <label for="cameraInput">카메라 촬영</label>
+              <label for="galleryInput">사진 불러오기</label>
+            </div>
+
+            <input id="cameraInput" type="file" accept="image/*" capture="environment" />
+            <input id="galleryInput" type="file" accept="image/*" />
+
+            <img id="preview" alt="첨부 사진 미리보기" />
+            <div id="fileInfo" class="file-info"></div>
           </div>
 
-          <input id="cameraInput" type="file" accept="image/*" capture="environment" />
-          <input id="galleryInput" type="file" accept="image/*" />
+          <button id="submitBtn" class="submit-btn" type="submit">의견 제출</button>
 
-          <img id="preview" alt="첨부 사진 미리보기" />
+          <div id="status" class="status"></div>
+
+          <p class="notice">
+            접수된 의견은 안전관리 목적 외 용도로 사용하지 않습니다.
+            사진 첨부 시 업로드 시간이 다소 걸릴 수 있습니다.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminPage" class="page hidden">
+    <div class="admin-wrap">
+      <div id="adminLogin" class="admin-login card">
+        <h1>관리자 화면</h1>
+        <p class="desc">접수된 안전의견을 확인하려면 관리자 비밀번호를 입력하세요.</p>
+
+        <label for="adminPassword">관리자 비밀번호</label>
+        <input id="adminPassword" type="password" placeholder="비밀번호 입력" />
+
+        <button id="adminLoginBtn" class="primary-btn" type="button">관리자 로그인</button>
+        <button id="goFormBtn1" class="ghost-btn" type="button">접수 화면으로 이동</button>
+
+        <div id="adminLoginStatus" class="status"></div>
+      </div>
+
+      <div id="adminPanel" class="hidden">
+        <div class="admin-header">
+          <div>
+            <h1>접수 의견 관리자</h1>
+            <p class="desc" style="margin:6px 0 0;">Firestore에 저장된 안전의견 목록입니다.</p>
+          </div>
+
+          <div class="admin-actions">
+            <button id="refreshBtn" class="small-btn blue" type="button">새로고침</button>
+            <button id="goFormBtn2" class="small-btn" type="button">접수 화면</button>
+            <button id="logoutBtn" class="small-btn red" type="button">로그아웃</button>
+          </div>
         </div>
 
-        <button id="submitBtn" type="submit">의견 제출</button>
+        <div id="adminStatus" class="status"></div>
+        <div id="reportList" class="report-list"></div>
+      </div>
+    </div>
+  </div>
 
-        <div id="status" class="status"></div>
-
-        <p class="notice">
-          접수된 의견은 안전관리 목적 외 용도로 사용하지 않습니다.
-          사진 첨부 시 업로드 시간이 다소 걸릴 수 있습니다.
-        </p>
-      </form>
+  <div id="photoModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-top">
+        <strong>첨부 사진</strong>
+        <button id="closeModalBtn" class="small-btn red" type="button">닫기</button>
+      </div>
+      <img id="modalImage" alt="첨부 사진" />
+      <div class="link-row">
+        <a id="modalImageLink" href="#" target="_blank" rel="noopener noreferrer">새 창에서 원본 사진 열기</a>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
     import {
       getFirestore,
       collection,
       addDoc,
-      serverTimestamp
+      getDocs,
+      query,
+      orderBy,
+      serverTimestamp,
+      doc,
+      updateDoc,
+      deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
     import {
       getStorage,
       ref,
       uploadBytes,
       getDownloadURL
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-    import {
-      getAuth,
-      signInAnonymously
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     /*
       중요:
-      아래 firebaseConfig는 반드시 기존 index.html에 있던 본인 Firebase 설정값으로 바꾸세요.
-      지금 값은 예시입니다.
+      이 firebaseConfig는 반드시 기존 index.html에 있던 실제 값으로 유지하세요.
+      아래 값이 예시라면, 현재 GitHub index.html의 실제 firebaseConfig 값으로 바꿔야 합니다.
     */
     const firebaseConfig = {
       apiKey: "기존_apiKey",
@@ -239,14 +570,19 @@
       appId: "기존_appId"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-    const auth = getAuth(app);
-
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7NNUErtGwjm82Syu4ViRLkrDVEek7LyzRNtctHM0aTv_YcoiRlnFZbrpxOOAXRIzU/exec";
 
-    const form = document.getElementById("reportForm");
+    const ADMIN_PASSWORD = "5183";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const formPage = document.getElementById("formPage");
+    const adminPage = document.getElementById("adminPage");
+
+    const reportForm = document.getElementById("reportForm");
     const submitBtn = document.getElementById("submitBtn");
     const statusEl = document.getElementById("status");
 
@@ -259,8 +595,73 @@
     const cameraInput = document.getElementById("cameraInput");
     const galleryInput = document.getElementById("galleryInput");
     const preview = document.getElementById("preview");
+    const fileInfo = document.getElementById("fileInfo");
+
+    const adminLogin = document.getElementById("adminLogin");
+    const adminPanel = document.getElementById("adminPanel");
+    const adminPassword = document.getElementById("adminPassword");
+    const adminLoginBtn = document.getElementById("adminLoginBtn");
+    const adminLoginStatus = document.getElementById("adminLoginStatus");
+    const adminStatus = document.getElementById("adminStatus");
+    const reportList = document.getElementById("reportList");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const goFormBtn1 = document.getElementById("goFormBtn1");
+    const goFormBtn2 = document.getElementById("goFormBtn2");
+
+    const photoModal = document.getElementById("photoModal");
+    const modalImage = document.getElementById("modalImage");
+    const modalImageLink = document.getElementById("modalImageLink");
+    const closeModalBtn = document.getElementById("closeModalBtn");
 
     let selectedFile = null;
+    let selectedPreviewUrl = "";
+    let adminLoggedIn = false;
+
+    function showFormPage() {
+      formPage.classList.remove("hidden");
+      adminPage.classList.add("hidden");
+    }
+
+    function showAdminPage() {
+      formPage.classList.add("hidden");
+      adminPage.classList.remove("hidden");
+
+      if (adminLoggedIn) {
+        adminLogin.classList.add("hidden");
+        adminPanel.classList.remove("hidden");
+        loadReports();
+      } else {
+        adminLogin.classList.remove("hidden");
+        adminPanel.classList.add("hidden");
+      }
+    }
+
+    function handleRoute() {
+      if (location.hash === "#admin") {
+        showAdminPage();
+      } else {
+        showFormPage();
+      }
+    }
+
+    window.addEventListener("hashchange", handleRoute);
+    handleRoute();
+
+    function setStatus(message, type = "") {
+      statusEl.textContent = message || "";
+      statusEl.className = "status " + type;
+    }
+
+    function setAdminStatus(message, type = "") {
+      adminStatus.textContent = message || "";
+      adminStatus.className = "status " + type;
+    }
+
+    function setAdminLoginStatus(message, type = "") {
+      adminLoginStatus.textContent = message || "";
+      adminLoginStatus.className = "status " + type;
+    }
 
     async function ensureAnonymousLogin() {
       if (!auth.currentUser) {
@@ -269,34 +670,130 @@
       return auth.currentUser;
     }
 
-    function setStatus(message, type = "") {
-      statusEl.textContent = message;
-      statusEl.className = "status " + type;
+    function formatBytes(bytes) {
+      if (!bytes && bytes !== 0) return "";
+      const sizes = ["B", "KB", "MB", "GB"];
+      if (bytes === 0) return "0 B";
+      const i = Math.floor(Math.log(bytes) / Math.log(1024));
+      return Math.round((bytes / Math.pow(1024, i)) * 10) / 10 + " " + sizes[i];
     }
 
-    function handleFileSelect(file) {
-      selectedFile = file || null;
+    function resetPhotoSelection() {
+      selectedFile = null;
 
-      if (!selectedFile) {
-        preview.style.display = "none";
-        preview.src = "";
+      if (selectedPreviewUrl) {
+        URL.revokeObjectURL(selectedPreviewUrl);
+        selectedPreviewUrl = "";
+      }
+
+      preview.src = "";
+      preview.style.display = "none";
+      fileInfo.textContent = "";
+      fileInfo.style.display = "none";
+
+      cameraInput.value = "";
+      galleryInput.value = "";
+    }
+
+    async function compressImage(file) {
+      return new Promise((resolve) => {
+        if (!file || !file.type.startsWith("image/")) {
+          resolve(file);
+          return;
+        }
+
+        const img = new Image();
+        const objectUrl = URL.createObjectURL(file);
+
+        img.onload = function () {
+          URL.revokeObjectURL(objectUrl);
+
+          const maxSize = 1600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height && width > maxSize) {
+            height = Math.round(height * (maxSize / width));
+            width = maxSize;
+          } else if (height >= width && height > maxSize) {
+            width = Math.round(width * (maxSize / height));
+            height = maxSize;
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            function (blob) {
+              if (!blob) {
+                resolve(file);
+                return;
+              }
+
+              const newName = file.name.replace(/\.[^/.]+$/, "") + "_compressed.jpg";
+              const compressedFile = new File([blob], newName, {
+                type: "image/jpeg",
+                lastModified: Date.now()
+              });
+
+              resolve(compressedFile);
+            },
+            "image/jpeg",
+            0.82
+          );
+        };
+
+        img.onerror = function () {
+          URL.revokeObjectURL(objectUrl);
+          resolve(file);
+        };
+
+        img.src = objectUrl;
+      });
+    }
+
+    async function handleFileSelect(file) {
+      if (!file) {
+        resetPhotoSelection();
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        preview.src = e.target.result;
-        preview.style.display = "block";
-      };
-      reader.readAsDataURL(selectedFile);
+      if (!file.type.startsWith("image/")) {
+        alert("이미지 파일만 첨부할 수 있습니다.");
+        resetPhotoSelection();
+        return;
+      }
+
+      setStatus("사진을 준비 중입니다...");
+
+      const compressed = await compressImage(file);
+      selectedFile = compressed;
+
+      if (selectedPreviewUrl) {
+        URL.revokeObjectURL(selectedPreviewUrl);
+      }
+
+      selectedPreviewUrl = URL.createObjectURL(selectedFile);
+      preview.src = selectedPreviewUrl;
+      preview.style.display = "block";
+
+      fileInfo.textContent =
+        "선택된 사진: " + selectedFile.name + " / " + formatBytes(selectedFile.size);
+      fileInfo.style.display = "block";
+
+      setStatus("");
     }
 
     cameraInput.addEventListener("change", function (e) {
-      handleFileSelect(e.target.files[0]);
+      handleFileSelect(e.target.files && e.target.files[0]);
     });
 
     galleryInput.addEventListener("change", function (e) {
-      handleFileSelect(e.target.files[0]);
+      handleFileSelect(e.target.files && e.target.files[0]);
     });
 
     async function uploadPhotoIfNeeded(userId) {
@@ -304,15 +801,17 @@
         return "";
       }
 
-      const safeName = selectedFile.name.replace(/[^\w.\-가-힣]/g, "_");
-      const filePath = "reports/" + userId + "/" + Date.now() + "_" + safeName;
-      const storageRef = ref(storage, filePath);
-
       setStatus("사진 업로드 중입니다. 잠시만 기다려주세요...");
 
-      await uploadBytes(storageRef, selectedFile);
-      const downloadUrl = await getDownloadURL(storageRef);
+      const safeName = selectedFile.name.replace(/[^\w.\-가-힣]/g, "_");
+      const path = "reports/" + userId + "/" + Date.now() + "_" + safeName;
+      const storageRef = ref(storage, path);
 
+      await uploadBytes(storageRef, selectedFile, {
+        contentType: selectedFile.type || "image/jpeg"
+      });
+
+      const downloadUrl = await getDownloadURL(storageRef);
       return downloadUrl;
     }
 
@@ -331,7 +830,7 @@
       }
     }
 
-    form.addEventListener("submit", async function (e) {
+    reportForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const siteName = siteNameEl.value.trim();
@@ -342,6 +841,7 @@
 
       if (!content) {
         alert("의견 내용을 입력해주세요.");
+        contentEl.focus();
         return;
       }
 
@@ -357,7 +857,9 @@
           photoUrl = await uploadPhotoIfNeeded(user.uid);
         }
 
-        setStatus("의견을 저장 중입니다...");
+        const createdAtText = new Date().toLocaleString("ko-KR", {
+          timeZone: "Asia/Seoul"
+        });
 
         const reportData = {
           siteName: siteName || "",
@@ -367,33 +869,32 @@
           content: content || "",
           photoUrl: photoUrl || "",
           uid: user.uid,
+          status: "접수",
           createdAt: serverTimestamp(),
-          createdAtText: new Date().toLocaleString("ko-KR", {
-            timeZone: "Asia/Seoul"
-          }),
-          status: "접수"
+          createdAtText: createdAtText,
+          userAgent: navigator.userAgent || ""
         };
 
+        setStatus("의견을 저장 중입니다...");
         await addDoc(collection(db, "reports"), reportData);
 
         setStatus("메일 알림을 발송 중입니다...");
 
         await sendMailAlert({
-          siteName: siteName || "",
-          name: name || "익명",
-          phone: phone || "",
-          category: category || "",
-          content: content || "",
-          photoUrl: photoUrl || ""
+          siteName: reportData.siteName,
+          name: reportData.name,
+          phone: reportData.phone,
+          category: reportData.category,
+          content: reportData.content,
+          photoUrl: reportData.photoUrl,
+          createdAtText: createdAtText
         });
 
         setStatus("의견이 정상 접수되었습니다.", "success");
         alert("의견이 접수되었습니다.");
 
-        form.reset();
-        selectedFile = null;
-        preview.src = "";
-        preview.style.display = "none";
+        reportForm.reset();
+        resetPhotoSelection();
 
       } catch (error) {
         console.error(error);
@@ -402,6 +903,240 @@
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "의견 제출";
+      }
+    });
+
+    adminLoginBtn.addEventListener("click", async function () {
+      const pw = adminPassword.value.trim();
+
+      if (pw !== ADMIN_PASSWORD) {
+        setAdminLoginStatus("비밀번호가 맞지 않습니다.", "error");
+        return;
+      }
+
+      try {
+        setAdminLoginStatus("로그인 중입니다...");
+        await ensureAnonymousLogin();
+
+        adminLoggedIn = true;
+        sessionStorage.setItem("qrAdminLoggedIn", "true");
+
+        adminLogin.classList.add("hidden");
+        adminPanel.classList.remove("hidden");
+        setAdminLoginStatus("");
+
+        await loadReports();
+      } catch (error) {
+        console.error(error);
+        setAdminLoginStatus("관리자 로그인 중 오류가 발생했습니다.", "error");
+      }
+    });
+
+    adminPassword.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        adminLoginBtn.click();
+      }
+    });
+
+    refreshBtn.addEventListener("click", function () {
+      loadReports();
+    });
+
+    logoutBtn.addEventListener("click", function () {
+      adminLoggedIn = false;
+      sessionStorage.removeItem("qrAdminLoggedIn");
+      adminPassword.value = "";
+      adminPanel.classList.add("hidden");
+      adminLogin.classList.remove("hidden");
+    });
+
+    goFormBtn1.addEventListener("click", function () {
+      location.hash = "";
+    });
+
+    goFormBtn2.addEventListener("click", function () {
+      location.hash = "";
+    });
+
+    if (sessionStorage.getItem("qrAdminLoggedIn") === "true") {
+      adminLoggedIn = true;
+      if (location.hash === "#admin") {
+        showAdminPage();
+      }
+    }
+
+    function getCreatedAtText(data) {
+      if (data.createdAt && typeof data.createdAt.toDate === "function") {
+        return data.createdAt.toDate().toLocaleString("ko-KR", {
+          timeZone: "Asia/Seoul"
+        });
+      }
+
+      return data.createdAtText || "-";
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function loadReports() {
+      setAdminStatus("접수 목록을 불러오는 중입니다...");
+      reportList.innerHTML = "";
+
+      try {
+        await ensureAnonymousLogin();
+
+        const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          reportList.innerHTML = '<div class="empty">접수된 의견이 없습니다.</div>';
+          setAdminStatus("접수 0건");
+          return;
+        }
+
+        let count = 0;
+
+        snap.forEach(function (docSnap) {
+          count++;
+          const data = docSnap.data();
+          const id = docSnap.id;
+
+          const card = document.createElement("div");
+          card.className = "report-card";
+
+          const siteName = escapeHtml(data.siteName || "현장명 미입력");
+          const name = escapeHtml(data.name || "익명");
+          const phone = escapeHtml(data.phone || "-");
+          const category = escapeHtml(data.category || "기타");
+          const content = escapeHtml(data.content || "-");
+          const status = escapeHtml(data.status || "접수");
+          const createdAtText = escapeHtml(getCreatedAtText(data));
+          const photoUrl = data.photoUrl || "";
+
+          card.innerHTML = `
+            <div class="report-top">
+              <div>
+                <div class="report-title">${siteName}</div>
+                <div class="report-meta">
+                  작성자: ${name} / 연락처: ${phone}<br>
+                  접수시간: ${createdAtText}
+                </div>
+              </div>
+              <span class="badge">${category}</span>
+            </div>
+
+            <div class="report-content">${content}</div>
+
+            <div class="report-controls">
+              <select class="status-select" data-id="${id}">
+                <option value="접수" ${status === "접수" ? "selected" : ""}>접수</option>
+                <option value="확인중" ${status === "확인중" ? "selected" : ""}>확인중</option>
+                <option value="조치완료" ${status === "조치완료" ? "selected" : ""}>조치완료</option>
+                <option value="반려" ${status === "반려" ? "selected" : ""}>반려</option>
+              </select>
+
+              ${
+                photoUrl
+                  ? `<button class="small-btn blue photo-btn" type="button" data-url="${escapeHtml(photoUrl)}">사진보기</button>`
+                  : `<button class="small-btn" type="button" disabled>사진없음</button>`
+              }
+
+              <button class="small-btn red delete-btn" type="button" data-id="${id}">삭제</button>
+            </div>
+          `;
+
+          reportList.appendChild(card);
+        });
+
+        setAdminStatus("총 " + count + "건이 접수되었습니다.", "success");
+
+        bindAdminButtons();
+
+      } catch (error) {
+        console.error(error);
+        setAdminStatus("접수 목록을 불러오지 못했습니다. Firestore 권한 또는 설정을 확인하세요.", "error");
+      }
+    }
+
+    function bindAdminButtons() {
+      const statusSelects = document.querySelectorAll(".status-select");
+      statusSelects.forEach(function (select) {
+        select.addEventListener("change", async function () {
+          const id = this.dataset.id;
+          const newStatus = this.value;
+
+          try {
+            setAdminStatus("상태를 변경 중입니다...");
+            await updateDoc(doc(db, "reports", id), {
+              status: newStatus,
+              updatedAt: serverTimestamp()
+            });
+            setAdminStatus("상태가 변경되었습니다.", "success");
+          } catch (error) {
+            console.error(error);
+            setAdminStatus("상태 변경 실패. Firestore 권한을 확인하세요.", "error");
+          }
+        });
+      });
+
+      const photoButtons = document.querySelectorAll(".photo-btn");
+      photoButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const url = this.dataset.url;
+          openPhotoModal(url);
+        });
+      });
+
+      const deleteButtons = document.querySelectorAll(".delete-btn");
+      deleteButtons.forEach(function (btn) {
+        btn.addEventListener("click", async function () {
+          const id = this.dataset.id;
+
+          if (!confirm("이 접수 의견을 삭제하시겠습니까?")) {
+            return;
+          }
+
+          try {
+            setAdminStatus("삭제 중입니다...");
+            await deleteDoc(doc(db, "reports", id));
+            setAdminStatus("삭제되었습니다.", "success");
+            await loadReports();
+          } catch (error) {
+            console.error(error);
+            setAdminStatus("삭제 실패. Firestore 권한을 확인하세요.", "error");
+          }
+        });
+      });
+    }
+
+    function openPhotoModal(url) {
+      if (!url) {
+        alert("사진 URL이 없습니다.");
+        return;
+      }
+
+      modalImage.src = url;
+      modalImageLink.href = url;
+      photoModal.classList.remove("hidden");
+    }
+
+    function closePhotoModal() {
+      photoModal.classList.add("hidden");
+      modalImage.src = "";
+      modalImageLink.href = "#";
+    }
+
+    closeModalBtn.addEventListener("click", closePhotoModal);
+
+    photoModal.addEventListener("click", function (e) {
+      if (e.target === photoModal) {
+        closePhotoModal();
       }
     });
   </script>
