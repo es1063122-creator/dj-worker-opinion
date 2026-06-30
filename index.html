@@ -863,7 +863,7 @@
         img.onload = function () {
           URL.revokeObjectURL(objectUrl);
 
-          const maxSize = 1600;
+          const maxSize = 1200;
           let width = img.width;
           let height = img.height;
 
@@ -898,7 +898,7 @@
               resolve(compressedFile);
             },
             "image/jpeg",
-            0.82
+            0.72
           );
         };
 
@@ -951,9 +951,27 @@
       handleFileSelect(e.target.files && e.target.files[0]);
     });
 
+    function fileToDataUrl(file) {
+      return new Promise((resolve) => {
+        if (!file) {
+          resolve("");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          resolve(e.target.result || "");
+        };
+        reader.onerror = function () {
+          resolve("");
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
     async function uploadPhotoIfNeeded(userId) {
       if (!selectedFile) {
-        return { photoUrl: "", photoPath: "" };
+        return { photoUrl: "", photoPath: "", photoDataUrl: "", photoUploadMode: "none" };
       }
 
       setStatus("사진 업로드 중입니다. 잠시만 기다려주세요...");
@@ -962,12 +980,30 @@
       const photoPath = PHOTO_STORAGE_PREFIX + "/" + userId + "/" + Date.now() + "_" + safeName;
       const storageRef = ref(storage, photoPath);
 
-      await uploadBytes(storageRef, selectedFile, {
-        contentType: selectedFile.type || "image/jpeg"
-      });
+      try {
+        await uploadBytes(storageRef, selectedFile, {
+          contentType: selectedFile.type || "image/jpeg"
+        });
 
-      const photoUrl = await getDownloadURL(storageRef);
-      return { photoUrl: photoUrl, photoPath: photoPath };
+        const photoUrl = await getDownloadURL(storageRef);
+        return {
+          photoUrl: photoUrl,
+          photoPath: photoPath,
+          photoDataUrl: "",
+          photoUploadMode: "storage"
+        };
+      } catch (error) {
+        console.warn("Firebase Storage 업로드 실패, Firestore 사진 저장 방식으로 대체합니다.", error);
+        setStatus("Storage 업로드가 막혀 사진을 문서에 직접 저장합니다...");
+
+        const photoDataUrl = await fileToDataUrl(selectedFile);
+        return {
+          photoUrl: "",
+          photoPath: "",
+          photoDataUrl: photoDataUrl,
+          photoUploadMode: "firestore-dataurl"
+        };
+      }
     }
 
     async function sendMailAlert(data) {
@@ -1007,7 +1043,7 @@
       try {
         const user = await ensureAnonymousLogin();
 
-        let photoResult = { photoUrl: "", photoPath: "" };
+        let photoResult = { photoUrl: "", photoPath: "", photoDataUrl: "", photoUploadMode: "none" };
         if (selectedFile) {
           photoResult = await uploadPhotoIfNeeded(user.uid);
         }
@@ -1026,6 +1062,8 @@
           updatedAt: serverTimestamp(),
           photoPath: photoResult.photoPath || "",
           photoUrl: photoResult.photoUrl || "",
+          photoDataUrl: photoResult.photoDataUrl || "",
+          photoUploadMode: photoResult.photoUploadMode || "none",
 
           // 현재 화면/관리자용 필드
           siteName: siteName || "",
@@ -1196,8 +1234,10 @@
         content: data.content || "-",
         status: data.status || "접수",
         createdAtText: getCreatedAtText(data),
-        photoUrl: data.photoUrl || "",
+        photoUrl: data.photoUrl || data.photoDataUrl || "",
         photoPath: data.photoPath || "",
+        photoDataUrl: data.photoDataUrl || "",
+        photoUploadMode: data.photoUploadMode || "",
         actionText: data.actionText || data.action || data.adminAction || "",
         actionUpdatedAtText: formatTimestampValue(data.actionUpdatedAt) || "",
         raw: data
@@ -1211,7 +1251,7 @@
       const checking = viewItems.filter((item) => item.status === "확인중").length;
       const done = viewItems.filter((item) => item.status === "조치완료").length;
       const rejected = viewItems.filter((item) => item.status === "반려").length;
-      const photo = viewItems.filter((item) => item.photoUrl || item.photoPath).length;
+      const photo = viewItems.filter((item) => item.photoUrl || item.photoPath || item.photoDataUrl).length;
 
       sumTotal.textContent = total;
       sumReceived.textContent = received;
@@ -1304,7 +1344,7 @@
 
             ${
               photoUrl
-                ? `<button class="small-btn blue photo-btn" type="button" data-url="${escapeHtml(photoUrl)}">사진보기</button>`
+                ? `<button class="small-btn blue photo-btn" type="button" data-id="${escapeHtml(view.id)}">사진보기</button>`
                 : `<button class="small-btn" type="button" disabled>사진없음</button>`
             }
 
@@ -1424,7 +1464,10 @@
       const photoButtons = document.querySelectorAll(".photo-btn");
       photoButtons.forEach(function (btn) {
         btn.addEventListener("click", function () {
-          const url = this.dataset.url;
+          const id = this.dataset.id;
+          const found = allReports.find((item) => item.id === id);
+          const data = found ? found.data || {} : {};
+          const url = data.photoUrl || data.photoDataUrl || "";
           openPhotoModal(url);
         });
       });
@@ -1463,7 +1506,17 @@
       }
 
       modalImage.src = url;
-      modalImageLink.href = url;
+
+      if (String(url).startsWith("data:")) {
+        modalImageLink.href = "#";
+        modalImageLink.textContent = "문서에 저장된 사진입니다.";
+        modalImageLink.removeAttribute("target");
+      } else {
+        modalImageLink.href = url;
+        modalImageLink.textContent = "새 창에서 원본 사진 열기";
+        modalImageLink.setAttribute("target", "_blank");
+      }
+
       photoModal.classList.remove("hidden");
     }
 
