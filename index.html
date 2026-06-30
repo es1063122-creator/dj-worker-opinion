@@ -1,465 +1,147 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>동진토건(주) 종사자 의견청취</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    :root { --navy:#0f172a; --blue:#2563eb; --green:#059669; --orange:#f59e0b; --bg:#f1f5f9; --line:#cbd5e1; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Arial,'Noto Sans KR',sans-serif; background:var(--bg); color:var(--navy); }
-    header { background:#ffffff; color:#000; padding:30px 16px 20px; text-align:center; border-bottom:1px solid #e2e8f0; }
-    header h1 { margin:0; font-size:36px; font-weight:1000; letter-spacing:-.6px; color:#000; }
-    header p { display:none; }
-    main { max-width:1180px; margin:18px auto 60px; padding:0 14px; }
-    .card { background:white; border:1px solid #dbe3ef; border-radius:18px; padding:20px; margin-bottom:16px; box-shadow:0 8px 24px rgba(15,23,42,.08); }
-    .tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
-    .tab { border:0; border-radius:999px; padding:13px 18px; background:#e2e8f0; color:#0f172a; font-weight:900; cursor:pointer; }
-    .tab.active { background:#2563eb; color:white; }
-    .section { display:none; } .section.active { display:block; }
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-    .grid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-    .stat { background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px; }
-    .stat b { display:block; font-size:28px; color:#2563eb; margin-top:4px; }
-    label { display:block; font-weight:900; margin:12px 0 6px; font-size:14px; }
-    input,select,textarea { width:100%; border:1px solid var(--line); border-radius:12px; padding:12px; font-size:14px; }
-    button,.btn { border:0; border-radius:12px; padding:13px 16px; background:#2563eb; color:white; font-weight:900; cursor:pointer; text-decoration:none; display:inline-block; }
-    .btn-green { background:#059669; } .btn-orange { background:#f59e0b; color:#111827; } .btn-dark { background:#111827; } .btn-gray { background:#475569; }
-    .notice { background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:14px; padding:14px; line-height:1.65; }
-    .warn { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; border-radius:14px; padding:14px; line-height:1.65; }
-    table { width:100%; border-collapse:collapse; font-size:13px; } th,td { border-bottom:1px solid #e2e8f0; padding:10px 8px; text-align:left; vertical-align:top; } th { background:#f8fafc; }
-    .qrbox { text-align:center; border:2px dashed #cbd5e1; border-radius:18px; padding:26px; background:#fff; }
-    .qrbox h2 { font-size:34px; font-weight:1000; margin:0 0 22px; color:#000; letter-spacing:-.5px; }
-    .qrbox p { font-size:18px; line-height:1.75; }
-    .qrbox img { width:270px; height:270px; margin:12px 0 18px; }
-    .poster-note { font-size:19px!important; font-weight:900; color:#111827; max-width:760px; margin-left:auto; margin-right:auto; }
-    .poster-small { font-size:17px!important; font-weight:900; color:#111827; }
-    .site-card { border:1px solid #e2e8f0; border-radius:14px; padding:14px; background:#f8fafc; cursor:pointer; } .site-card:hover { border-color:#2563eb; }
-    pre { white-space:pre-wrap; background:#0f172a; color:#e5e7eb; border-radius:14px; padding:14px; max-height:320px; overflow:auto; }
-    .step { border-left:5px solid #2563eb; padding:14px; background:#f8fafc; border-radius:12px; margin:12px 0; }
-    @media(max-width:800px) { .grid,.grid2 { grid-template-columns:1fr; } header h1{font-size:25px;} header p{font-size:14px;} }
-    @page { size:A4 portrait; margin:10mm; }
-    @media print {
-      body { background:white!important; margin:0!important; }
-      body * { visibility:hidden!important; }
-      #qrResult, #qrResult * { visibility:visible!important; }
-      #qrResult {
-        display:block!important;
-        position:absolute!important;
-        left:0!important; top:0!important;
-        width:100%!important;
-        min-height:auto!important;
-        border:0!important;
-        box-shadow:none!important;
-        background:white!important;
-        padding:8mm 8mm 6mm!important;
-        border-radius:0!important;
-        page-break-after:avoid!important;
-      }
-      #qrResult h2 { font-size:30px!important; margin:0 0 14mm!important; color:#000!important; font-weight:1000!important; }
-      #qrResult .poster-note { font-size:16px!important; line-height:1.65!important; margin:0 auto 9mm!important; color:#111!important; font-weight:800!important; }
-      #qrResult img { width:78mm!important; height:78mm!important; margin:4mm auto 8mm!important; display:block!important; }
-      #formUrlText, .screen-only, .no-print, .tabs, .settings, header, button { display:none!important; visibility:hidden!important; }
-      main, .card { margin:0!important; padding:0!important; max-width:none!important; box-shadow:none!important; border:0!important; background:white!important; }
-    }
+    :root{--blue:#2563eb;--green:#059669;--bg:#f1f5f9;--line:#cbd5e1;--navy:#0f172a;--red:#dc2626;}
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,'Noto Sans KR',sans-serif;background:var(--bg);color:var(--navy)}
+    header{background:white;text-align:center;padding:28px 14px;border-bottom:1px solid #e2e8f0} header h1{margin:0;color:#000;font-size:34px;font-weight:1000;letter-spacing:-.6px}
+    main{max-width:1180px;margin:18px auto 60px;padding:0 14px}.card{background:white;border:1px solid #dbe3ef;border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 8px 24px rgba(15,23,42,.08)}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.tab{border:0;border-radius:999px;padding:13px 18px;background:#e2e8f0;color:#0f172a;font-weight:900;cursor:pointer}.tab.active{background:#2563eb;color:white}
+    .section{display:none}.section.active{display:block}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    label{display:block;font-weight:900;margin:12px 0 6px;font-size:14px}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px}textarea{min-height:120px}
+    button,.btn{border:0;border-radius:12px;padding:13px 16px;background:#2563eb;color:white;font-weight:900;cursor:pointer;text-decoration:none;display:inline-block}.btn-green{background:#059669}.btn-gray{background:#475569}.btn-red{background:#dc2626}.btn-dark{background:#111827}
+    .notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:14px;padding:14px;line-height:1.65}.warn{background:#fffbeb;border:1px solid #fcd34d;color:#92400e;border-radius:14px;padding:14px;line-height:1.65}
+    table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #e2e8f0;padding:10px 8px;text-align:left;vertical-align:top}th{background:#f8fafc}.stat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:16px}.stat b{display:block;font-size:28px;color:#2563eb;margin-top:4px}
+    .qrbox{text-align:center;border:2px dashed #cbd5e1;border-radius:18px;padding:26px;background:#fff}.qrbox h2{font-size:34px;font-weight:1000;margin:0 0 22px;color:#000;letter-spacing:-.5px}.qrbox p{font-size:18px;line-height:1.75}.qrbox img{width:270px;height:270px;margin:12px 0 18px}.poster-note{font-size:19px!important;font-weight:900;color:#111827;max-width:760px;margin-left:auto;margin-right:auto}.poster-small{font-size:17px!important;font-weight:900;color:#111827}.small{font-size:12px;color:#64748b}.status{font-weight:900;color:#2563eb}
+    .form-only header h1{font-size:28px}.submit-wrap{max-width:720px;margin:18px auto}.hidden{display:none!important}.step{border-left:5px solid #2563eb;padding:14px;background:#f8fafc;border-radius:12px;margin:12px 0}code{background:#eef2ff;padding:2px 6px;border-radius:6px}
+    @media(max-width:800px){.grid,.grid2{grid-template-columns:1fr}header h1{font-size:25px}.qrbox img{width:230px;height:230px}}
+    @page{size:A4 portrait;margin:10mm}@media print{body{background:white!important;margin:0!important}body *{visibility:hidden!important}#qrResult,#qrResult *{visibility:visible!important}#qrResult{display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;border:0!important;box-shadow:none!important;background:white!important;padding:8mm!important;border-radius:0!important}#qrResult h2{font-size:30px!important;margin:0 0 14mm!important;color:#000!important;font-weight:1000!important}#qrResult .poster-note{font-size:16px!important;line-height:1.65!important;margin:0 auto 9mm!important;color:#111!important;font-weight:800!important}#qrResult img{width:78mm!important;height:78mm!important;margin:4mm auto 8mm!important;display:block!important}.no-print,header,button,#formUrlText{display:none!important;visibility:hidden!important}main,.card{margin:0!important;padding:0!important;max-width:none!important;box-shadow:none!important;border:0!important;background:white!important}}
   </style>
 </head>
 <body>
-<header>
-  <h1>동진토건(주) 종사자 의견청취</h1>
-  <p></p>
-</header>
-<main>
-  <div class="card settings no-print">
+<header><h1>동진토건(주) 종사자 의견청취</h1></header>
+<main id="app">
+  <div id="adminApp" class="card no-print">
     <div class="tabs">
-      <button class="tab active" onclick="showTab('dashboard', this)">🏢 본사 관리자</button>
-      <button class="tab" onclick="showTab('qr', this)">📱 QR 안내문</button>
-      <button class="tab" onclick="showTab('setup', this)">⚙️ 최초 설정</button>
-      <button class="tab" onclick="showTab('guide', this)">📖 초보 설치가이드</button>
+      <button class="tab active" onclick="showTab('dashboard',this)">🏢 본사 관리자</button>
+      <button class="tab" onclick="showTab('qr',this)">📱 QR 안내문</button>
+      <button class="tab" onclick="showTab('setup',this)">⚙️ Firebase 설정</button>
+      <button class="tab" onclick="showTab('guide',this)">📖 초보 설치가이드</button>
     </div>
     <div class="grid2">
-      <div><label>Google Apps Script 웹앱 URL</label><input id="gasUrl" placeholder="https://script.google.com/macros/s/배포ID/exec"></div>
-      <div><label>관리자 PIN</label><input id="pin" placeholder="예: 5183" type="password"></div>
+      <div><label>관리자 PIN</label><input id="adminPin" type="password" placeholder="기본 5183"></div>
+      <div style="display:flex;align-items:end;gap:8px"><button onclick="savePin()">PIN 저장</button><button class="btn-gray" onclick="initFirebaseFromPage()">Firebase 재연결</button></div>
     </div>
-    <p><button onclick="saveSettings()">설정 저장</button> <button class="btn-dark" onclick="clearSettings()">설정 초기화</button> <button class="btn-gray" onclick="loadDashboard()">전체 새로고침</button></p>
   </div>
 
   <section id="dashboard" class="section active">
-    <div class="card">
-      <h2>본사 통합 대시보드</h2>
-      <div class="notice">전현장 공통 QR 1개만 사용합니다. 근로자가 설문지 첫 항목에 <b>현장명</b>을 입력하면 본사 화면에서 현장별로 자동 분류됩니다.</div>
-      <div class="grid" style="margin-top:12px">
-        <div class="stat">전체 접수<b id="stTotal">0</b></div>
-        <div class="stat">즉시조치<b id="stImmediate">0</b></div>
-        <div class="stat">조치/검토중<b id="stOpen">0</b></div>
-        <div class="stat">조치완료<b id="stDone">0</b></div>
-        <div class="stat">교육반영<b id="stEdu">0</b></div>
-        <div class="stat">해당없음<b id="stNone">0</b></div>
-      </div>
+    <div class="card"><h2>본사 관리자</h2><div class="notice">이 버전은 <b>구글시트와 Apps Script를 사용하지 않습니다.</b> 데이터는 Firebase Firestore, 사진은 Firebase Storage에 저장됩니다. 근로자는 구글 로그인 없이 QR 설문을 제출합니다.</div><br><button onclick="loadOpinions()">전체 새로고침</button> <button class="btn-green" onclick="downloadCSV()">CSV 저장</button></div>
+    <div class="grid card">
+      <div class="stat">전체 접수<b id="stAll">0</b></div><div class="stat">즉시조치<b id="stUrgent">0</b></div><div class="stat">미완료<b id="stOpen">0</b></div><div class="stat">조치완료<b id="stDone">0</b></div><div class="stat">교육반영<b id="stEdu">0</b></div><div class="stat">현장 수<b id="stSites">0</b></div>
     </div>
-    <div class="card">
-      <h2>현장별 접수현황</h2>
-      <div id="siteCards" class="grid"></div>
-    </div>
-    <div class="card">
-      <h2>접수의견 목록</h2>
-      <div class="grid2 no-print">
-        <div><label>현장명 필터</label><input id="filterSite" placeholder="예: 군산" oninput="renderOpinions()"></div>
-        <div><label>상태 필터</label><select id="filterStatus" onchange="renderOpinions()"><option value="">전체</option><option>접수</option><option>검토중</option><option>조치필요</option><option>조치중</option><option>조치완료</option><option>교육반영</option><option>해당없음</option></select></div>
-      </div>
-      <div style="overflow:auto;margin-top:12px"><table><thead><tr><th>접수일</th><th>현장명</th><th>장소</th><th>유형</th><th>긴급도</th><th>내용</th><th>상태</th><th class="no-print">관리</th></tr></thead><tbody id="opinionBody"><tr><td colspan="8">데이터를 불러오세요.</td></tr></tbody></table></div>
-    </div>
+    <div class="card"><h3>현장별 접수현황</h3><div id="siteSummary"></div></div>
+    <div class="card"><h3>접수의견 목록</h3><div class="grid2"><input id="searchText" placeholder="현장명/내용/위험장소 검색" oninput="renderTable()"><select id="statusFilter" onchange="renderTable()"><option value="">전체 상태</option><option>접수</option><option>검토중</option><option>조치필요</option><option>조치중</option><option>조치완료</option><option>교육반영</option><option>해당없음</option></select></div><br><div style="overflow:auto"><table><thead><tr><th>접수일</th><th>현장명</th><th>장소</th><th>유형</th><th>의견내용</th><th>긴급도</th><th>사진</th><th>상태</th><th>관리</th></tr></thead><tbody id="opinionTable"><tr><td colspan="9">데이터를 불러오세요.</td></tr></tbody></table></div></div>
   </section>
 
   <section id="qr" class="section">
-    <div class="card">
-      <div class="no-print" style="margin-bottom:14px;">
-        <button class="btn-green" onclick="makeSingleQR()">QR 생성</button>
-        <button class="btn-dark" onclick="window.print()">A4 안내문 출력</button>
-      </div>
-      <div id="qrResult" class="qrbox" style="display:none">
-        <h2>동진토건(주) 종사자 의견청취</h2>
-        <p class="poster-note">현장에서 위험하다고 느낀 사항, 개선이 필요한 안전시설, 작업방법, 장비운행, 보호구, 통로, 추락·낙하·붕괴·끼임 위험 등을 자유롭게 제보해 주세요.</p>
-        <img id="qrImage" alt="종사자 의견청취 QR 코드">
-        <p id="formUrlText" class="screen-only" style="word-break:break-all;font-size:12px;color:#64748b"></p>
-        <p class="poster-small">익명 제출 가능 · 사진 첨부 가능 · 현장명 필수 입력</p>
-        <p class="poster-small">긴급위험은 즉시 현장 관리자에게 함께 보고</p>
-      </div>
-    </div>
+    <div class="card no-print"><h2>QR 안내문</h2><p>이 QR 하나를 모든 현장에 게시합니다. 근로자가 설문지에 현장명을 직접 입력합니다.</p><button onclick="makeSingleQR()">QR 생성</button> <button class="btn-green" onclick="window.print()">A4 안내문 출력</button><p id="formUrlText" class="small"></p></div>
+    <div id="qrResult" class="qrbox card" style="display:none"><h2>동진토건(주) 종사자 의견청취</h2><p class="poster-note">현장에서 위험하다고 느낀 사항, 개선이 필요한 안전시설, 작업방법, 장비운행, 보호구, 통로, 추락·낙하·붕괴·끼임 위험 등을 자유롭게 제보해 주세요.</p><img id="qrImage" alt="QR 코드"><p class="poster-small">익명 제출 가능 · 사진 첨부 가능 · 현장명 필수 입력<br>긴급위험은 즉시 현장 관리자에게 함께 보고</p></div>
   </section>
 
   <section id="setup" class="section">
-    <div class="card">
-      <h2>0. 최초 설정</h2>
-      <div class="notice">설치 순서: 구글시트 만들기 → Apps Script 만들기 → 설치코드 복사/붙여넣기 → SHEET_ID 입력 → setupSheets() 실행 → 웹앱 배포 URL 저장 → QR 생성</div>
-      <p>
-        <a class="btn btn-green" target="_blank" href="https://sheets.new">① 구글시트 만들기</a>
-        <a class="btn" target="_blank" href="https://script.new">② Apps Script 만들기</a>
-        <button class="btn-orange" onclick="copyInstallCode()">③ 설치코드 복사</button>
-        <button class="btn-dark" onclick="showTabById('guide')">초보 설치가이드 보기</button>
-      </p>
-      <h3>설치코드 미리보기</h3>
-      <pre id="codePreview"></pre>
+    <div class="card"><h2>Firebase 설정</h2><div class="warn">아래 Firebase 설정값은 <b>index.html 코드 상단의 FIREBASE_CONFIG</b>에 직접 넣어 GitHub에 올리는 방식입니다. 화면에서 임시 입력해 테스트할 수도 있지만, 근로자 QR 접속까지 되려면 코드에 반영되어 있어야 합니다.</div>
+      <div class="grid2"><div><label>apiKey</label><input id="cfgApiKey"></div><div><label>authDomain</label><input id="cfgAuthDomain" placeholder="프로젝트ID.firebaseapp.com"></div><div><label>projectId</label><input id="cfgProjectId"></div><div><label>storageBucket</label><input id="cfgStorageBucket" placeholder="프로젝트ID.appspot.com"></div><div><label>appId</label><input id="cfgAppId"></div></div><br>
+      <button onclick="saveConfigLocal()">이 브라우저에 임시 저장</button> <button class="btn-gray" onclick="copyFirebaseSnippet()">index.html에 넣을 설정코드 복사</button>
+      <pre id="snippetBox"></pre>
     </div>
   </section>
 
-  <section id="guide" class="section">
-    <div class="card">
-      <h2>초보 설치가이드</h2>
-      <div class="step"><h3>1) 구글시트 만들기</h3><p>최초 설정에서 <b>① 구글시트 만들기</b>를 누르고 제목을 <b>동진_종사자의견청취_관리대장</b>으로 바꿉니다. 주소에서 <b>/d/ 와 /edit 사이</b>만 복사합니다. 이것이 SHEET_ID입니다.</p></div>
-      <div class="step"><h3>2) Apps Script 만들기</h3><p><b>② Apps Script 만들기</b>를 누릅니다. 기본 Code.gs 내용을 모두 지웁니다.</p></div>
-      <div class="step"><h3>3) 설치코드 붙여넣기</h3><p>이 화면에서 <b>③ 설치코드 복사</b>를 누르고 Apps Script의 Code.gs에 붙여넣습니다.</p></div>
-      <div class="step"><h3>4) SHEET_ID 입력</h3><p>코드 맨 위 <code>const SHEET_ID = "여기에_구글시트_ID_입력";</code> 부분에 구글시트 ID만 넣습니다. 주소 전체를 넣으면 안 됩니다.</p></div>
-      <div class="step"><h3>5) setupSheets() 실행</h3><p>Apps Script 상단 함수 선택에서 <b>setupSheets</b> 선택 후 실행합니다. 권한 승인 후 구글시트에 <b>의견접수, 반기점검</b> 시트가 생기면 정상입니다.</p></div>
-      <div class="step"><h3>6) 웹앱 배포 URL 저장</h3><p>Apps Script에서 <b>배포 → 새 배포 → 웹 앱</b>을 선택합니다. 실행 사용자: <b>나</b>, 액세스 권한: <b>모든 사용자</b>로 배포합니다. 나온 URL을 이 관리화면 상단의 Google Apps Script 웹앱 URL에 저장합니다.</p></div>
-      <div class="step"><h3>7) 테스트</h3><p>단일 QR 안내문 화면에서 QR을 생성하고 제출화면을 열어 의견 1건을 넣습니다. 그 다음 본사 관리자에서 전체 새로고침을 눌러 접수 내용을 확인합니다.</p></div>
-    </div>
-  </section>
-</main>
-
-<script>
-const INSTALL_CODE = `/************************************************************
- * 동진토건 종사자 안전보건 의견청취 QR 관리시스템 - 전현장 공통 QR 버전 v2.3
- *
- * 사용 순서
- * 1) 구글시트 생성
- * 2) 아래 SHEET_ID에 구글시트 ID 입력
- * 3) setupSheets() 1회 실행
- * 4) 배포 > 새 배포 > 웹 앱
- *    - 실행 사용자: 나
- *    - 액세스 권한: 모든 사용자
- ************************************************************/
-
-const SHEET_ID = "여기에_구글시트_ID_입력";
-const ADMIN_PIN = "5183";
-
-const SHEET_OPINIONS = "의견접수";
-const SHEET_CHECK = "반기점검";
-
-function setupSheets() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-
-  let sh = ss.getSheetByName(SHEET_OPINIONS);
-  if (!sh) sh = ss.insertSheet(SHEET_OPINIONS);
-  sh.clear();
-  sh.appendRow([
-    "접수번호", "접수일시", "현장명", "소속업체", "직종", "위험장소", "위험유형",
-    "의견내용", "긴급도", "사진URL", "작성자", "연락처", "상태", "검토자",
-    "검토일", "조치내용", "담당자", "조치예정일", "완료일", "비고"
-  ]);
-  sh.setFrozenRows(1);
-
-  let chk = ss.getSheetByName(SHEET_CHECK);
-  if (!chk) chk = ss.insertSheet(SHEET_CHECK);
-  chk.clear();
-  chk.appendRow([
-    "점검기간", "현장명", "접수건수", "즉시조치", "조치완료", "조치중/검토중",
-    "교육반영", "해당없음", "미완료", "점검자", "점검일", "비고"
-  ]);
-  chk.setFrozenRows(1);
-
-  return "시트 설정 완료";
-}
-
-function doGet(e) {
-  const p = e.parameter || {};
-
-  if (p.page === "form") {
-    return HtmlService.createHtmlOutput(getWorkerFormHtml())
-      .setTitle("종사자 안전보건 의견청취")
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-  }
-
-  if (p.action === "list") return jsonp_(p.callback, listOpinions_(p));
-  if (p.action === "update") return jsonp_(p.callback, updateOpinion_(p));
-  if (p.action === "summary") return jsonp_(p.callback, getSummary_(p));
-
-  return HtmlService.createHtmlOutput("동진토건 종사자 의견청취 API가 정상 작동 중입니다.");
-}
-
-function doPost(e) {
-  const p = e.parameter || {};
-  saveOpinion_(p);
-  return HtmlService.createHtmlOutput(getThanksHtml())
-    .setTitle("의견 제출 완료")
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-}
-
-function saveOpinion_(p) {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sh = ss.getSheetByName(SHEET_OPINIONS) || ss.insertSheet(SHEET_OPINIONS);
-  const now = new Date();
-  const id = "OP-" + Utilities.formatDate(now, "Asia/Seoul", "yyyyMMdd-HHmmss") + "-" + Math.floor(Math.random() * 900 + 100);
-  const photoUrl = savePhoto_(p.photoFile, id);
-
-  sh.appendRow([
-    id,
-    now,
-    clean_(p.siteName),
-    clean_(p.company),
-    clean_(p.job),
-    clean_(p.place),
-    clean_(p.riskType),
-    clean_(p.content),
-    clean_(p.urgency),
-    photoUrl,
-    clean_(p.writer) || "익명",
-    clean_(p.phone),
-    "접수",
-    "", "", "", "", "", "", ""
-  ]);
-}
-
-function savePhoto_(fileBlob, opinionId) {
-  try {
-    if (!fileBlob || typeof fileBlob.getBytes !== "function") return "";
-    if (fileBlob.getBytes().length === 0) return "";
-
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const parent = DriveApp.getFileById(ss.getId()).getParents();
-    const folder = parent.hasNext() ? parent.next() : DriveApp.getRootFolder();
-
-    const ext = fileBlob.getContentType().split("/")[1] || "jpg";
-    const safeName = opinionId + "_photo." + ext.replace(/[^a-zA-Z0-9]/g, "");
-    const file = folder.createFile(fileBlob).setName(safeName);
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    return file.getUrl();
-  } catch (err) {
-    return "사진 저장 오류: " + err.message;
-  }
-}
-
-function listOpinions_(p) {
-  if (p.pin !== ADMIN_PIN) return { ok:false, message:"관리자 PIN이 맞지 않습니다." };
-  const rows = getOpinionObjects_();
-  return { ok:true, data: rows.reverse(), summary: buildSummary_(rows) };
-}
-
-function getSummary_(p) {
-  if (p.pin !== ADMIN_PIN) return { ok:false, message:"관리자 PIN이 맞지 않습니다." };
-  const rows = getOpinionObjects_();
-  return { ok:true, summary: buildSummary_(rows) };
-}
-
-function updateOpinion_(p) {
-  if (p.pin !== ADMIN_PIN) return { ok:false, message:"관리자 PIN이 맞지 않습니다." };
-  if (!p.id) return { ok:false, message:"접수번호가 없습니다." };
-
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sh = ss.getSheetByName(SHEET_OPINIONS);
-  if (!sh) return { ok:false, message:"의견접수 시트가 없습니다." };
-
-  const values = sh.getDataRange().getValues();
-  for (let r = 1; r < values.length; r++) {
-    if (String(values[r][0]) === String(p.id)) {
-      if (p.status !== undefined) sh.getRange(r + 1, 13).setValue(clean_(p.status));
-      if (p.reviewer !== undefined) sh.getRange(r + 1, 14).setValue(clean_(p.reviewer));
-      sh.getRange(r + 1, 15).setValue(new Date());
-      if (p.actionText !== undefined) sh.getRange(r + 1, 16).setValue(clean_(p.actionText));
-      if (p.owner !== undefined) sh.getRange(r + 1, 17).setValue(clean_(p.owner));
-      if (p.dueDate !== undefined) sh.getRange(r + 1, 18).setValue(clean_(p.dueDate));
-      if (p.doneDate !== undefined) sh.getRange(r + 1, 19).setValue(clean_(p.doneDate));
-      if (p.memo !== undefined) sh.getRange(r + 1, 20).setValue(clean_(p.memo));
-      return { ok:true, message:"수정 완료" };
+  <section id="guide" class="section"><div class="card"><h2>초보 설치가이드</h2><div class="step"><h3>1) Firebase 프로젝트 만들기</h3><p>Firebase 콘솔에서 프로젝트를 만들고 웹앱을 추가합니다. 표시되는 firebaseConfig 값을 복사합니다.</p></div><div class="step"><h3>2) Authentication 익명 로그인 켜기</h3><p>Authentication → Sign-in method → <b>Anonymous</b>를 사용 설정합니다. 근로자는 로그인 화면을 보지 않습니다.</p></div><div class="step"><h3>3) Firestore Database 만들기</h3><p>Firestore Database를 만들고 컬렉션 이름은 자동으로 <code>workerOpinions</code>를 사용합니다.</p></div><div class="step"><h3>4) Storage 만들기</h3><p>Storage를 만들면 사진 첨부파일이 <code>worker-opinion/</code> 폴더에 저장됩니다.</p></div><div class="step"><h3>5) 보안 규칙</h3><p>초기 테스트용 규칙은 아래처럼 사용합니다. 운영 전에는 관리자 로그인 방식으로 강화하는 것이 좋습니다.</p><pre>Firestore rules:
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /workerOpinions/{docId} {
+      allow create, read, update: if request.auth != null;
+      allow delete: if false;
     }
   }
-  return { ok:false, message:"해당 접수번호를 찾을 수 없습니다." };
 }
 
-function getOpinionObjects_() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sh = ss.getSheetByName(SHEET_OPINIONS);
-  if (!sh) return [];
-  const values = sh.getDataRange().getValues();
-  if (values.length <= 1) return [];
-
-  return values.slice(1).map(row => ({
-    id: row[0],
-    receivedAt: formatDate_(row[1]),
-    siteName: row[2],
-    company: row[3],
-    job: row[4],
-    place: row[5],
-    riskType: row[6],
-    content: row[7],
-    urgency: row[8],
-    photoUrl: row[9],
-    writer: row[10],
-    phone: row[11],
-    status: row[12] || "접수",
-    reviewer: row[13],
-    reviewDate: formatDate_(row[14]),
-    actionText: row[15],
-    owner: row[16],
-    dueDate: formatDate_(row[17]),
-    doneDate: formatDate_(row[18]),
-    memo: row[19]
-  }));
-}
-
-function buildSummary_(rows) {
-  const siteMap = {};
-  const total = {
-    total: rows.length, immediate:0, open:0, done:0, education:0, none:0
-  };
-
-  rows.forEach(r => {
-    const site = r.siteName || "현장명 미입력";
-    if (!siteMap[site]) siteMap[site] = { siteName:site, total:0, immediate:0, open:0, done:0, education:0, none:0, latest:"" };
-    siteMap[site].total++;
-    if (String(r.urgency).indexOf("즉시") >= 0) { siteMap[site].immediate++; total.immediate++; }
-    if (r.status === "조치완료") { siteMap[site].done++; total.done++; }
-    else if (r.status === "교육반영") { siteMap[site].education++; total.education++; }
-    else if (r.status === "해당없음") { siteMap[site].none++; total.none++; }
-    else { siteMap[site].open++; total.open++; }
-    if (!siteMap[site].latest || String(r.receivedAt) > String(siteMap[site].latest)) siteMap[site].latest = r.receivedAt;
-  });
-
-  return { total, sites: Object.keys(siteMap).sort().map(k => siteMap[k]) };
-}
-
-function jsonp_(callback, obj) {
-  const cb = callback || "callback";
-  const out = cb + "(" + JSON.stringify(obj) + ");";
-  return ContentService.createTextOutput(out).setMimeType(ContentService.MimeType.JAVASCRIPT);
-}
-
-function clean_(v) {
-  return v == null ? "" : String(v).trim();
-}
-
-function formatDate_(v) {
-  if (!v) return "";
-  if (Object.prototype.toString.call(v) === "[object Date]" && !isNaN(v)) {
-    return Utilities.formatDate(v, "Asia/Seoul", "yyyy-MM-dd HH:mm");
+Storage rules:
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /worker-opinion/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
   }
-  return String(v);
-}
+}</pre></div><div class="step"><h3>6) QR 생성</h3><p>GitHub Pages 주소에서 QR 안내문 → QR 생성 → A4 안내문 출력. QR 주소는 <code>?mode=form</code>이 붙은 GitHub Pages 주소입니다.</p></div></div></section>
+</main>
 
-function getWorkerFormHtml() {
-  const actionUrl = ScriptApp.getService().getUrl();
-  return \`<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>동진토건 종사자 안전보건 의견청취</title>
-  <style>
-    body{margin:0;background:#f1f5f9;font-family:Arial,'Noto Sans KR',sans-serif;color:#0f172a;}
-    header{background:linear-gradient(135deg,#0f172a,#2563eb);color:white;padding:24px 16px;text-align:center;}
-    h1{font-size:22px;margin:0 0 8px;} p{line-height:1.6;}
-    main{max-width:680px;margin:18px auto;padding:0 14px 40px;}
-    .card{background:white;border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.1);}
-    label{display:block;font-weight:800;margin:14px 0 6px;font-size:14px;}
-    input,select,textarea{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:12px;box-sizing:border-box;font-size:15px;}
-    textarea{min-height:120px;}
-    button{width:100%;margin-top:20px;padding:16px;border:0;border-radius:14px;background:#2563eb;color:white;font-weight:900;font-size:16px;}
-    .notice{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:12px;color:#1e3a8a;font-size:13px;}
-  </style>
-</head>
-<body>
-  <header><h1>동진토건 종사자 안전보건 의견청취</h1><p>현장의 위험요인·개선의견을 자유롭게 제출해 주세요.</p></header>
-  <main><div class="card">
-    <div class="notice"><b>필수 입력:</b> 현장명, 위험요인 또는 개선의견<br><b>선택 입력:</b> 소속업체, 직종, 위험장소, 위험유형, 긴급도, 사진, 작성자, 연락처<br>익명 제출 가능 / 사진 첨부 가능 / 긴급위험은 QR 제출과 함께 현장 관리자에게 즉시 알려주세요.</div>
-    <form method="post" action="\${actionUrl}" enctype="multipart/form-data">
-      <label>현장명 *</label>
-      <input name="siteName" required placeholder="예: 군산 호수공원 IPARK">
-      <label>소속업체 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
-      <input name="company" placeholder="예: 동진토건, ○○건설">
-      <label>직종 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
-      <input name="job" placeholder="예: 보통인부, 장비기사, 철근공">
-      <label>위험 장소 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
-      <input name="place" placeholder="예: B1 계단실, 흙막이 구간, 장비 작업반경">
-      <label>위험 유형 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
-      <select name="riskType">
-        <option value="">선택</option><option>추락</option><option>낙하</option><option>끼임</option><option>붕괴</option><option>장비</option><option>전기</option><option>화재</option><option>질식</option><option>통로</option><option>보호구</option><option>기타</option>
-      </select>
-      <label>위험요인 또는 개선의견 *</label>
-      <div class="notice" style="margin:6px 0 8px;">개선의견이 없으면 <b>개선의견없음</b>이라고 적어주세요. 위험한 상황이나 개선이 필요한 내용을 적어주세요.</div>
-      <textarea name="content" required placeholder="예: 계단실 난간이 흔들림 / 장비 작업반경 접근통제 필요 / 개선의견없음"></textarea>
-      <label>긴급도 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
-      <select name="urgency">
-        <option value="">선택</option><option>일반 개선</option><option>빠른 조치 필요</option><option>즉시조치 필요</option>
-      </select>
-      <label>사진 첨부 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
-      <input type="file" name="photoFile" accept="image/*" capture="environment">
-      <div class="notice" style="margin-top:8px;">사진은 선택사항입니다. 휴대폰에서는 <b>파일 선택</b>을 누르면 카메라 촬영 또는 사진 선택으로 첨부할 수 있습니다.</div>
-      <label>작성자 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
-      <input name="writer" placeholder="익명 가능">
-      <label>연락처 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
-      <input name="phone" placeholder="회신이 필요한 경우만 입력">
-      <button type="submit">의견 제출하기</button>
+<div id="formApp" class="submit-wrap hidden">
+  <div class="card"><h2>종사자 안전보건 의견 제출</h2><div class="notice">현장에서 위험하다고 느낀 사항이나 개선이 필요한 내용을 제출해 주세요. <b>현장명</b>과 <b>위험요인 또는 개선의견</b>만 필수입니다.</div>
+    <form id="opinionForm">
+      <label>현장명 *</label><input name="siteName" required placeholder="예: 군산 호수공원 IPARK">
+      <label>소속업체</label><input name="company" placeholder="선택입력">
+      <label>직종</label><input name="job" placeholder="선택입력">
+      <label>위험장소</label><input name="place" placeholder="예: B1 계단실, 굴착부 주변">
+      <label>위험유형</label><select name="riskType"><option value="">선택입력</option><option>추락</option><option>낙하</option><option>끼임</option><option>붕괴</option><option>장비</option><option>전기</option><option>화재</option><option>질식</option><option>통로</option><option>보호구</option><option>기타</option></select>
+      <label>위험요인 또는 개선의견 *</label><textarea name="content" required placeholder="개선의견이 없으면 개선의견없음이라고 적어주세요.\n위험한 상황이나 개선이 필요한 내용을 적어주세요."></textarea>
+      <label>긴급도</label><select name="urgency"><option value="">선택입력</option><option>즉시조치 필요</option><option>빠른 조치 필요</option><option>일반 개선</option></select>
+      <label>사진 첨부</label><input id="photoFile" type="file" accept="image/*" capture="environment"><p class="small">선택입력입니다. 휴대폰에서는 사진 촬영 또는 앨범 선택이 가능합니다.</p>
+      <label>작성자</label><input name="writer" placeholder="익명 가능">
+      <label>연락처</label><input name="phone" placeholder="회신 필요 시 입력">
+      <br><br><button type="submit" class="btn-green">제출하기</button><p id="submitStatus" class="status"></p>
     </form>
-  </div></main>
-</body>
-</html>\`;
-}
+  </div>
+</div>
 
-function getThanksHtml() {
-  return \`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{font-family:Arial,'Noto Sans KR',sans-serif;background:#f1f5f9;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center}.box{background:white;border-radius:20px;padding:30px;max-width:480px;text-align:center;box-shadow:0 8px 24px rgba(15,23,42,.12)}h1{color:#2563eb}</style></head><body><div class="box"><h1>제출 완료</h1><p>안전보건 의견이 접수되었습니다.</p><p>재해예방에 필요한 사항은 검토 후 조치하겠습니다.</p><button onclick="location.href='?page=form'" style="padding:12px 18px;border:0;border-radius:12px;background:#2563eb;color:white;font-weight:800">추가 의견 제출</button></div></body></html>\`;
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script>
+// ★ 여기에 Firebase 웹앱 설정값을 넣으세요.
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDF8VVYYhDN4daxLytjsxNiILZv0nXfBn4",
+  authDomain: "dongjin-worker-opinion.firebaseapp.com",
+  projectId: "dongjin-worker-opinion",
+  storageBucket: "dongjin-worker-opinion.firebasestorage.app",
+  messagingSenderId: "937984836099",
+  appId: "1:937984836099:web:c0089282acdc36511bc436",
+  measurementId: "G-7QN2JD5QSW"
+};
+const ADMIN_PIN_DEFAULT = '5183';
+let db=null, storage=null, auth=null, allOpinions=[];
+function configReady(c){return c && c.apiKey && !String(c.apiKey).startsWith('여기에') && c.projectId && !String(c.projectId).startsWith('여기에');}
+async function initFirebaseFromPage(){
+  let cfg = configReady(FIREBASE_CONFIG) ? FIREBASE_CONFIG : JSON.parse(localStorage.getItem('dj_firebase_config')||'{}');
+  if(!configReady(cfg)){ alert('Firebase 설정이 필요합니다. Firebase 설정 탭에 값을 입력하거나 index.html의 FIREBASE_CONFIG를 수정하세요.'); return false; }
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(cfg);
+    auth=firebase.auth(); db=firebase.firestore(); storage=firebase.storage();
+    if(!auth.currentUser) await auth.signInAnonymously();
+    return true;
+  }catch(e){ alert('Firebase 연결 오류: '+e.message); return false; }
 }
-`;
-let allOpinions = [];
-document.getElementById('codePreview').textContent = INSTALL_CODE.substring(0, 2200) + '\n...';
-window.addEventListener('load', () => {
-  document.getElementById('gasUrl').value = localStorage.getItem('dongjin_gas_url') || '';
-  document.getElementById('pin').value = localStorage.getItem('dongjin_pin') || '';
-  if (document.getElementById('gasUrl').value) makeSingleQR();
-});
-function showTab(id, btn) { document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); if(btn) btn.classList.add('active'); }
-function showTabById(id) { const tabs = Array.from(document.querySelectorAll('.tab')); const names = {dashboard:0, qr:1, setup:2, guide:3}; showTab(id, tabs[names[id]]); }
-function saveSettings() { localStorage.setItem('dongjin_gas_url', document.getElementById('gasUrl').value.trim()); localStorage.setItem('dongjin_pin', document.getElementById('pin').value.trim()); alert('설정 저장 완료'); makeSingleQR(); }
-function clearSettings() { localStorage.removeItem('dongjin_gas_url'); localStorage.removeItem('dongjin_pin'); location.reload(); }
-function getGas() { return document.getElementById('gasUrl').value.trim(); }
-function getPin() { return document.getElementById('pin').value.trim(); }
-function makeSingleQR() { const gas = getGas(); if(!gas) { alert('먼저 Google Apps Script 웹앱 URL을 입력하고 설정 저장하세요.'); return; } const formUrl = gas + '?page=form'; const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=360x360&data=' + encodeURIComponent(formUrl); document.getElementById('qrImage').src = qr; document.getElementById('formUrlText').textContent = formUrl; document.getElementById('qrResult').style.display = 'block'; }
-async function copyInstallCode() { try { await navigator.clipboard.writeText(INSTALL_CODE); alert('설치코드가 복사되었습니다. Apps Script Code.gs에 붙여넣으세요.'); } catch(e) { const w = window.open('', '_blank'); w.document.write('<pre style="white-space:pre-wrap">'+INSTALL_CODE.replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))+'</pre>'); } }
-function jsonp(url) { return new Promise((resolve,reject)=>{ const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*1000); window[cb]=(data)=>{ resolve(data); delete window[cb]; script.remove(); }; const script=document.createElement('script'); script.onerror=reject; script.src=url+(url.includes('?')?'&':'?')+'callback='+cb; document.body.appendChild(script); }); }
-async function loadDashboard() { const gas=getGas(), pin=getPin(); if(!gas||!pin) { alert('웹앱 URL과 관리자 PIN을 먼저 저장하세요.'); return; } const res = await jsonp(gas+'?action=list&pin='+encodeURIComponent(pin)); if(!res.ok) { alert(res.message||'불러오기 실패'); return; } allOpinions = res.data || []; renderSummary(res.summary); renderOpinions(); }
-function renderSummary(summary) { const t=summary?.total||{}; stTotal.textContent=t.total||0; stImmediate.textContent=t.immediate||0; stOpen.textContent=t.open||0; stDone.textContent=t.done||0; stEdu.textContent=t.education||0; stNone.textContent=t.none||0; const box=document.getElementById('siteCards'); const sites=summary?.sites||[]; box.innerHTML = sites.length ? sites.map(s=>`<div class="site-card" onclick="filterSite.value='${esc(s.siteName)}';renderOpinions()"><b>${esc(s.siteName)}</b><p>전체 ${s.total}건 / 즉시 ${s.immediate}건 / 조치완료 ${s.done}건 / 미완료 ${s.open}건</p><small>최근 접수: ${esc(s.latest||'')}</small></div>`).join('') : '<p>아직 접수된 현장이 없습니다.</p>'; }
-function renderOpinions() { const site=(filterSite.value||'').toLowerCase(); const status=filterStatus.value; const rows=allOpinions.filter(r=>(!site||String(r.siteName||'').toLowerCase().includes(site))&&(!status||r.status===status)); opinionBody.innerHTML = rows.length ? rows.map(r=>`<tr><td>${esc(r.receivedAt)}</td><td>${esc(r.siteName)}</td><td>${esc(r.place)}</td><td>${esc(r.riskType)}</td><td>${esc(r.urgency)}</td><td>${esc(r.content)}</td><td>${esc(r.status)}</td><td class="no-print"><button onclick="editOpinion('${esc(r.id)}')">상태변경</button></td></tr>`).join('') : '<tr><td colspan="8">표시할 의견이 없습니다.</td></tr>'; }
-async function editOpinion(id) { const r=allOpinions.find(x=>x.id===id); if(!r) return; const status=prompt('상태 입력: 접수 / 검토중 / 조치필요 / 조치중 / 조치완료 / 교육반영 / 해당없음', r.status||'검토중'); if(!status) return; const actionText=prompt('조치내용 또는 검토의견을 입력하세요.', r.actionText||'')||''; const owner=prompt('담당자를 입력하세요.', r.owner||'')||''; const gas=getGas(), pin=getPin(); const url=gas+'?action=update&pin='+encodeURIComponent(pin)+'&id='+encodeURIComponent(id)+'&status='+encodeURIComponent(status)+'&actionText='+encodeURIComponent(actionText)+'&owner='+encodeURIComponent(owner)+'&reviewer='+encodeURIComponent('본사관리자'); const res=await jsonp(url); alert(res.message||'처리 완료'); loadDashboard(); }
-function esc(v) { return String(v??'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function showTab(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');}
+function savePin(){localStorage.setItem('dj_admin_pin',document.getElementById('adminPin').value||ADMIN_PIN_DEFAULT);alert('PIN 저장 완료');}
+function checkPin(){const pin=localStorage.getItem('dj_admin_pin')||ADMIN_PIN_DEFAULT;const input=document.getElementById('adminPin')?.value||pin;if(input!==pin){alert('관리자 PIN을 확인하세요.');return false;}return true;}
+function makeSingleQR(){const formUrl=location.origin+location.pathname+'?mode=form';const qr='https://api.qrserver.com/v1/create-qr-code/?size=360x360&data='+encodeURIComponent(formUrl);document.getElementById('qrImage').src=qr;document.getElementById('formUrlText').textContent=formUrl;document.getElementById('qrResult').style.display='block';}
+async function loadOpinions(){if(!checkPin())return;if(!await initFirebaseFromPage())return;const snap=await db.collection('workerOpinions').orderBy('receivedAt','desc').limit(500).get();allOpinions=snap.docs.map(d=>({id:d.id,...d.data()}));renderStats();renderTable();}
+function renderStats(){const sites=new Set(allOpinions.map(x=>x.siteName||'미입력'));document.getElementById('stAll').textContent=allOpinions.length;document.getElementById('stUrgent').textContent=allOpinions.filter(x=>(x.urgency||'').includes('즉시')).length;document.getElementById('stDone').textContent=allOpinions.filter(x=>x.status==='조치완료').length;document.getElementById('stEdu').textContent=allOpinions.filter(x=>x.status==='교육반영').length;document.getElementById('stOpen').textContent=allOpinions.filter(x=>!['조치완료','교육반영','해당없음'].includes(x.status)).length;document.getElementById('stSites').textContent=sites.size;let map={};allOpinions.forEach(x=>{let s=x.siteName||'미입력';if(!map[s])map[s]={all:0,urgent:0,done:0,open:0};map[s].all++;if((x.urgency||'').includes('즉시'))map[s].urgent++;if(x.status==='조치완료')map[s].done++;if(!['조치완료','교육반영','해당없음'].includes(x.status))map[s].open++;});document.getElementById('siteSummary').innerHTML=Object.entries(map).map(([s,v])=>`<div class="notice" style="margin:8px 0"><b>${s}</b> · 전체 ${v.all}건 · 즉시 ${v.urgent}건 · 조치완료 ${v.done}건 · 미완료 ${v.open}건</div>`).join('')||'데이터 없음';}
+function dateText(ts){try{return ts?.toDate?ts.toDate().toLocaleString('ko-KR'):'';}catch(e){return '';}}
+function renderTable(){let q=(document.getElementById('searchText')?.value||'').toLowerCase();let st=document.getElementById('statusFilter')?.value||'';let rows=allOpinions.filter(x=>(!st||x.status===st)&&(!q||JSON.stringify(x).toLowerCase().includes(q)));document.getElementById('opinionTable').innerHTML=rows.map(x=>`<tr><td>${dateText(x.receivedAt)}</td><td>${x.siteName||''}</td><td>${x.place||''}</td><td>${x.riskType||''}</td><td>${(x.content||'').replace(/</g,'&lt;')}</td><td>${x.urgency||''}</td><td>${x.photoUrl?`<a href="${x.photoUrl}" target="_blank">사진보기</a>`:''}</td><td>${x.status||'접수'}</td><td><select onchange="updateStatus('${x.id}',this.value)"><option>${x.status||'접수'}</option><option>검토중</option><option>조치필요</option><option>조치중</option><option>조치완료</option><option>교육반영</option><option>해당없음</option></select></td></tr>`).join('')||'<tr><td colspan="9">데이터 없음</td></tr>';}
+async function updateStatus(id,status){if(!await initFirebaseFromPage())return;await db.collection('workerOpinions').doc(id).update({status,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});allOpinions=allOpinions.map(x=>x.id===id?{...x,status}:x);renderStats();renderTable();}
+function downloadCSV(){const headers=['접수일','현장명','소속','직종','장소','유형','의견내용','긴급도','사진URL','작성자','연락처','상태'];const lines=[headers.join(',')].concat(allOpinions.map(x=>[dateText(x.receivedAt),x.siteName,x.company,x.job,x.place,x.riskType,x.content,x.urgency,x.photoUrl,x.writer,x.phone,x.status].map(v=>'"'+String(v||'').replaceAll('"','""')+'"').join(',')));const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='종사자의견청취.csv';a.click();}
+function saveConfigLocal(){const cfg={apiKey:cfgApiKey.value,authDomain:cfgAuthDomain.value,projectId:cfgProjectId.value,storageBucket:cfgStorageBucket.value,appId:cfgAppId.value};localStorage.setItem('dj_firebase_config',JSON.stringify(cfg));alert('임시 저장 완료');}
+function copyFirebaseSnippet(){const cfg={apiKey:cfgApiKey.value,authDomain:cfgAuthDomain.value,projectId:cfgProjectId.value,storageBucket:cfgStorageBucket.value,appId:cfgAppId.value};const txt='const FIREBASE_CONFIG = '+JSON.stringify(cfg,null,2)+';';snippetBox.textContent=txt;navigator.clipboard?.writeText(txt);}
+async function handleSubmit(e){e.preventDefault();submitStatus.textContent='제출 중입니다...';if(!await initFirebaseFromPage()){submitStatus.textContent='Firebase 설정 오류입니다. 관리자에게 문의하세요.';return;}const fd=new FormData(e.target);let photoUrl='';const file=document.getElementById('photoFile').files[0];if(file){const path='worker-opinion/'+new Date().toISOString().slice(0,10)+'/'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9_.가-힣-]/g,'_');const ref=storage.ref(path);await ref.put(file);photoUrl=await ref.getDownloadURL();}
+ await db.collection('workerOpinions').add({siteName:fd.get('siteName')||'',company:fd.get('company')||'',job:fd.get('job')||'',place:fd.get('place')||'',riskType:fd.get('riskType')||'',content:fd.get('content')||'',urgency:fd.get('urgency')||'',writer:fd.get('writer')||'',phone:fd.get('phone')||'',photoUrl,status:'접수',receivedAt:firebase.firestore.FieldValue.serverTimestamp(),userAgent:navigator.userAgent});e.target.reset();submitStatus.textContent='제출 완료되었습니다. 안전보건 의견이 접수되었습니다.';}
+window.addEventListener('load',()=>{document.getElementById('adminPin').value=localStorage.getItem('dj_admin_pin')||ADMIN_PIN_DEFAULT;if(new URLSearchParams(location.search).get('mode')==='form'){document.body.classList.add('form-only');document.getElementById('app').classList.add('hidden');document.getElementById('formApp').classList.remove('hidden');document.getElementById('opinionForm').addEventListener('submit',handleSubmit);initFirebaseFromPage();} });
 </script>
 </body>
 </html>
