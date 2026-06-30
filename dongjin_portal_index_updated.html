@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>동진안전 통합 포털</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy:    #0a1628;
+      --blue:    #1a3a6b;
+      --accent:  #2563eb;
+      --sky:     #38bdf8;
+      --white:   #ffffff;
+      --gray-50: #f8fafc;
+      --gray-100:#f1f5f9;
+      --gray-300:#cbd5e1;
+      --gray-500:#64748b;
+      --gray-700:#334155;
+      --green:   #059669;
+      --radius:  16px;
+      --shadow:  0 4px 24px rgba(10,22,40,.13);
+      --shadow-lg: 0 12px 40px rgba(10,22,40,.18);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; }
+
+    body {
+      font-family: "Noto Sans KR", system-ui, sans-serif;
+      background: var(--gray-50);
+      color: var(--navy);
+      min-height: 100vh;
+    }
+
+    /* ── 배경 패턴 ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(37,99,235,.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 90% 80%, rgba(56,189,248,.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── 탑바 ── */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(203,213,225,.5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1000;
+      box-shadow: 0 1px 12px rgba(10,22,40,.07);
+    }
+
+    .topbar-logo img {
+      height: 36px;
+      display: block;
+    }
+
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .18s, transform .18s, box-shadow .18s;
+      box-shadow: 0 2px 12px rgba(37,99,235,.35);
+    }
+    .home-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37,99,235,.45);
+    }
+
+    /* ── 메인 래퍼 ── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      padding-top: 60px;
+    }
+
+    /* ── 히어로 ── */
+    .hero {
+      width: 100%;
+      max-width: 580px;
+      margin: 32px auto 0;
+      padding: 0 20px;
+    }
+    .hero img {
+      width: 100%;
+      border-radius: 22px;
+      box-shadow: var(--shadow-lg);
+      display: block;
+    }
+
+    /* ── 메인 카드 ── */
+    .card {
+      width: 100%;
+      max-width: 580px;
+      margin: 24px auto;
+      padding: 32px 24px 28px;
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(203,213,225,.4);
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .card-header .badge {
+      display: inline-block;
+      padding: 4px 14px;
+      background: rgba(37,99,235,.09);
+      color: var(--accent);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .card-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -.3px;
+    }
+    .card-header p {
+      margin-top: 6px;
+      font-size: 13.5px;
+      color: var(--gray-500);
+    }
+
+    /* ── 메뉴 그리드 ── */
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .menu-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 18px 8px 16px;
+      border-radius: var(--radius);
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-100);
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.34,1.56,.64,1);
+      text-align: center;
+    }
+    .menu-item:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(37,99,235,.3);
+    }
+    .menu-item:hover .item-icon,
+    .menu-item:hover .item-label {
+      color: #fff;
+    }
+    .menu-item:active { transform: translateY(0); }
+
+    .item-icon {
+      font-size: 24px;
+      line-height: 1;
+      transition: color .2s;
+    }
+    .item-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-700);
+      line-height: 1.4;
+      transition: color .2s;
+      word-break: keep-all;
+    }
+
+    /* 특별 강조 아이템 */
+    .menu-item.featured {
+      background: linear-gradient(135deg, #0f3460 0%, var(--accent) 100%);
+      border-color: transparent;
+    }
+    .menu-item.featured .item-icon,
+    .menu-item.featured .item-label { color: #fff; }
+    .menu-item.featured:hover {
+      background: linear-gradient(135deg, #0c2a50 0%, #1d4ed8 100%);
+      box-shadow: 0 8px 28px rgba(37,99,235,.45);
+    }
+
+    /* ── 구분선 ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--gray-100);
+      margin: 24px 0 20px;
+    }
+
+    /* ── 소개 섹션 ── */
+    .intro-section {
+      text-align: left;
+    }
+    .intro-section h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .intro-section p {
+      font-size: 13px;
+      color: var(--gray-500);
+      line-height: 1.7;
+    }
+
+    /* ── 그린 CTA ── */
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 18px;
+      padding: 15px 20px;
+      border-radius: 14px;
+      font-size: 14.5px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(135deg, #047857 0%, var(--green) 100%);
+      box-shadow: 0 6px 20px rgba(5,150,105,.3);
+      transition: all .2s ease;
+      letter-spacing: .3px;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(5,150,105,.45);
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    }
+    .cta-btn:active { transform: translateY(0); }
+
+    /* ── 동영상 ── */
+    .video-wrap {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto 28px;
+      padding: 0 20px;
+    }
+    .video-wrap video {
+      width: 100%;
+      height: auto;
+      border-radius: 22px;
+      box-shadow: var(--shadow-lg);
+      display: block;
+    }
+
+    /* ── 푸터 ── */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-300);
+      padding: 12px 0 28px;
+      line-height: 1.6;
+    }
+
+    /* ── AI 봇 레이블 ── */
+    #bot-label {
+      position: fixed;
+      z-index: 1000;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      letter-spacing: .5px;
+      background: rgba(37,99,235,.85);
+      border-radius: 999px;
+      padding: 3px 10px;
+      pointer-events: none;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(37,99,235,.4);
+    }
+
+    /* ── 챗봇 팝업 ── */
+    #bot-popup {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      background: #dce8f4;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(10,22,40,.35);
+      overflow: hidden;
+      flex-direction: column;
+      resize: both;
+      min-width: 300px; min-height: 400px;
+      width: 700px; height: 650px;
+      top: 120px; right: 210px;
+    }
+    #bot-popup.open { display: flex; }
+
+    #bot-popup-header {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: move;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .header-left { display:flex; align-items:center; gap:8px; }
+    .header-avatar {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.2);
+      display: flex; align-items:center; justify-content:center;
+      font-size: 16px;
+    }
+    #bot-popup-close {
+      background: none; border: none;
+      font-size: 18px; cursor: pointer;
+      color: rgba(255,255,255,.8);
+      line-height: 1; padding: 0 4px;
+      transition: color .15s;
+    }
+    #bot-popup-close:hover { color: #fff; }
+
+    #bot-popup iframe {
+      flex: 1; width: 100%; border: none;
+    }
+
+    #bot-popup::after {
+      content:'';
+      position:absolute; bottom:4px; right:4px;
+      width:10px; height:10px;
+      border-right:2px solid rgba(0,0,0,.2);
+      border-bottom:2px solid rgba(0,0,0,.2);
+      pointer-events:none;
+    }
+
+    /* ── 모바일 오버레이 ── */
+    #bot-overlay {
+      position:fixed; inset:0;
+      background:rgba(10,22,40,.4);
+      backdrop-filter:blur(6px);
+      z-index:1999;
+      display:none;
+    }
+
+    /* ── 반응형 ── */
+    @media (max-width: 600px) {
+      .menu { grid-template-columns: repeat(3, 1fr); gap: 9px; }
+      .item-label { font-size: 11px; }
+      .item-icon { font-size: 20px; }
+      .menu-item { padding: 14px 6px 12px; }
+      .card { padding: 24px 16px 20px; }
+    }
+
+    @media (max-width: 768px) {
+      body.bot-open { overflow: hidden; }
+      #bot-popup {
+        width: 100vw !important; height: 100vh !important;
+        top: 0 !important; left: 0 !important; right: auto !important;
+        border-radius: 0 !important; resize: none;
+      }
+    }
+
+    /* ── 진입 애니메이션 ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .hero   { animation: fadeUp .5s ease both; }
+    .card   { animation: fadeUp .55s ease .08s both; }
+    .video-wrap { animation: fadeUp .55s ease .14s both; }
+  </style>
+</head>
+<body>
+
+  <!-- 탑바 -->
+  <nav class="topbar">
+    <div class="topbar-logo">
+      <img src="https://raw.githubusercontent.com/es1063122-creator/ani/main/djlogo.png" alt="동진안전 로고">
+    </div>
+    <a href="https://es1063122-creator.github.io/djweb2/" class="home-btn" target="_blank">
+      🏠 홈으로 가기
+    </a>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- 히어로 이미지 -->
+    <div class="hero">
+      <img src="https://raw.githubusercontent.com/es1063122-creator/dj-safty-portal/main/safe-main.png" alt="동진 스마트 안전 메인">
+    </div>
+
+    <!-- 메인 카드 -->
+    <div class="card">
+
+      <div class="card-header">
+        <div class="badge">Smart Safety Portal</div>
+        <h2>동진안전 통합 포털</h2>
+        <p>현장의 모든 안전 기능을 한 곳에</p>
+      </div>
+
+      <div class="menu">
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/dj-Supervisor-Check/')">
+          <div class="item-icon">📋</div>
+          <div class="item-label">관리감독자 점검</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://script.google.com/macros/s/AKfycbwgQ__21svWi9J1NvtDODXlRj-HpIJ4kW40eZe1LWbq_vwP3CqjrmU4pVVk3DqjV_PAkA/exec')">
+          <div class="item-icon">🛠</div>
+          <div class="item-label">스마트 안전점검</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://script.google.com/macros/s/AKfycbwZSI4Y2MbPQq14IPpDTAINoSyE4ifCPzbfhwnXEU-wNnUrsmj-G-bN4_GVXlRLdD7P1g/exec')">
+          <div class="item-icon">❓</div>
+          <div class="item-label">관리감독자 퀴즈</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/dj-machine-safety/')">
+          <div class="item-icon">🚜</div>
+          <div class="item-label">건설기계 일일점검</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/dongjin-safety-check/')">
+          <div class="item-icon">🔍</div>
+          <div class="item-label">현장 안전점검</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/dj-kohsa-guide/')">
+          <div class="item-icon">📘</div>
+          <div class="item-label">안전보건작업지침</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/dj-risk-Sharing/')">
+          <div class="item-icon">📤</div>
+          <div class="item-label">위험성평가 공유</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/dj-risk-system/')">
+          <div class="item-icon">⚠️</div>
+          <div class="item-label">위험성평가 시스템</div>
+        </div>
+
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/dj-worker-opinion/')">
+          <div class="item-icon">🗣️</div>
+          <div class="item-label">종사자 의견청취 QR</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://script.google.com/macros/s/AKfycbwLxyQuuAro7xHe2Jfm7wlf1FLDyS3XNhw_yFfjhE_86AXcERMP8_si_-AXlDg_WjxwvA/exec')">
+          <div class="item-icon">🎓</div>
+          <div class="item-label">직무교육 관리</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/dongjin-site/')">
+          <div class="item-icon">🏗️</div>
+          <div class="item-label">기상 AI 안전관제</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://es1063122-creator.github.io/safety-education/')">
+          <div class="item-icon">🚧</div>
+          <div class="item-label">특별안전교육</div>
+        </div>
+
+        <div class="menu-item" onclick="openApp('https://mov-learning.vercel.app')">
+          <div class="item-icon">🎬</div>
+          <div class="item-label">교육동영상</div>
+        </div>
+
+        <div class="menu-item featured" onclick="openBotPopup()">
+          <div class="item-icon">🤖</div>
+          <div class="item-label">동진 AI 챗봇</div>
+        </div>
+
+      </div>
+
+      <hr class="divider">
+
+      <div class="intro-section">
+        <h3>🏢 동진안전 소개</h3>
+        <p>
+          동진안전은 스마트 안전기술을 통해 현장 위험요인을 신속하고 정확하게 파악할 수 있게 해줍니다.
+          본 포털은 다양한 안전 시스템을 한 곳에서 사용할 수 있도록 설계된 통합 플랫폼입니다.
+        </p>
+
+        <a href="https://es1063122-creator.github.io/kdh-safety2/"
+           class="cta-btn"
+           target="_blank">
+          🌿 KDH-Safety 2.0 바로가기
+        </a>
+      </div>
+
+    </div>
+
+    <!-- 동영상 -->
+    <div class="video-wrap">
+      <video autoplay muted loop playsinline>
+        <source src="https://raw.githubusercontent.com/es1063122-creator/dj-safty-portal/main/dj-aibot.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- AI 봇 레이블 -->
+    <div id="bot-label">🤖 AI 봇 클릭</div>
+
+    <!-- 챗봇 팝업 -->
+    <div id="bot-popup">
+      <div id="bot-popup-header">
+        <div class="header-left">
+          <div class="header-avatar">🤖</div>
+          <span>동진 AI 챗봇</span>
+        </div>
+        <button id="bot-popup-close" onclick="closeBotPopup()">✕</button>
+      </div>
+      <iframe
+        src="https://es1063122-creator.github.io/ai-bot/"
+        allow="microphone"
+        title="동진 AI 챗봇">
+      </iframe>
+    </div>
+
+    <footer>
+      ⓒ 2025 Dongjin Safety (KDH). All Rights Reserved.<br>
+      문의: es5183@djenc.co.kr &nbsp;/&nbsp; 031-792-8361
+    </footer>
+
+  </div><!-- /page-wrap -->
+
+  <div id="bot-overlay"></div>
+
+  <script>
+    function openApp(url) { window.open(url, "_blank"); }
+
+    function openBotPopup() {
+      const popup   = document.getElementById("bot-popup");
+      const overlay = document.getElementById("bot-overlay");
+      popup.classList.add("open");
+      if (window.innerWidth <= 768) {
+        document.body.classList.add("bot-open");
+        overlay.style.display = "block";
+      }
+    }
+
+    function closeBotPopup() {
+      const popup   = document.getElementById("bot-popup");
+      const overlay = document.getElementById("bot-overlay");
+      popup.classList.remove("open");
+      document.body.classList.remove("bot-open");
+      overlay.style.display = "none";
+    }
+
+    /* 팝업 드래그 */
+    (function () {
+      const popup  = document.getElementById("bot-popup");
+      const header = document.getElementById("bot-popup-header");
+      let dragging=false, sx,sy,ol,ot;
+
+      header.addEventListener("mousedown", e => {
+        if (e.target.id === "bot-popup-close") return;
+        dragging=true;
+        const r=popup.getBoundingClientRect();
+        sx=e.clientX; sy=e.clientY; ol=r.left; ot=r.top;
+        popup.style.left=ol+"px"; popup.style.right="";
+        e.preventDefault();
+      });
+      document.addEventListener("mousemove", e => {
+        if (!dragging) return;
+        popup.style.left=(ol+e.clientX-sx)+"px";
+        popup.style.top =(ot+e.clientY-sy)+"px";
+      });
+      document.addEventListener("mouseup", ()=>{ dragging=false; });
+
+      header.addEventListener("touchstart", e => {
+        if (e.target.id==="bot-popup-close") return;
+        dragging=true;
+        const t=e.touches[0], r=popup.getBoundingClientRect();
+        sx=t.clientX; sy=t.clientY; ol=r.left; ot=r.top;
+        popup.style.left=ol+"px"; popup.style.right="";
+      },{ passive:true });
+      document.addEventListener("touchmove", e => {
+        if (!dragging) return;
+        const t=e.touches[0];
+        popup.style.left=(ol+t.clientX-sx)+"px";
+        popup.style.top =(ot+t.clientY-sy)+"px";
+      },{ passive:true });
+      document.addEventListener("touchend",()=>{ dragging=false; });
+    })();
+  </script>
+
+  <!-- Three.js 3D 봇 캐릭터 -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>
+  window.addEventListener("load", () => {
+    if (!window.THREE) return;
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+    camera.position.set(0, 0, 8);
+
+    const renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
+    const BOT_SIZE = 170;
+    renderer.setSize(BOT_SIZE, BOT_SIZE);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    Object.assign(renderer.domElement.style, {
+      position:"fixed", top:"100px", left:"0",
+      zIndex:"999", cursor:"pointer", pointerEvents:"auto"
+    });
+    document.body.appendChild(renderer.domElement);
+
+    renderer.domElement.addEventListener("click", () => {
+      openBotPopup();
+      const popup = document.getElementById("bot-popup");
+      const rect  = renderer.domElement.getBoundingClientRect();
+      if (window.innerWidth <= 768) {
+        popup.style.width="100vw"; popup.style.height="100vh";
+        popup.style.top="0"; popup.style.left="0";
+      } else {
+        popup.style.width="700px"; popup.style.height="650px";
+        popup.style.top=rect.top+"px"; popup.style.right="";
+        popup.style.left=Math.max(8, rect.left-355)+"px";
+      }
+    });
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.4));
+
+    const loader  = new THREE.TextureLoader();
+    const texture = loader.load("https://raw.githubusercontent.com/es1063122-creator/ai-bot/main/dj-ai-default.png");
+    const material= new THREE.MeshBasicMaterial({ map:texture, transparent:true });
+    const geometry= new THREE.PlaneGeometry(8, 8);
+    const bot     = new THREE.Mesh(geometry, material);
+    scene.add(bot);
+
+    const mouse = { x:0, y:0 };
+    window.addEventListener("mousemove", e => {
+      mouse.x =  (e.clientX/window.innerWidth)*2-1;
+      mouse.y = -(e.clientY/window.innerHeight)*2+1;
+    });
+
+    let t=0;
+    function animate() {
+      requestAnimationFrame(animate);
+      t+=0.02;
+      bot.position.y = Math.sin(t*2)*0.4;
+      bot.position.x += (mouse.x*0.8 - bot.position.x)*0.05;
+      bot.position.z += (mouse.y*0.4 - bot.position.z)*0.05;
+      bot.lookAt(camera.position);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    const label = document.getElementById("bot-label");
+    function positionBot() {
+      const container = document.querySelector(".card");
+      const cRect = container ? container.getBoundingClientRect() : null;
+      const leftPos = cRect
+        ? Math.min(cRect.right+10, window.innerWidth-BOT_SIZE-8)
+        : window.innerWidth-BOT_SIZE-16;
+      renderer.domElement.style.left  = leftPos+"px";
+      renderer.domElement.style.right = "auto";
+      const bRect = renderer.domElement.getBoundingClientRect();
+      label.style.top   = (bRect.top - label.offsetHeight - 3)+"px";
+      label.style.left  = leftPos+"px";
+      label.style.right = "auto";
+      label.style.width = BOT_SIZE+"px";
+    }
+    positionBot();
+    window.addEventListener("resize", positionBot);
+    window.addEventListener("scroll", positionBot);
+    requestAnimationFrame(positionBot);
+  });
+  </script>
+
+</body>
+</html>

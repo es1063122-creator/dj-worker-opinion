@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>동진 종사자 의견청취 QR 설치가이드</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#0a1628;--blue:#2563eb;--green:#059669;--red:#dc2626;--gray:#64748b;--line:#e2e8f0;--bg:#f8fafc;--card:#fff;--shadow:0 10px 30px rgba(10,22,40,.11)}
+    *{box-sizing:border-box}body{margin:0;font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:var(--navy)}
+    header{background:linear-gradient(135deg,#0a1628 0%,#123a73 55%,#2563eb 100%);color:#fff;padding:22px 16px 26px;text-align:center;box-shadow:0 8px 28px rgba(10,22,40,.22)}
+    header h1{margin:0;font-size:24px;letter-spacing:-.5px}header p{margin:8px 0 0;font-size:13.5px;opacity:.92;line-height:1.55}
+    main{max-width:980px;margin:18px auto 48px;padding:0 14px}.card{background:var(--card);border:1px solid rgba(203,213,225,.75);border-radius:18px;box-shadow:var(--shadow);padding:20px;margin-bottom:16px}.card h2{font-size:20px;margin:0 0 12px}.card p{color:var(--gray);font-size:13.5px;line-height:1.65;margin:6px 0 14px}
+    .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:0;border-radius:12px;padding:12px 15px;font-weight:900;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;color:#fff;background:var(--blue)}.btn.green{background:var(--green)}.btn.gray{background:#475569}
+    .notice{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:14px;color:#1e3a8a;font-size:13px;line-height:1.65}.notice.gray{background:#f8fafc;border-color:#e2e8f0;color:#334155}
+    .step-list{display:grid;gap:14px}.step-card{border:1px solid #e2e8f0;border-radius:16px;padding:16px;background:#fff}.step-card h3{margin:0 0 8px;font-size:16px}.step-no{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:#2563eb;color:#fff;font-weight:900;margin-right:8px}.code-box{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.6;overflow:auto}.guide-img{border:1px dashed #cbd5e1;border-radius:12px;padding:12px;background:#f8fafc;color:#475569;font-size:13px}.checklist li{margin:6px 0;line-height:1.55}.danger-text{color:#dc2626;font-weight:900}.ok-text{color:#059669;font-weight:900}
+    @media(max-width:700px){.btn{width:100%}header h1{font-size:21px}}
+    @media print{header,.btns{display:none}body{background:#fff}.card{box-shadow:none;border:0}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>동진 종사자 의견청취 QR 설치가이드</h1>
+    <p>구글시트 · Apps Script · SHEET_ID · setupSheets · 웹앱 배포 URL 저장까지 초보자용 순서 안내</p>
+  </header>
+  <main>
+    <div class="btns" style="margin-bottom:14px">
+      <a class="btn green" href="https://spreadsheet.new" target="_blank">① 구글시트 만들기</a>
+      <a class="btn" href="https://script.new" target="_blank">② Apps Script 만들기</a>
+      <a class="btn gray" href="index.html">관리화면으로 돌아가기</a>
+    </div>
+<section class="card">
+      <h2>📖 초보자용 최초 설치가이드</h2>
+      <p>아래 순서대로 하면 됩니다. 이 페이지는 현장 관리자나 본사 담당자가 처음 설치할 때 옆에 켜두고 따라 하는 용도입니다.</p>
+
+      <div class="notice">
+        <b>전체 흐름</b><br>
+        구글시트는 <b>데이터 저장소</b>, Apps Script는 <b>서버/접수폼</b>, 이 웹페이지는 <b>본사 관리자 화면</b>입니다.
+        설치가 끝나면 근로자는 QR로 의견을 제출하고, 본사는 전현장 현황을 확인할 수 있습니다.
+      </div>
+
+      <div class="step-list" style="margin-top:14px">
+        <div class="step-card">
+          <h3><span class="step-no">1</span>구글시트 만들기</h3>
+          <p><b>무엇을 하는 단계?</b> 접수된 의견, 현장QR, 반기점검 자료가 저장될 엑셀 같은 파일을 만드는 단계입니다.</p>
+          <ol class="checklist">
+            <li>상단 <b>최초 설정</b> 탭에서 <b>① 구글시트 만들기</b>를 누릅니다.</li>
+            <li>새 구글시트가 열리면 왼쪽 위 제목을 <b>동진_종사자의견청취_관리대장</b>으로 바꿉니다.</li>
+            <li>브라우저 주소창에서 아래 부분을 복사해야 합니다.</li>
+          </ol>
+          <div class="code-box">https://docs.google.com/spreadsheets/d/<b>여기가_SHEET_ID</b>/edit#gid=0</div>
+          <p><b>입력할 내용:</b> 이 단계에서는 제목만 바꾸면 됩니다. 시트 안의 표 제목은 나중에 <b>setupSheets()</b>가 자동으로 만듭니다.</p>
+        </div>
+
+        <div class="step-card">
+          <h3><span class="step-no">2</span>Apps Script 만들기</h3>
+          <p><b>무엇을 하는 단계?</b> QR 제출화면과 본사 관리자 화면이 구글시트에 데이터를 저장/조회할 수 있게 하는 서버를 만드는 단계입니다.</p>
+          <ol class="checklist">
+            <li>상단 <b>최초 설정</b> 탭에서 <b>② Apps Script 만들기</b>를 누릅니다.</li>
+            <li>새 Apps Script 화면이 열리면 프로젝트 이름을 <b>동진 종사자의견청취 QR 서버</b>로 바꿉니다.</li>
+            <li>기본으로 보이는 <b>Code.gs</b> 안의 내용을 전부 지웁니다.</li>
+          </ol>
+          <p><b>입력할 내용:</b> 프로젝트 이름만 바꿉니다. 코드는 다음 단계에서 붙여넣습니다.</p>
+        </div>
+
+        <div class="step-card">
+          <h3><span class="step-no">3</span>설치코드 복사/붙여넣기</h3>
+          <p><b>무엇을 하는 단계?</b> 미리 만들어둔 서버 코드를 Apps Script에 넣는 단계입니다.</p>
+          <ol class="checklist">
+            <li>상단 <b>최초 설정</b> 탭에서 <b>③ 설치코드 복사</b>를 누릅니다.</li>
+            <li>Apps Script 화면으로 돌아갑니다.</li>
+            <li>비어 있는 <b>Code.gs</b>에 붙여넣기 합니다. 단축키는 <b>Ctrl + V</b>입니다.</li>
+            <li>붙여넣은 뒤 <b>Ctrl + S</b> 또는 저장 아이콘을 누릅니다.</li>
+          </ol>
+          <div class="guide-img">복사가 안 되면 새로 열린 설치코드 창에서 <b>Ctrl+A → Ctrl+C</b> 하거나, 압축파일 안의 <b>apps_script.gs</b> 파일을 직접 열어서 전체 복사하면 됩니다.</div>
+        </div>
+
+        <div class="step-card">
+          <h3><span class="step-no">4</span>SHEET_ID 입력</h3>
+          <p><b>무엇을 하는 단계?</b> Apps Script가 어느 구글시트에 저장할지 알려주는 단계입니다.</p>
+          <ol class="checklist">
+            <li>Apps Script 코드 맨 위쪽에서 <b>SHEET_ID</b> 또는 <b>CONFIG.SHEET_ID</b>라고 적힌 부분을 찾습니다.</li>
+            <li>1단계에서 복사한 구글시트 ID를 따옴표 안에 붙여넣습니다.</li>
+          </ol>
+          <div class="code-box">const CONFIG = {
+  SHEET_ID: "구글시트_ID를_여기에_붙여넣기",
+  ADMIN_PIN: "5183"
+};</div>
+          <p><b>입력 예시:</b></p>
+          <div class="code-box">SHEET_ID: "1AbCDeFgHIjkLmNoPqRstUvWxYz1234567890"</div>
+          <p><span class="danger-text">주의:</span> 주소 전체를 넣으면 안 됩니다. 반드시 <b>/d/와 /edit 사이의 긴 글자</b>만 넣으세요.</p>
+        </div>
+
+        <div class="step-card">
+          <h3><span class="step-no">5</span>setupSheets() 실행</h3>
+          <p><b>무엇을 하는 단계?</b> 구글시트 안에 필요한 탭과 표 제목을 자동으로 만드는 단계입니다.</p>
+          <ol class="checklist">
+            <li>Apps Script 상단의 함수 선택 드롭다운에서 <b>setupSheets</b>를 선택합니다.</li>
+            <li><b>실행</b> 버튼을 누릅니다.</li>
+            <li>권한 승인 창이 나오면 본인 구글계정을 선택합니다.</li>
+            <li>경고 화면이 나오면 <b>고급</b> → <b>프로젝트로 이동</b> → <b>허용</b>을 누릅니다.</li>
+            <li>실행이 끝나면 구글시트에 <b>의견접수 / 현장QR / 반기점검</b> 탭이 생겼는지 확인합니다.</li>
+          </ol>
+          <p><span class="ok-text">정상 결과:</span> 구글시트 하단에 <b>의견접수, 현장QR, 반기점검</b> 시트가 생기면 성공입니다.</p>
+        </div>
+
+        <div class="step-card">
+          <h3><span class="step-no">6</span>웹앱 배포 URL 저장</h3>
+          <p><b>무엇을 하는 단계?</b> QR 제출화면과 본사 관리자 화면이 사용할 인터넷 주소를 만드는 단계입니다.</p>
+          <ol class="checklist">
+            <li>Apps Script 오른쪽 위 <b>배포</b>를 누릅니다.</li>
+            <li><b>새 배포</b>를 누릅니다.</li>
+            <li>유형 선택에서 <b>웹 앱</b>을 선택합니다.</li>
+            <li>설명은 <b>동진 의견청취 QR v1</b>로 입력합니다.</li>
+            <li>실행 사용자는 <b>나</b>로 선택합니다.</li>
+            <li>액세스 권한은 <b>모든 사용자</b>로 선택합니다.</li>
+            <li><b>배포</b>를 누르고 나온 <b>웹 앱 URL</b>을 복사합니다.</li>
+            <li>이 관리화면 상단의 <b>Google Apps Script 배포 URL</b>에 붙여넣고 <b>설정 저장</b>을 누릅니다.</li>
+          </ol>
+          <div class="code-box">https://script.google.com/macros/s/배포ID/exec</div>
+          <p><b>관리자 PIN:</b> 기본값은 코드에서 설정한 <b>5183</b>을 입력하면 됩니다. 나중에 바꾸려면 Apps Script 코드의 <b>ADMIN_PIN</b> 값을 수정하면 됩니다.</p>
+        </div>
+
+        <div class="step-card">
+          <h3><span class="step-no">7</span>설치 후 테스트</h3>
+          <ol class="checklist">
+            <li>상단에 <b>Apps Script 배포 URL</b>과 <b>관리자 PIN</b>을 입력하고 <b>설정 저장</b>을 누릅니다.</li>
+            <li><b>현장 QR 관리</b> 탭으로 이동합니다.</li>
+            <li>현장명에 <b>테스트 현장</b>, 관리자에 <b>김대홍</b>을 입력합니다.</li>
+            <li><b>QR 생성</b> → <b>현장QR 등록/수정</b>을 누릅니다.</li>
+            <li><b>제출화면 열기</b>를 눌러 테스트 의견을 1건 제출합니다.</li>
+            <li><b>본사 관리자</b> 탭에서 <b>본사 현황 불러오기</b>와 <b>의견 목록 불러오기</b>를 눌러 접수 여부를 확인합니다.</li>
+          </ol>
+          <p><span class="ok-text">성공 기준:</span> 본사 관리자 화면에 테스트 의견이 보이면 설치 완료입니다.</p>
+        </div>
+
+        <div class="step-card">
+          <h3>자주 실수하는 부분</h3>
+          <ul class="checklist">
+            <li><b>SHEET_ID에 주소 전체를 넣는 경우</b> → /d/와 /edit 사이 글자만 넣어야 합니다.</li>
+            <li><b>setupSheets를 실행하지 않은 경우</b> → 시트 탭이 없어서 저장이 안 됩니다.</li>
+            <li><b>웹앱 액세스 권한을 본인만으로 한 경우</b> → 근로자가 QR 화면을 열 수 없습니다.</li>
+            <li><b>Apps Script 수정 후 재배포하지 않은 경우</b> → 예전 코드가 계속 실행될 수 있습니다. 수정 후에는 배포 관리를 확인하세요.</li>
+            <li><b>관리자 PIN 불일치</b> → Apps Script 코드의 ADMIN_PIN과 화면에 입력한 PIN이 같아야 합니다.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
