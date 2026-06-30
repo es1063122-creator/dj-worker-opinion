@@ -59,7 +59,7 @@
     </div>
   </section>
 
-  <section id="guide" class="section"><div class="card"><h2>초보 설치가이드</h2><div class="step"><h3>1) Firebase 프로젝트 만들기</h3><p>Firebase 콘솔에서 프로젝트를 만들고 웹앱을 추가합니다. 표시되는 firebaseConfig 값을 복사합니다.</p></div><div class="step"><h3>2) Authentication 익명 로그인 켜기</h3><p>Authentication → Sign-in method → <b>Anonymous</b>를 사용 설정합니다. 근로자는 로그인 화면을 보지 않습니다.</p></div><div class="step"><h3>3) Firestore Database 만들기</h3><p>Firestore Database를 만들고 컬렉션 이름은 자동으로 <code>workerOpinions</code>를 사용합니다.</p></div><div class="step"><h3>4) Storage 만들기</h3><p>Storage를 만들면 사진 첨부파일이 <code>worker-opinion/</code> 폴더에 저장됩니다.</p></div><div class="step"><h3>5) 보안 규칙</h3><p>초기 테스트용 규칙은 아래처럼 사용합니다. 운영 전에는 관리자 로그인 방식으로 강화하는 것이 좋습니다.</p><pre>Firestore rules:
+  <section id="guide" class="section"><div class="card"><h2>초보 설치가이드</h2><div class="step"><h3>1) Firebase 프로젝트 만들기</h3><p>Firebase 콘솔에서 프로젝트를 만들고 웹앱을 추가합니다. 표시되는 firebaseConfig 값을 복사합니다.</p></div><div class="step"><h3>2) Authentication 익명 로그인 켜기</h3><p>Authentication → Sign-in method → <b>Anonymous</b>를 사용 설정합니다. 근로자는 로그인 화면을 보지 않습니다.</p></div><div class="step"><h3>3) Firestore Database 만들기</h3><p>Firestore Database를 만들고 컬렉션 이름은 자동으로 <code>workerOpinions</code>를 사용합니다.</p></div><div class="step"><h3>4) Storage 만들기</h3><p>Storage를 만들면 사진 첨부파일이 <code>workerOpinionPhotos/</code> 폴더에 저장됩니다.</p></div><div class="step"><h3>5) 보안 규칙</h3><p>초기 테스트용 규칙은 아래처럼 사용합니다. 운영 전에는 관리자 로그인 방식으로 강화하는 것이 좋습니다.</p><pre>Firestore rules:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -139,8 +139,72 @@ async function updateStatus(id,status){if(!await initFirebaseFromPage())return;a
 function downloadCSV(){const headers=['접수일','현장명','소속','직종','장소','유형','의견내용','긴급도','사진URL','작성자','연락처','상태'];const lines=[headers.join(',')].concat(allOpinions.map(x=>[dateText(x.receivedAt),x.siteName,x.company,x.job,x.place,x.riskType,x.content,x.urgency,x.photoUrl,x.writer,x.phone,x.status].map(v=>'"'+String(v||'').replaceAll('"','""')+'"').join(',')));const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='종사자의견청취.csv';a.click();}
 function saveConfigLocal(){const cfg={apiKey:cfgApiKey.value,authDomain:cfgAuthDomain.value,projectId:cfgProjectId.value,storageBucket:cfgStorageBucket.value,appId:cfgAppId.value};localStorage.setItem('dj_firebase_config',JSON.stringify(cfg));alert('임시 저장 완료');}
 function copyFirebaseSnippet(){const cfg={apiKey:cfgApiKey.value,authDomain:cfgAuthDomain.value,projectId:cfgProjectId.value,storageBucket:cfgStorageBucket.value,appId:cfgAppId.value};const txt='const FIREBASE_CONFIG = '+JSON.stringify(cfg,null,2)+';';snippetBox.textContent=txt;navigator.clipboard?.writeText(txt);}
-async function handleSubmit(e){e.preventDefault();submitStatus.textContent='제출 중입니다...';if(!await initFirebaseFromPage()){submitStatus.textContent='Firebase 설정 오류입니다. 관리자에게 문의하세요.';return;}const fd=new FormData(e.target);let photoUrl='';const file=document.getElementById('photoFile').files[0];if(file){const path='worker-opinion/'+new Date().toISOString().slice(0,10)+'/'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9_.가-힣-]/g,'_');const ref=storage.ref(path);await ref.put(file);photoUrl=await ref.getDownloadURL();}
- await db.collection('workerOpinions').add({siteName:fd.get('siteName')||'',company:fd.get('company')||'',job:fd.get('job')||'',place:fd.get('place')||'',riskType:fd.get('riskType')||'',content:fd.get('content')||'',urgency:fd.get('urgency')||'',writer:fd.get('writer')||'',phone:fd.get('phone')||'',photoUrl,status:'접수',receivedAt:firebase.firestore.FieldValue.serverTimestamp(),userAgent:navigator.userAgent});e.target.reset();submitStatus.textContent='제출 완료되었습니다. 안전보건 의견이 접수되었습니다.';}
+async function handleSubmit(e){
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  try{
+    if(btn) btn.disabled = true;
+    submitStatus.style.color = '#2563eb';
+    submitStatus.textContent='제출 중입니다...';
+
+    const fd=new FormData(e.target);
+    const siteName=(fd.get('siteName')||'').trim();
+    const content=(fd.get('content')||'').trim();
+    if(!siteName || !content){
+      submitStatus.style.color = '#b91c1c';
+      submitStatus.textContent='현장명과 위험요인 또는 개선의견은 필수입니다.';
+      return;
+    }
+
+    const ok = await initFirebaseFromPage();
+    if(!ok){
+      submitStatus.style.color = '#b91c1c';
+      submitStatus.textContent='Firebase 설정 오류입니다. 관리자에게 문의하세요.';
+      return;
+    }
+
+    let photoUrl='';
+    let photoPath='';
+    const file=document.getElementById('photoFile').files[0];
+    if(file){
+      submitStatus.textContent='사진 업로드 중입니다...';
+      const safeName=file.name.replace(/[^a-zA-Z0-9_.가-힣-]/g,'_');
+      photoPath='workerOpinionPhotos/'+new Date().toISOString().slice(0,10)+'/'+Date.now()+'_'+safeName;
+      const ref=storage.ref(photoPath);
+      await ref.put(file);
+      photoUrl=await ref.getDownloadURL();
+    }
+
+    submitStatus.textContent='의견 저장 중입니다...';
+    await db.collection('workerOpinions').add({
+      siteName,
+      company:fd.get('company')||'',
+      job:fd.get('job')||'',
+      place:fd.get('place')||'',
+      riskType:fd.get('riskType')||'',
+      content,
+      urgency:fd.get('urgency')||'',
+      writer:fd.get('writer')||'',
+      phone:fd.get('phone')||'',
+      photoUrl,
+      photoPath,
+      status:'접수',
+      receivedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      userAgent:navigator.userAgent
+    });
+
+    e.target.reset();
+    submitStatus.style.color = '#059669';
+    submitStatus.textContent='제출 완료되었습니다. 안전보건 의견이 접수되었습니다.';
+  }catch(err){
+    console.error('submit failed:', err);
+    submitStatus.style.color = '#b91c1c';
+    let msg = err && (err.message || err.code) ? (err.code ? err.code+' / '+err.message : err.message) : String(err);
+    submitStatus.textContent='제출 실패: '+msg;
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+}
 window.addEventListener('load',()=>{document.getElementById('adminPin').value=localStorage.getItem('dj_admin_pin')||ADMIN_PIN_DEFAULT;if(new URLSearchParams(location.search).get('mode')==='form'){document.body.classList.add('form-only');document.getElementById('app').classList.add('hidden');document.getElementById('formApp').classList.remove('hidden');document.getElementById('opinionForm').addEventListener('submit',handleSubmit);initFirebaseFromPage();} });
 </script>
 </body>
