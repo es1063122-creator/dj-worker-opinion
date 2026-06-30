@@ -392,7 +392,108 @@
       font-weight: 700;
     }
 
+
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0 14px;
+    }
+
+    .summary-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px 12px;
+      box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04);
+      text-align: center;
+    }
+
+    .summary-card .num {
+      font-size: 23px;
+      font-weight: 900;
+      color: #063b70;
+      line-height: 1.1;
+    }
+
+    .summary-card .label {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #64748b;
+    }
+
+    .filter-box {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 5px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: 160px 190px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .filter-row select,
+    .filter-row input {
+      padding: 10px 11px;
+      font-size: 14px;
+    }
+
+    .action-box {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .action-title {
+      font-weight: 900;
+      color: #111827;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .action-textarea {
+      min-height: 86px;
+      font-size: 14px;
+      padding: 10px;
+    }
+
+    .action-meta {
+      margin-top: 6px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .law-note {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-left: 4px solid #1976d2;
+      background: #eef6ff;
+      color: #0f3b63;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
     @media (max-width: 520px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .filter-row {
+        grid-template-columns: 1fr;
+      }
+
       .page {
         padding: 18px 10px;
       }
@@ -498,14 +599,55 @@
       <div id="adminPanel" class="hidden">
         <div class="admin-header">
           <div>
-            <h1>접수 의견 관리자</h1>
-            <p class="desc" style="margin:6px 0 0;">Firestore에 저장된 안전의견 목록입니다.</p>
+            <h1>중대재해처벌법 안전의견 조치관리</h1>
+            <p class="desc" style="margin:6px 0 0;">
+              근로자 안전보건 의견 접수, 검토, 조치내용을 기록·관리하는 화면입니다.
+            </p>
+            <div class="law-note">
+              관리자는 접수된 의견의 위험유형, 처리상태, 검토·조치내용을 기록하여 근로자 의견 청취 및 개선조치 이력으로 관리할 수 있습니다.
+            </div>
           </div>
 
           <div class="admin-actions">
             <button id="refreshBtn" class="small-btn blue" type="button">새로고침</button>
             <button id="goFormBtn2" class="small-btn" type="button">접수 화면</button>
             <button id="logoutBtn" class="small-btn red" type="button">로그아웃</button>
+          </div>
+        </div>
+
+        <div id="summaryGrid" class="summary-grid">
+          <div class="summary-card"><div id="sumTotal" class="num">0</div><div class="label">총 접수</div></div>
+          <div class="summary-card"><div id="sumReceived" class="num">0</div><div class="label">접수</div></div>
+          <div class="summary-card"><div id="sumChecking" class="num">0</div><div class="label">확인중</div></div>
+          <div class="summary-card"><div id="sumDone" class="num">0</div><div class="label">조치완료</div></div>
+          <div class="summary-card"><div id="sumRejected" class="num">0</div><div class="label">반려</div></div>
+          <div class="summary-card"><div id="sumPhoto" class="num">0</div><div class="label">사진첨부</div></div>
+        </div>
+
+        <div class="filter-box">
+          <div class="filter-row">
+            <select id="statusFilter">
+              <option value="전체">상태 전체</option>
+              <option value="접수">접수</option>
+              <option value="확인중">확인중</option>
+              <option value="조치완료">조치완료</option>
+              <option value="반려">반려</option>
+            </select>
+
+            <select id="riskFilter">
+              <option value="전체">위험유형 전체</option>
+              <option value="추락위험">추락위험</option>
+              <option value="끼임위험">끼임위험</option>
+              <option value="장비위험">장비위험</option>
+              <option value="감전위험">감전위험</option>
+              <option value="붕괴위험">붕괴위험</option>
+              <option value="화재폭발위험">화재폭발위험</option>
+              <option value="보호구 미착용">보호구 미착용</option>
+              <option value="통로/정리정돈">통로/정리정돈</option>
+              <option value="기타">기타</option>
+            </select>
+
+            <input id="searchInput" type="search" placeholder="현장명, 작성자, 연락처, 의견내용 검색" />
           </div>
         </div>
 
@@ -574,6 +716,8 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7NNUErtGwjm82Syu4ViRLkrDVEek7LyzRNtctHM0aTv_YcoiRlnFZbrpxOOAXRIzU/exec";
 
     const ADMIN_PASSWORD = "5183";
+    const OPINION_COLLECTION = "workerOpinions";
+    const PHOTO_STORAGE_PREFIX = "reports";
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -605,6 +749,15 @@
     const adminLoginStatus = document.getElementById("adminLoginStatus");
     const adminStatus = document.getElementById("adminStatus");
     const reportList = document.getElementById("reportList");
+    const sumTotal = document.getElementById("sumTotal");
+    const sumReceived = document.getElementById("sumReceived");
+    const sumChecking = document.getElementById("sumChecking");
+    const sumDone = document.getElementById("sumDone");
+    const sumRejected = document.getElementById("sumRejected");
+    const sumPhoto = document.getElementById("sumPhoto");
+    const statusFilter = document.getElementById("statusFilter");
+    const riskFilter = document.getElementById("riskFilter");
+    const searchInput = document.getElementById("searchInput");
     const refreshBtn = document.getElementById("refreshBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const goFormBtn1 = document.getElementById("goFormBtn1");
@@ -618,6 +771,7 @@
     let selectedFile = null;
     let selectedPreviewUrl = "";
     let adminLoggedIn = false;
+    let allReports = [];
 
     function showFormPage() {
       formPage.classList.remove("hidden");
@@ -805,7 +959,7 @@
       setStatus("사진 업로드 중입니다. 잠시만 기다려주세요...");
 
       const safeName = selectedFile.name.replace(/[^\w.\-가-힣]/g, "_");
-      const photoPath = "workerOpinions/" + userId + "/" + Date.now() + "_" + safeName;
+      const photoPath = PHOTO_STORAGE_PREFIX + "/" + userId + "/" + Date.now() + "_" + safeName;
       const storageRef = ref(storage, photoPath);
 
       await uploadBytes(storageRef, selectedFile, {
@@ -813,11 +967,7 @@
       });
 
       const photoUrl = await getDownloadURL(storageRef);
-
-      return {
-        photoUrl: photoUrl,
-        photoPath: photoPath
-      };
+      return { photoUrl: photoUrl, photoPath: photoPath };
     }
 
     async function sendMailAlert(data) {
@@ -862,39 +1012,39 @@
           photoResult = await uploadPhotoIfNeeded(user.uid);
         }
 
-        const photoUrl = photoResult.photoUrl || "";
-        const photoPath = photoResult.photoPath || "";
-
         const createdAtText = new Date().toLocaleString("ko-KR", {
           timeZone: "Asia/Seoul"
         });
 
         const reportData = {
-          // 새 화면용 필드
-          siteName: siteName || "",
-          name: name || "익명",
-          phone: phone || "",
-          category: category || "",
-          content: content || "",
-          photoUrl: photoUrl || "",
-          photoPath: photoPath || "",
-          uid: user.uid,
-          status: "접수",
-          createdAt: serverTimestamp(),
-          createdAtText: createdAtText,
-          userAgent: navigator.userAgent || "",
-
-          // 기존 workerOpinions 데이터 구조와 호환용 필드
+          // 기존 workerOpinions 필드 호환
           company: "",
           job: "",
           place: siteName || "",
           riskType: category || "",
-          receivedAt: createdAtText,
-          updatedAt: createdAtText
+          receivedAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          photoPath: photoResult.photoPath || "",
+          photoUrl: photoResult.photoUrl || "",
+
+          // 현재 화면/관리자용 필드
+          siteName: siteName || "",
+          name: name || "익명",
+          workerName: name || "익명",
+          phone: phone || "",
+          category: category || "",
+          content: content || "",
+          uid: user.uid,
+          status: "접수",
+          actionText: "",
+          actionUpdatedAt: null,
+          createdAt: serverTimestamp(),
+          createdAtText: createdAtText,
+          userAgent: navigator.userAgent || ""
         };
 
         setStatus("의견을 저장 중입니다...");
-        await addDoc(collection(db, "workerOpinions"), reportData);
+        await addDoc(collection(db, OPINION_COLLECTION), reportData);
 
         setStatus("메일 알림을 발송 중입니다...");
 
@@ -984,49 +1134,46 @@
       }
     }
 
-    function timestampToText(value) {
-      if (value && typeof value.toDate === "function") {
+    function formatTimestampValue(value) {
+      if (!value) {
+        return "";
+      }
+
+      if (typeof value.toDate === "function") {
         return value.toDate().toLocaleString("ko-KR", {
           timeZone: "Asia/Seoul"
         });
       }
 
-      if (value && typeof value.seconds === "number") {
+      if (typeof value === "string") {
+        return value;
+      }
+
+      if (value.seconds) {
         return new Date(value.seconds * 1000).toLocaleString("ko-KR", {
           timeZone: "Asia/Seoul"
         });
       }
 
-      return value || "";
+      return String(value);
     }
 
-    function timestampToMillis(value) {
-      if (value && typeof value.toDate === "function") {
-        return value.toDate().getTime();
-      }
-
-      if (value && typeof value.seconds === "number") {
-        return value.seconds * 1000;
-      }
-
-      const parsed = Date.parse(value || "");
+    function timestampMillis(value) {
+      if (!value) return 0;
+      if (typeof value.toDate === "function") return value.toDate().getTime();
+      if (value.seconds) return value.seconds * 1000;
+      const parsed = Date.parse(value);
       return Number.isNaN(parsed) ? 0 : parsed;
     }
 
     function getCreatedAtText(data) {
-      return timestampToText(data.createdAt) ||
-        timestampToText(data.receivedAt) ||
-        timestampToText(data.updatedAt) ||
+      return (
+        formatTimestampValue(data.createdAt) ||
+        formatTimestampValue(data.receivedAt) ||
+        formatTimestampValue(data.updatedAt) ||
         data.createdAtText ||
-        "-";
-    }
-
-    function getTimeMillis(data) {
-      return timestampToMillis(data.createdAt) ||
-        timestampToMillis(data.receivedAt) ||
-        timestampToMillis(data.updatedAt) ||
-        timestampToMillis(data.createdAtText) ||
-        0;
+        "-"
+      );
     }
 
     function escapeHtml(value) {
@@ -1038,28 +1185,143 @@
         .replaceAll("'", "&#039;");
     }
 
-    async function resolvePhotoUrl(data) {
-      const photoUrl = data.photoUrl || "";
-      const photoPath = data.photoPath || "";
+    function getReportViewData(item) {
+      const data = item.data || {};
+      return {
+        id: item.id,
+        siteName: data.siteName || data.place || data.company || "현장명 미입력",
+        name: data.name || data.workerName || "익명",
+        phone: data.phone || "-",
+        category: data.category || data.riskType || "기타",
+        content: data.content || "-",
+        status: data.status || "접수",
+        createdAtText: getCreatedAtText(data),
+        photoUrl: data.photoUrl || "",
+        photoPath: data.photoPath || "",
+        actionText: data.actionText || data.action || data.adminAction || "",
+        actionUpdatedAtText: formatTimestampValue(data.actionUpdatedAt) || "",
+        raw: data
+      };
+    }
 
-      if (photoUrl && String(photoUrl).startsWith("http")) {
-        return photoUrl;
+    function updateSummary(items) {
+      const viewItems = items.map(getReportViewData);
+      const total = viewItems.length;
+      const received = viewItems.filter((item) => item.status === "접수").length;
+      const checking = viewItems.filter((item) => item.status === "확인중").length;
+      const done = viewItems.filter((item) => item.status === "조치완료").length;
+      const rejected = viewItems.filter((item) => item.status === "반려").length;
+      const photo = viewItems.filter((item) => item.photoUrl || item.photoPath).length;
+
+      sumTotal.textContent = total;
+      sumReceived.textContent = received;
+      sumChecking.textContent = checking;
+      sumDone.textContent = done;
+      sumRejected.textContent = rejected;
+      sumPhoto.textContent = photo;
+    }
+
+    function getFilteredReports() {
+      const selectedStatus = statusFilter.value;
+      const selectedRisk = riskFilter.value;
+      const keyword = searchInput.value.trim().toLowerCase();
+
+      return allReports.filter((item) => {
+        const view = getReportViewData(item);
+        const statusOk = selectedStatus === "전체" || view.status === selectedStatus;
+        const riskOk = selectedRisk === "전체" || view.category === selectedRisk;
+        const haystack = [
+          view.siteName,
+          view.name,
+          view.phone,
+          view.category,
+          view.content,
+          view.status,
+          view.actionText
+        ].join(" ").toLowerCase();
+        const keywordOk = !keyword || haystack.includes(keyword);
+        return statusOk && riskOk && keywordOk;
+      });
+    }
+
+    function renderReports(items) {
+      reportList.innerHTML = "";
+
+      updateSummary(allReports);
+
+      if (!items.length) {
+        reportList.innerHTML = '<div class="empty">조건에 맞는 접수 의견이 없습니다.</div>';
+        setAdminStatus("접수 " + allReports.length + "건 / 표시 " + items.length + "건");
+        return;
       }
 
-      if (photoPath && String(photoPath).startsWith("http")) {
-        return photoPath;
-      }
+      items.forEach(function (item, index) {
+        const view = getReportViewData(item);
+        const card = document.createElement("div");
+        card.className = "report-card";
 
-      if (photoPath) {
-        try {
-          return await getDownloadURL(ref(storage, photoPath));
-        } catch (error) {
-          console.warn("사진 URL 변환 실패:", error);
-          return "";
-        }
-      }
+        const siteName = escapeHtml(view.siteName);
+        const name = escapeHtml(view.name);
+        const phone = escapeHtml(view.phone);
+        const category = escapeHtml(view.category);
+        const content = escapeHtml(view.content);
+        const status = escapeHtml(view.status);
+        const createdAtText = escapeHtml(view.createdAtText);
+        const actionText = escapeHtml(view.actionText);
+        const actionUpdatedAtText = escapeHtml(view.actionUpdatedAtText);
+        const photoUrl = view.photoUrl || "";
 
-      return "";
+        card.innerHTML = `
+          <div class="report-top">
+            <div>
+              <div class="report-title">${siteName}</div>
+              <div class="report-meta">
+                접수번호: ${escapeHtml(view.id)}<br>
+                작성자: ${name} / 연락처: ${phone}<br>
+                접수시간: ${createdAtText}
+              </div>
+            </div>
+            <span class="badge">${category}</span>
+          </div>
+
+          <div class="report-content">${content}</div>
+
+          <div class="action-box">
+            <div class="action-title">관리자 검토·조치내용</div>
+            <textarea class="action-textarea" data-id="${escapeHtml(view.id)}" placeholder="예: 현장 확인 후 안전난간 보완, TBM 교육 실시, 조치완료 사진 확인 등">${actionText}</textarea>
+            <div class="action-meta">
+              ${actionUpdatedAtText ? "최근 조치내용 저장: " + actionUpdatedAtText : "조치내용 미입력"}
+            </div>
+          </div>
+
+          <div class="report-controls">
+            <select class="status-select" data-id="${escapeHtml(view.id)}">
+              <option value="접수" ${status === "접수" ? "selected" : ""}>접수</option>
+              <option value="확인중" ${status === "확인중" ? "selected" : ""}>확인중</option>
+              <option value="조치완료" ${status === "조치완료" ? "selected" : ""}>조치완료</option>
+              <option value="반려" ${status === "반려" ? "selected" : ""}>반려</option>
+            </select>
+
+            ${
+              photoUrl
+                ? `<button class="small-btn blue photo-btn" type="button" data-url="${escapeHtml(photoUrl)}">사진보기</button>`
+                : `<button class="small-btn" type="button" disabled>사진없음</button>`
+            }
+
+            <button class="small-btn blue action-save-btn" type="button" data-id="${escapeHtml(view.id)}">조치내용 저장</button>
+            <button class="small-btn red delete-btn" type="button" data-id="${escapeHtml(view.id)}">삭제</button>
+          </div>
+        `;
+
+        reportList.appendChild(card);
+      });
+
+      setAdminStatus("총 " + allReports.length + "건 중 " + items.length + "건 표시", "success");
+      bindAdminButtons();
+    }
+
+    function applyFilters() {
+      renderReports(getFilteredReports());
     }
 
     async function loadReports() {
@@ -1069,83 +1331,29 @@
       try {
         await ensureAnonymousLogin();
 
-        const snap = await getDocs(collection(db, "workerOpinions"));
+        const snap = await getDocs(collection(db, OPINION_COLLECTION));
 
-        if (snap.empty) {
+        allReports = [];
+        snap.forEach(function (docSnap) {
+          allReports.push({ id: docSnap.id, data: docSnap.data() });
+        });
+
+        allReports.sort(function (a, b) {
+          const ad = a.data || {};
+          const bd = b.data || {};
+          const at = timestampMillis(ad.createdAt) || timestampMillis(ad.receivedAt) || timestampMillis(ad.updatedAt);
+          const bt = timestampMillis(bd.createdAt) || timestampMillis(bd.receivedAt) || timestampMillis(bd.updatedAt);
+          return bt - at;
+        });
+
+        if (!allReports.length) {
+          updateSummary(allReports);
           reportList.innerHTML = '<div class="empty">접수된 의견이 없습니다.</div>';
           setAdminStatus("접수 0건");
           return;
         }
 
-        const docs = [];
-        snap.forEach(function (docSnap) {
-          docs.push({
-            id: docSnap.id,
-            data: docSnap.data()
-          });
-        });
-
-        docs.sort(function (a, b) {
-          return getTimeMillis(b.data) - getTimeMillis(a.data);
-        });
-
-        let count = 0;
-
-        for (const item of docs) {
-          count++;
-          const data = item.data;
-          const id = item.id;
-
-          const card = document.createElement("div");
-          card.className = "report-card";
-
-          const siteName = escapeHtml(data.siteName || data.place || data.company || "현장명 미입력");
-          const name = escapeHtml(data.name || data.workerName || "익명");
-          const phone = escapeHtml(data.phone || "-");
-          const category = escapeHtml(data.category || data.riskType || "기타");
-          const content = escapeHtml(data.content || "-");
-          const status = escapeHtml(data.status || "접수");
-          const createdAtText = escapeHtml(getCreatedAtText(data));
-          const photoUrl = await resolvePhotoUrl(data);
-
-          card.innerHTML = `
-            <div class="report-top">
-              <div>
-                <div class="report-title">${siteName}</div>
-                <div class="report-meta">
-                  작성자: ${name} / 연락처: ${phone}<br>
-                  접수시간: ${createdAtText}
-                </div>
-              </div>
-              <span class="badge">${category}</span>
-            </div>
-
-            <div class="report-content">${content}</div>
-
-            <div class="report-controls">
-              <select class="status-select" data-id="${id}">
-                <option value="접수" ${status === "접수" ? "selected" : ""}>접수</option>
-                <option value="확인중" ${status === "확인중" ? "selected" : ""}>확인중</option>
-                <option value="조치완료" ${status === "조치완료" ? "selected" : ""}>조치완료</option>
-                <option value="반려" ${status === "반려" ? "selected" : ""}>반려</option>
-              </select>
-
-              ${
-                photoUrl
-                  ? `<button class="small-btn blue photo-btn" type="button" data-url="${escapeHtml(photoUrl)}">사진보기</button>`
-                  : `<button class="small-btn" type="button" disabled>사진없음</button>`
-              }
-
-              <button class="small-btn red delete-btn" type="button" data-id="${id}">삭제</button>
-            </div>
-          `;
-
-          reportList.appendChild(card);
-        }
-
-        setAdminStatus("총 " + count + "건이 접수되었습니다.", "success");
-
-        bindAdminButtons();
+        applyFilters();
 
       } catch (error) {
         console.error(error);
@@ -1162,14 +1370,53 @@
 
           try {
             setAdminStatus("상태를 변경 중입니다...");
-            await updateDoc(doc(db, "workerOpinions", id), {
+            await updateDoc(doc(db, OPINION_COLLECTION, id), {
               status: newStatus,
               updatedAt: serverTimestamp()
             });
+
+            const found = allReports.find((item) => item.id === id);
+            if (found) {
+              found.data.status = newStatus;
+            }
+
             setAdminStatus("상태가 변경되었습니다.", "success");
+            applyFilters();
           } catch (error) {
             console.error(error);
             setAdminStatus("상태 변경 실패. Firestore 권한을 확인하세요.", "error");
+          }
+        });
+      });
+
+      const actionButtons = document.querySelectorAll(".action-save-btn");
+      actionButtons.forEach(function (btn) {
+        btn.addEventListener("click", async function () {
+          const id = this.dataset.id;
+          const textarea = document.querySelector('.action-textarea[data-id="' + CSS.escape(id) + '"]');
+          const actionText = textarea ? textarea.value.trim() : "";
+
+          try {
+            setAdminStatus("조치내용을 저장 중입니다...");
+            await updateDoc(doc(db, OPINION_COLLECTION, id), {
+              actionText: actionText,
+              adminAction: actionText,
+              actionUpdatedAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            });
+
+            const found = allReports.find((item) => item.id === id);
+            if (found) {
+              found.data.actionText = actionText;
+              found.data.adminAction = actionText;
+              found.data.actionUpdatedAt = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
+            }
+
+            setAdminStatus("조치내용이 저장되었습니다.", "success");
+            applyFilters();
+          } catch (error) {
+            console.error(error);
+            setAdminStatus("조치내용 저장 실패. Firestore 권한을 확인하세요.", "error");
           }
         });
       });
@@ -1193,9 +1440,10 @@
 
           try {
             setAdminStatus("삭제 중입니다...");
-            await deleteDoc(doc(db, "workerOpinions", id));
+            await deleteDoc(doc(db, OPINION_COLLECTION, id));
+            allReports = allReports.filter((item) => item.id !== id);
             setAdminStatus("삭제되었습니다.", "success");
-            await loadReports();
+            applyFilters();
           } catch (error) {
             console.error(error);
             setAdminStatus("삭제 실패. Firestore 권한을 확인하세요.", "error");
@@ -1203,6 +1451,10 @@
         });
       });
     }
+
+    statusFilter.addEventListener("change", applyFilters);
+    riskFilter.addEventListener("change", applyFilters);
+    searchInput.addEventListener("input", applyFilters);
 
     function openPhotoModal(url) {
       if (!url) {
