@@ -1,575 +1,413 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>동진 종사자 의견청취 QR 관리</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>동진 종사자 의견청취 QR 관리 - 단일 QR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root{--navy:#0a1628;--blue:#2563eb;--green:#059669;--red:#dc2626;--orange:#f59e0b;--purple:#7c3aed;--gray:#64748b;--line:#e2e8f0;--bg:#f8fafc;--card:#fff;--shadow:0 10px 30px rgba(10,22,40,.11)}
-    *{box-sizing:border-box}body{margin:0;font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--bg);color:var(--navy)}
-    header{background:linear-gradient(135deg,#0a1628 0%,#123a73 55%,#2563eb 100%);color:#fff;padding:22px 16px 26px;text-align:center;box-shadow:0 8px 28px rgba(10,22,40,.22)}
-    header h1{margin:0;font-size:24px;letter-spacing:-.5px}header p{margin:8px 0 0;font-size:13.5px;opacity:.92;line-height:1.55}
-    main{max-width:1220px;margin:18px auto 48px;padding:0 14px}.card{background:var(--card);border:1px solid rgba(203,213,225,.75);border-radius:18px;box-shadow:var(--shadow);padding:20px;margin-bottom:16px}.card h2{font-size:18px;margin:0 0 12px}.card p{color:var(--gray);font-size:13.5px;line-height:1.65;margin:6px 0 14px}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tab{border:0;border-radius:999px;padding:11px 15px;background:#e2e8f0;color:#334155;font-weight:900;cursor:pointer}.tab.active{background:var(--blue);color:#fff}.tab.hq.active{background:#0f172a}.tab.site.active{background:var(--green)}
-    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    label{display:block;font-size:12.5px;font-weight:900;margin:0 0 6px}input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:12px;padding:12px;font-size:14px;font-family:inherit;background:#fff}textarea{min-height:90px;resize:vertical}
-    .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button,.btn{border:0;border-radius:12px;padding:12px 15px;font-weight:900;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;color:#fff;background:var(--blue)}.btn.green,button.green{background:var(--green)}.btn.gray,button.gray{background:#475569}.btn.red,button.red{background:var(--red)}.btn.yellow,button.yellow{background:var(--orange);color:#111827}.btn.dark,button.dark{background:#0f172a}.btn.purple,button.purple{background:var(--purple)}
-    .notice{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:14px;color:#1e3a8a;font-size:13px;line-height:1.65}.notice.gray{background:#f8fafc;border-color:#e2e8f0;color:#334155}.notice.red{background:#fef2f2;border-color:#fecaca;color:#991b1b}
-    .summary{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.stat{border:1px solid var(--line);border-radius:15px;padding:14px;background:#fff}.stat b{display:block;font-size:25px;letter-spacing:-.5px}.stat span{font-size:12px;color:var(--gray);font-weight:900}.stat.red b{color:var(--red)}.stat.green b{color:var(--green)}.stat.blue b{color:var(--blue)}
-    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;margin-top:12px}table{width:100%;border-collapse:collapse;font-size:13px;min-width:980px}th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}th{background:#f8fafc;font-weight:900;color:#334155}tbody tr:hover{background:#f8fafc}.click-row{cursor:pointer}
-    .pill{display:inline-block;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:900;background:#e2e8f0;color:#334155}.pill.urgent{background:#fee2e2;color:#991b1b}.pill.done{background:#dcfce7;color:#166534}.pill.ing{background:#dbeafe;color:#1e40af}.pill.site{background:#ede9fe;color:#5b21b6}.pill.received{background:#fef3c7;color:#92400e}
-    .qr-area{display:none;margin-top:14px;border:2px dashed #cbd5e1;border-radius:16px;background:#f8fafc;padding:18px;text-align:center}.qr-area img{width:220px;height:220px}.small{font-size:12px;color:var(--gray)}.hidden{display:none!important}.print-only{display:none}
-    .step-list{display:grid;gap:14px}.step-card{border:1px solid #e2e8f0;border-radius:16px;padding:16px;background:#fff}.step-card h3{margin:0 0 8px;font-size:16px}.step-no{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:#2563eb;color:#fff;font-weight:900;margin-right:8px}.code-box{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.6;overflow:auto}.guide-img{border:1px dashed #cbd5e1;border-radius:12px;padding:12px;background:#f8fafc;color:#475569;font-size:13px}.checklist li{margin:6px 0;line-height:1.55}.danger-text{color:#dc2626;font-weight:900}.ok-text{color:#059669;font-weight:900}
-
-    @media(max-width:900px){.grid,.grid-2,.grid-3,.summary{grid-template-columns:1fr}.btns button,.btn{width:100%}header h1{font-size:21px}table{min-width:900px}}
-    @media print{header,.no-print,.card:not(.print-card){display:none!important}body{background:#fff}.card{box-shadow:none;border:0}.print-only{display:block}.qr-area{display:block!important;border:0}.qr-area img{width:270px;height:270px}}
+    :root { --navy:#0f172a; --blue:#2563eb; --green:#059669; --orange:#f59e0b; --bg:#f1f5f9; --line:#cbd5e1; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Arial,'Noto Sans KR',sans-serif; background:var(--bg); color:var(--navy); }
+    header { background:linear-gradient(135deg,#0f172a,#2563eb); color:white; padding:28px 16px; text-align:center; }
+    header h1 { margin:0; font-size:25px; } header p { margin:10px 0 0; opacity:.9; }
+    main { max-width:1180px; margin:18px auto 60px; padding:0 14px; }
+    .card { background:white; border:1px solid #dbe3ef; border-radius:18px; padding:20px; margin-bottom:16px; box-shadow:0 8px 24px rgba(15,23,42,.08); }
+    .tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+    .tab { border:0; border-radius:999px; padding:13px 18px; background:#e2e8f0; color:#0f172a; font-weight:900; cursor:pointer; }
+    .tab.active { background:#2563eb; color:white; }
+    .section { display:none; } .section.active { display:block; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .grid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .stat { background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px; }
+    .stat b { display:block; font-size:28px; color:#2563eb; margin-top:4px; }
+    label { display:block; font-weight:900; margin:12px 0 6px; font-size:14px; }
+    input,select,textarea { width:100%; border:1px solid var(--line); border-radius:12px; padding:12px; font-size:14px; }
+    button,.btn { border:0; border-radius:12px; padding:13px 16px; background:#2563eb; color:white; font-weight:900; cursor:pointer; text-decoration:none; display:inline-block; }
+    .btn-green { background:#059669; } .btn-orange { background:#f59e0b; color:#111827; } .btn-dark { background:#111827; } .btn-gray { background:#475569; }
+    .notice { background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:14px; padding:14px; line-height:1.65; }
+    .warn { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; border-radius:14px; padding:14px; line-height:1.65; }
+    table { width:100%; border-collapse:collapse; font-size:13px; } th,td { border-bottom:1px solid #e2e8f0; padding:10px 8px; text-align:left; vertical-align:top; } th { background:#f8fafc; }
+    .qrbox { text-align:center; border:2px dashed #cbd5e1; border-radius:18px; padding:20px; background:#f8fafc; } .qrbox img { width:240px; height:240px; }
+    .site-card { border:1px solid #e2e8f0; border-radius:14px; padding:14px; background:#f8fafc; cursor:pointer; } .site-card:hover { border-color:#2563eb; }
+    pre { white-space:pre-wrap; background:#0f172a; color:#e5e7eb; border-radius:14px; padding:14px; max-height:320px; overflow:auto; }
+    .step { border-left:5px solid #2563eb; padding:14px; background:#f8fafc; border-radius:12px; margin:12px 0; }
+    @media(max-width:800px) { .grid,.grid2 { grid-template-columns:1fr; } header h1{font-size:21px;} }
+    @media print { .no-print,.tabs,.settings { display:none!important; } body{background:white;} .card{box-shadow:none;border:0;} }
   </style>
 </head>
 <body>
-  <header>
-    <h1>동진 종사자 안전보건 의견청취 QR 관리</h1>
-    <p>본사 통합관리 · 전현장 현황 · 현장별 QR · 조치관리 · 반기점검 증빙자료</p>
-  </header>
+<header>
+  <h1>동진 종사자 안전보건 의견청취 QR 관리</h1>
+  <p>단일 QR 방식 · 근로자가 설문지에 현장명을 직접 입력 · 본사는 현장별로 자동 집계</p>
+</header>
+<main>
+  <div class="card settings no-print">
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('dashboard', this)">🏢 본사 관리자</button>
+      <button class="tab" onclick="showTab('qr', this)">📱 단일 QR 안내문</button>
+      <button class="tab" onclick="showTab('setup', this)">⚙️ 최초 설정</button>
+      <button class="tab" onclick="showTab('guide', this)">📖 초보 설치가이드</button>
+    </div>
+    <div class="grid2">
+      <div><label>Google Apps Script 웹앱 URL</label><input id="gasUrl" placeholder="https://script.google.com/macros/s/배포ID/exec"></div>
+      <div><label>관리자 PIN</label><input id="pin" placeholder="예: 5183" type="password"></div>
+    </div>
+    <p><button onclick="saveSettings()">설정 저장</button> <button class="btn-dark" onclick="clearSettings()">설정 초기화</button> <button class="btn-gray" onclick="loadDashboard()">전체 새로고침</button></p>
+  </div>
 
-  <main>
-    <section class="card no-print">
-      <div class="tabs">
-        <button class="tab hq active" id="tabHq" onclick="showMode('hq')">🏢 본사 관리자</button>
-        <button class="tab site" id="tabSite" onclick="showMode('site')">🏗️ 현장 QR 관리</button>
-        <button class="tab" id="tabSetup" onclick="showMode('setup')">⚙️ 최초 설정</button>
-        <button class="tab" id="tabGuide" onclick="showMode('guide')">📖 초보 설치가이드</button>
+  <section id="dashboard" class="section active">
+    <div class="card">
+      <h2>본사 통합 대시보드</h2>
+      <div class="notice">QR은 하나만 사용합니다. 근로자가 설문지 첫 항목에 <b>현장명</b>을 입력하면 본사 화면에서 현장별로 자동 분류됩니다.</div>
+      <div class="grid" style="margin-top:12px">
+        <div class="stat">전체 접수<b id="stTotal">0</b></div>
+        <div class="stat">즉시조치<b id="stImmediate">0</b></div>
+        <div class="stat">조치/검토중<b id="stOpen">0</b></div>
+        <div class="stat">조치완료<b id="stDone">0</b></div>
+        <div class="stat">교육반영<b id="stEdu">0</b></div>
+        <div class="stat">해당없음<b id="stNone">0</b></div>
       </div>
-      <div class="grid-2">
-        <div><label>Google Apps Script 배포 URL</label><input id="gasUrl" placeholder="https://script.google.com/macros/s/배포ID/exec"></div>
-        <div><label>관리자 PIN</label><input id="adminPin" type="password" placeholder="예: 5183"></div>
+    </div>
+    <div class="card">
+      <h2>현장별 접수현황</h2>
+      <div id="siteCards" class="grid"></div>
+    </div>
+    <div class="card">
+      <h2>접수의견 목록</h2>
+      <div class="grid2 no-print">
+        <div><label>현장명 필터</label><input id="filterSite" placeholder="예: 군산" oninput="renderOpinions()"></div>
+        <div><label>상태 필터</label><select id="filterStatus" onchange="renderOpinions()"><option value="">전체</option><option>접수</option><option>검토중</option><option>조치필요</option><option>조치중</option><option>조치완료</option><option>교육반영</option><option>해당없음</option></select></div>
       </div>
-      <div class="btns"><button onclick="saveSettings()">설정 저장</button><button class="gray" onclick="clearSettings()">설정 초기화</button><button class="dark" onclick="loadAllInitial()">전체 새로고침</button></div>
-    </section>
+      <div style="overflow:auto;margin-top:12px"><table><thead><tr><th>접수일</th><th>현장명</th><th>장소</th><th>유형</th><th>긴급도</th><th>내용</th><th>상태</th><th class="no-print">관리</th></tr></thead><tbody id="opinionBody"><tr><td colspan="8">데이터를 불러오세요.</td></tr></tbody></table></div>
+    </div>
+  </section>
 
-    <section id="modeSetup" class="card no-print hidden">
+  <section id="qr" class="section">
+    <div class="card">
+      <h2>전현장 공통 QR</h2>
+      <div class="warn"><b>이번 버전은 현장별 QR을 만들지 않습니다.</b><br>아래 QR 하나를 모든 현장 TBM장, 출입구, 휴게실, 게시판에 동일하게 붙이면 됩니다. 설문지에서 근로자가 현장명을 직접 입력합니다.</div>
+      <p><button class="btn-green" onclick="makeSingleQR()">단일 QR 생성</button> <button class="btn-dark" onclick="window.print()">A4 안내문 출력</button></p>
+      <div id="qrResult" class="qrbox" style="display:none">
+        <h2>종사자 안전보건 의견청취 QR</h2>
+        <p>현장에서 위험하다고 느낀 사항, 개선이 필요한 안전시설, 작업방법, 장비운행, 보호구, 통로, 추락·낙하·붕괴·끼임 위험 등을 자유롭게 제보해 주세요.</p>
+        <img id="qrImage" alt="단일 QR 코드">
+        <p id="formUrlText" style="word-break:break-all;font-size:12px"></p>
+        <p><b>익명 제출 가능 · 사진 URL 입력 가능 · 긴급위험은 즉시 관리자에게 함께 보고</b></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="setup" class="section">
+    <div class="card">
       <h2>0. 최초 설정</h2>
-      <div class="notice">
-        <b>설치 순서</b><br>
-        1) 구글시트 만들기 → 2) Apps Script 만들기 → 3) 설치코드 복사/붙여넣기 → 4) SHEET_ID 입력 → 5) setupSheets() 실행 → 6) 웹앱 배포 URL 저장<br>
-        ※ 보안상 웹페이지 버튼 하나로 사용자의 구글 계정 안에 Apps Script를 자동 생성할 수는 없습니다. 대신 새 프로젝트를 바로 열고 코드를 복사하도록 만들었습니다. v1.4부터는 로컬 파일(file://)로 열어도 설치코드 복사가 되도록 코드가 index.html 안에 포함되어 있습니다.
-      </div>
-      <div class="btns">
-        <a class="btn green" href="https://spreadsheet.new" target="_blank">① 구글시트 만들기</a>
-        <a class="btn" href="https://script.new" target="_blank">② Apps Script 만들기</a>
-        <button class="yellow" onclick="copyAppsScriptCode()">③ 설치코드 복사</button>
-        <button class="gray" onclick="showMode('guide')">초보 설치가이드 열기</button>
-        <a class="btn dark" href="setup_guide.html" target="_blank">별도 가이드 페이지 열기</a>
-      </div>
-      <div id="setupGuide" class="notice gray" style="display:none;margin-top:12px">
-        구글시트 주소에서 <b>/d/와 /edit 사이의 ID</b>를 복사해 Apps Script 코드 상단 <b>CONFIG.SHEET_ID</b>에 붙여넣으세요.<br>
-        Apps Script에서 함수 선택을 <b>setupSheets</b>로 바꾼 뒤 1회 실행하세요. 권한 승인 후 <b>배포 &gt; 새 배포 &gt; 웹 앱</b>으로 배포합니다.<br>
-        실행 사용자: <b>나</b>, 액세스 권한: <b>모든 사용자</b>로 설정해야 근로자 QR 제출 화면이 열립니다.
-      </div>
-    </section>
+      <div class="notice">설치 순서: 구글시트 만들기 → Apps Script 만들기 → 설치코드 복사/붙여넣기 → SHEET_ID 입력 → setupSheets() 실행 → 웹앱 배포 URL 저장</div>
+      <p>
+        <a class="btn btn-green" target="_blank" href="https://sheets.new">① 구글시트 만들기</a>
+        <a class="btn" target="_blank" href="https://script.new">② Apps Script 만들기</a>
+        <button class="btn-orange" onclick="copyInstallCode()">③ 설치코드 복사</button>
+        <button class="btn-dark" onclick="showTabById('guide')">초보 설치가이드 보기</button>
+      </p>
+      <h3>설치코드 미리보기</h3>
+      <pre id="codePreview"></pre>
+    </div>
+  </section>
 
-    <section id="modeGuide" class="card no-print hidden">
-      <h2>📖 초보자용 최초 설치가이드</h2>
-      <p>아래 순서대로 하면 됩니다. 이 페이지는 현장 관리자나 본사 담당자가 처음 설치할 때 옆에 켜두고 따라 하는 용도입니다.</p>
+  <section id="guide" class="section">
+    <div class="card">
+      <h2>초보 설치가이드</h2>
+      <div class="step"><h3>1) 구글시트 만들기</h3><p>최초 설정에서 <b>① 구글시트 만들기</b>를 누르고 제목을 <b>동진_종사자의견청취_관리대장</b>으로 바꿉니다. 주소에서 <b>/d/ 와 /edit 사이</b>만 복사합니다. 이것이 SHEET_ID입니다.</p></div>
+      <div class="step"><h3>2) Apps Script 만들기</h3><p><b>② Apps Script 만들기</b>를 누릅니다. 기본 Code.gs 내용을 모두 지웁니다.</p></div>
+      <div class="step"><h3>3) 설치코드 붙여넣기</h3><p>이 화면에서 <b>③ 설치코드 복사</b>를 누르고 Apps Script의 Code.gs에 붙여넣습니다.</p></div>
+      <div class="step"><h3>4) SHEET_ID 입력</h3><p>코드 맨 위 <code>const SHEET_ID = "여기에_구글시트_ID_입력";</code> 부분에 구글시트 ID만 넣습니다. 주소 전체를 넣으면 안 됩니다.</p></div>
+      <div class="step"><h3>5) setupSheets() 실행</h3><p>Apps Script 상단 함수 선택에서 <b>setupSheets</b> 선택 후 실행합니다. 권한 승인 후 구글시트에 <b>의견접수, 반기점검</b> 시트가 생기면 정상입니다.</p></div>
+      <div class="step"><h3>6) 웹앱 배포 URL 저장</h3><p>Apps Script에서 <b>배포 → 새 배포 → 웹 앱</b>을 선택합니다. 실행 사용자: <b>나</b>, 액세스 권한: <b>모든 사용자</b>로 배포합니다. 나온 URL을 이 관리화면 상단의 Google Apps Script 웹앱 URL에 저장합니다.</p></div>
+      <div class="step"><h3>7) 테스트</h3><p>단일 QR 안내문에서 QR을 생성하고 제출화면을 열어 의견 1건을 넣습니다. 그 다음 본사 관리자에서 전체 새로고침을 눌러 접수 내용을 확인합니다.</p></div>
+    </div>
+  </section>
+</main>
 
-      <div class="notice">
-        <b>전체 흐름</b><br>
-        구글시트는 <b>데이터 저장소</b>, Apps Script는 <b>서버/접수폼</b>, 이 웹페이지는 <b>본사 관리자 화면</b>입니다.
-        설치가 끝나면 근로자는 QR로 의견을 제출하고, 본사는 전현장 현황을 확인할 수 있습니다.
-      </div>
-
-      <div class="step-list" style="margin-top:14px">
-        <div class="step-card">
-          <h3><span class="step-no">1</span>구글시트 만들기</h3>
-          <p><b>무엇을 하는 단계?</b> 접수된 의견, 현장QR, 반기점검 자료가 저장될 엑셀 같은 파일을 만드는 단계입니다.</p>
-          <ol class="checklist">
-            <li>상단 <b>최초 설정</b> 탭에서 <b>① 구글시트 만들기</b>를 누릅니다.</li>
-            <li>새 구글시트가 열리면 왼쪽 위 제목을 <b>동진_종사자의견청취_관리대장</b>으로 바꿉니다.</li>
-            <li>브라우저 주소창에서 아래 부분을 복사해야 합니다.</li>
-          </ol>
-          <div class="code-box">https://docs.google.com/spreadsheets/d/<b>여기가_SHEET_ID</b>/edit#gid=0</div>
-          <p><b>입력할 내용:</b> 이 단계에서는 제목만 바꾸면 됩니다. 시트 안의 표 제목은 나중에 <b>setupSheets()</b>가 자동으로 만듭니다.</p>
-        </div>
-
-        <div class="step-card">
-          <h3><span class="step-no">2</span>Apps Script 만들기</h3>
-          <p><b>무엇을 하는 단계?</b> QR 제출화면과 본사 관리자 화면이 구글시트에 데이터를 저장/조회할 수 있게 하는 서버를 만드는 단계입니다.</p>
-          <ol class="checklist">
-            <li>상단 <b>최초 설정</b> 탭에서 <b>② Apps Script 만들기</b>를 누릅니다.</li>
-            <li>새 Apps Script 화면이 열리면 프로젝트 이름을 <b>동진 종사자의견청취 QR 서버</b>로 바꿉니다.</li>
-            <li>기본으로 보이는 <b>Code.gs</b> 안의 내용을 전부 지웁니다.</li>
-          </ol>
-          <p><b>입력할 내용:</b> 프로젝트 이름만 바꿉니다. 코드는 다음 단계에서 붙여넣습니다.</p>
-        </div>
-
-        <div class="step-card">
-          <h3><span class="step-no">3</span>설치코드 복사/붙여넣기</h3>
-          <p><b>무엇을 하는 단계?</b> 미리 만들어둔 서버 코드를 Apps Script에 넣는 단계입니다.</p>
-          <ol class="checklist">
-            <li>상단 <b>최초 설정</b> 탭에서 <b>③ 설치코드 복사</b>를 누릅니다.</li>
-            <li>Apps Script 화면으로 돌아갑니다.</li>
-            <li>비어 있는 <b>Code.gs</b>에 붙여넣기 합니다. 단축키는 <b>Ctrl + V</b>입니다.</li>
-            <li>붙여넣은 뒤 <b>Ctrl + S</b> 또는 저장 아이콘을 누릅니다.</li>
-          </ol>
-          <div class="guide-img">복사가 안 되면 GitHub에 올린 <b>apps_script.gs</b> 파일을 직접 열어서 전체 복사하면 됩니다.</div>
-        </div>
-
-        <div class="step-card">
-          <h3><span class="step-no">4</span>SHEET_ID 입력</h3>
-          <p><b>무엇을 하는 단계?</b> Apps Script가 어느 구글시트에 저장할지 알려주는 단계입니다.</p>
-          <ol class="checklist">
-            <li>Apps Script 코드 맨 위쪽에서 <b>SHEET_ID</b> 또는 <b>CONFIG.SHEET_ID</b>라고 적힌 부분을 찾습니다.</li>
-            <li>1단계에서 복사한 구글시트 ID를 따옴표 안에 붙여넣습니다.</li>
-          </ol>
-          <div class="code-box">const CONFIG = {
-  SHEET_ID: "구글시트_ID를_여기에_붙여넣기",
-  ADMIN_PIN: "5183"
-};</div>
-          <p><b>입력 예시:</b></p>
-          <div class="code-box">SHEET_ID: "1AbCDeFgHIjkLmNoPqRstUvWxYz1234567890"</div>
-          <p><span class="danger-text">주의:</span> 주소 전체를 넣으면 안 됩니다. 반드시 <b>/d/와 /edit 사이의 긴 글자</b>만 넣으세요.</p>
-        </div>
-
-        <div class="step-card">
-          <h3><span class="step-no">5</span>setupSheets() 실행</h3>
-          <p><b>무엇을 하는 단계?</b> 구글시트 안에 필요한 탭과 표 제목을 자동으로 만드는 단계입니다.</p>
-          <ol class="checklist">
-            <li>Apps Script 상단의 함수 선택 드롭다운에서 <b>setupSheets</b>를 선택합니다.</li>
-            <li><b>실행</b> 버튼을 누릅니다.</li>
-            <li>권한 승인 창이 나오면 본인 구글계정을 선택합니다.</li>
-            <li>경고 화면이 나오면 <b>고급</b> → <b>프로젝트로 이동</b> → <b>허용</b>을 누릅니다.</li>
-            <li>실행이 끝나면 구글시트에 <b>의견접수 / 현장QR / 반기점검</b> 탭이 생겼는지 확인합니다.</li>
-          </ol>
-          <p><span class="ok-text">정상 결과:</span> 구글시트 하단에 <b>의견접수, 현장QR, 반기점검</b> 시트가 생기면 성공입니다.</p>
-        </div>
-
-        <div class="step-card">
-          <h3><span class="step-no">6</span>웹앱 배포 URL 저장</h3>
-          <p><b>무엇을 하는 단계?</b> QR 제출화면과 본사 관리자 화면이 사용할 인터넷 주소를 만드는 단계입니다.</p>
-          <ol class="checklist">
-            <li>Apps Script 오른쪽 위 <b>배포</b>를 누릅니다.</li>
-            <li><b>새 배포</b>를 누릅니다.</li>
-            <li>유형 선택에서 <b>웹 앱</b>을 선택합니다.</li>
-            <li>설명은 <b>동진 의견청취 QR v1</b>로 입력합니다.</li>
-            <li>실행 사용자는 <b>나</b>로 선택합니다.</li>
-            <li>액세스 권한은 <b>모든 사용자</b>로 선택합니다.</li>
-            <li><b>배포</b>를 누르고 나온 <b>웹 앱 URL</b>을 복사합니다.</li>
-            <li>이 관리화면 상단의 <b>Google Apps Script 배포 URL</b>에 붙여넣고 <b>설정 저장</b>을 누릅니다.</li>
-          </ol>
-          <div class="code-box">https://script.google.com/macros/s/배포ID/exec</div>
-          <p><b>관리자 PIN:</b> 기본값은 코드에서 설정한 <b>5183</b>을 입력하면 됩니다. 나중에 바꾸려면 Apps Script 코드의 <b>ADMIN_PIN</b> 값을 수정하면 됩니다.</p>
-        </div>
-
-        <div class="step-card">
-          <h3><span class="step-no">7</span>설치 후 테스트</h3>
-          <ol class="checklist">
-            <li>상단에 <b>Apps Script 배포 URL</b>과 <b>관리자 PIN</b>을 입력하고 <b>설정 저장</b>을 누릅니다.</li>
-            <li><b>현장 QR 관리</b> 탭으로 이동합니다.</li>
-            <li>현장명에 <b>테스트 현장</b>, 관리자에 <b>김대홍</b>을 입력합니다.</li>
-            <li><b>QR 생성</b> → <b>현장QR 등록/수정</b>을 누릅니다.</li>
-            <li><b>제출화면 열기</b>를 눌러 테스트 의견을 1건 제출합니다.</li>
-            <li><b>본사 관리자</b> 탭에서 <b>본사 현황 불러오기</b>와 <b>의견 목록 불러오기</b>를 눌러 접수 여부를 확인합니다.</li>
-          </ol>
-          <p><span class="ok-text">성공 기준:</span> 본사 관리자 화면에 테스트 의견이 보이면 설치 완료입니다.</p>
-        </div>
-
-        <div class="step-card">
-          <h3>자주 실수하는 부분</h3>
-          <ul class="checklist">
-            <li><b>SHEET_ID에 주소 전체를 넣는 경우</b> → /d/와 /edit 사이 글자만 넣어야 합니다.</li>
-            <li><b>setupSheets를 실행하지 않은 경우</b> → 시트 탭이 없어서 저장이 안 됩니다.</li>
-            <li><b>웹앱 액세스 권한을 본인만으로 한 경우</b> → 근로자가 QR 화면을 열 수 없습니다.</li>
-            <li><b>Apps Script 수정 후 재배포하지 않은 경우</b> → 예전 코드가 계속 실행될 수 있습니다. 수정 후에는 배포 관리를 확인하세요.</li>
-            <li><b>관리자 PIN 불일치</b> → Apps Script 코드의 ADMIN_PIN과 화면에 입력한 PIN이 같아야 합니다.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="modeHq" class="no-print">
-      <section class="card">
-        <h2>1. 본사 통합 대시보드</h2>
-        <p>전현장의 접수의견, 즉시조치 건, 조치완료, 미완료 현황을 한 화면에서 봅니다.</p>
-        <div class="summary" id="companySummary">
-          <div class="stat"><b>-</b><span>전체 접수</span></div><div class="stat red"><b>-</b><span>즉시조치</span></div><div class="stat blue"><b>-</b><span>조치/검토중</span></div><div class="stat green"><b>-</b><span>조치완료</span></div><div class="stat"><b>-</b><span>교육반영</span></div><div class="stat red"><b>-</b><span>미완료</span></div>
-        </div>
-        <div class="btns"><button class="dark" onclick="loadDashboard()">본사 현황 불러오기</button><button class="green" onclick="exportCsv()">현재 목록 CSV 저장</button><button class="gray" onclick="window.print()">인쇄</button></div>
-      </section>
-
-      <section class="card">
-        <h2>2. 현장별 접수현황</h2>
-        <p>현장명을 클릭하면 아래 접수의견 목록이 해당 현장으로 필터됩니다.</p>
-        <div class="table-wrap"><table><thead><tr><th>현장명</th><th>관리자</th><th>전체</th><th>즉시조치</th><th>조치/검토중</th><th>조치완료</th><th>미완료</th><th>최근 접수</th><th>관리</th></tr></thead><tbody id="siteSummaryTable"><tr><td colspan="9">본사 현황을 불러오세요.</td></tr></tbody></table></div>
-      </section>
-
-      <section class="card">
-        <h2>3. 접수 의견 목록</h2>
-        <div class="grid-3">
-          <div><label>현장 필터</label><select id="filterSite"><option value="">전체 현장</option></select></div>
-          <div><label>상태 필터</label><select id="filterStatus"><option value="">전체 상태</option><option>접수</option><option>검토중</option><option>조치필요</option><option>조치중</option><option>조치완료</option><option>교육반영</option><option>해당없음</option></select></div>
-          <div><label>검색어</label><input id="filterKeyword" placeholder="장소/내용/업체 검색"></div>
-        </div>
-        <div class="btns"><button onclick="loadOpinions()">의견 목록 불러오기</button><button class="gray" onclick="applyLocalFilter()">화면 필터 적용</button><button class="purple" onclick="clearFilters()">필터 초기화</button></div>
-        <div class="table-wrap"><table><thead><tr><th>접수일시</th><th>현장</th><th>소속/직종</th><th>장소</th><th>위험유형</th><th>의견내용</th><th>긴급도</th><th>사진</th><th>상태</th><th>관리</th></tr></thead><tbody id="opinionTable"><tr><td colspan="10">접수 의견을 불러오세요.</td></tr></tbody></table></div>
-      </section>
-    </section>
-
-    <section id="modeSite" class="hidden">
-      <section class="card print-card">
-        <h2>1. 현장 QR 생성 / 등록</h2>
-        <p>본사 또는 각 현장 관리자가 현장별 QR을 생성하고 등록합니다. 등록된 현장은 본사 대시보드에서 자동 집계됩니다.</p>
-        <div class="grid">
-          <div><label>현장명</label><input id="siteName" placeholder="예: 군산 호수공원 IPARK"></div>
-          <div><label>관리자</label><input id="managerName" placeholder="예: 김대홍 안전팀장"></div>
-          <div><label>원청/공종</label><input id="projectInfo" placeholder="예: HDC / 토공"></div>
-          <div><label>게시 위치</label><input id="postPlace" placeholder="예: TBM장, 출입구, 휴게실"></div>
-        </div>
-        <div class="btns no-print"><button onclick="makeQR()">QR 생성</button><button class="green" onclick="saveSiteQr()">현장QR 등록/수정</button><button class="yellow" onclick="window.print()">A4 안내문 출력</button><a class="btn gray" id="openFormBtn" target="_blank" href="#">제출화면 열기</a></div>
-        <div id="qrResult" class="qr-area">
-          <h2 id="qrTitle">종사자 안전보건 의견청취 QR</h2>
-          <p class="small" id="qrSub"></p>
-          <img id="qrImage" alt="QR 코드">
-          <p id="qrUrlText" class="small"></p>
-          <div style="max-width:720px;margin:14px auto 0;text-align:left;background:#fff;border-radius:14px;padding:16px;border:1px solid #e2e8f0">
-            <b>현장에서 위험하다고 느낀 사항을 제보해 주세요.</b><br><br>
-            추락·낙하·끼임·붕괴·장비·전기·화재·질식·통로·보호구 등 개선이 필요한 사항을 제출할 수 있습니다.<br>
-            익명 제출 가능 / 사진 첨부 가능 / 긴급위험은 즉시 현장 관리자 또는 안전관리자에게 함께 알려주세요.<br><br>
-            접수된 의견은 안전관리자가 검토 후 재해예방에 필요한 경우 개선조치하겠습니다.
-          </div>
-        </div>
-      </section>
-
-      <section class="card no-print">
-        <h2>2. 등록 현장 목록</h2>
-        <div class="btns"><button onclick="loadSites()">등록 현장 불러오기</button></div>
-        <div class="table-wrap"><table><thead><tr><th>현장명</th><th>관리자</th><th>원청/공종</th><th>게시위치</th><th>사용여부</th><th>QR/관리</th></tr></thead><tbody id="siteListTable"><tr><td colspan="6">등록 현장을 불러오세요.</td></tr></tbody></table></div>
-      </section>
-    </section>
-
-    <section class="card no-print">
-      <h2>반기 점검자료 관리 기준</h2>
-      <div class="notice gray">본사에서는 반기 1회 이상 ① 현장별 QR 운영 여부 ② 접수 의견 수 ③ 즉시조치/미완료 건 ④ 조치완료 증빙 ⑤ TBM·회의 공유 여부를 점검자료로 보관하면 좋습니다.</div>
-    </section>
-  </main>
-
-  <script>
-    let rows=[]; let siteRows=[]; let currentFormUrl='';
-    window.addEventListener('load',()=>{document.getElementById('gasUrl').value=localStorage.getItem('djOpinionGasUrl')||'';document.getElementById('adminPin').value=localStorage.getItem('djOpinionPin')||'';});
-    function showMode(mode){['hq','site','setup','guide'].forEach(m=>{document.getElementById('mode'+cap(m)).classList.toggle('hidden',m!==mode);document.getElementById('tab'+cap(m)).classList.toggle('active',m===mode);});}
-    function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
-    function toggleGuide(){const el=document.getElementById('setupGuide');el.style.display=el.style.display==='none'?'block':'none'}
-    function getGasUrl(){return document.getElementById('gasUrl').value.trim().replace(/\/$/,'')}
-    function getPin(){return document.getElementById('adminPin').value.trim()}
-    function saveSettings(){localStorage.setItem('djOpinionGasUrl',getGasUrl());localStorage.setItem('djOpinionPin',getPin());alert('설정을 저장했습니다.');}
-    function clearSettings(){if(confirm('저장된 설정을 초기화할까요?')){localStorage.removeItem('djOpinionGasUrl');localStorage.removeItem('djOpinionPin');document.getElementById('gasUrl').value='';document.getElementById('adminPin').value='';}}
-    async function copyAppsScriptCode(){
-      const store=document.getElementById('appsScriptCodeStore');
-      const code=store ? store.value : '';
-      if(!code.trim()){
-        alert('설치코드를 찾지 못했습니다. 압축파일 안의 apps_script.gs 파일을 직접 열어서 전체 복사하세요.');
-        return;
-      }
-      try{
-        if(navigator.clipboard && window.isSecureContext){
-          await navigator.clipboard.writeText(code);
-        }else{
-          const ta=document.createElement('textarea');
-          ta.value=code;
-          ta.style.position='fixed';
-          ta.style.left='-9999px';
-          document.body.appendChild(ta);
-          ta.focus();
-          ta.select();
-          const ok=document.execCommand('copy');
-          document.body.removeChild(ta);
-          if(!ok) throw new Error('브라우저 복사 명령 실패');
-        }
-        alert('Apps Script 설치코드를 복사했습니다.\n새 Apps Script 화면에서 기존 코드를 모두 삭제한 뒤 붙여넣으세요.');
-      }catch(e){
-        const manual=window.open('', '_blank');
-        if(manual){
-          manual.document.write('<pre style="white-space:pre-wrap;font-family:Consolas,monospace;font-size:13px;line-height:1.45;padding:20px;">'+code.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>');
-          manual.document.title='Apps Script 설치코드 - 전체 복사';
-        }
-        alert('자동 복사가 차단되어 설치코드 창을 열었습니다.\n새로 열린 창에서 전체 선택(Ctrl+A) 후 복사(Ctrl+C)하세요.');
-      }
-    }
-    function checkReady(){if(!getGasUrl()) {alert('Google Apps Script 배포 URL을 입력하고 저장하세요.');return false} if(!getPin()){alert('관리자 PIN을 입력하세요.');return false} return true}
-    function jsonp(url){return new Promise((resolve,reject)=>{const cb='cb_'+Date.now()+Math.random().toString(16).slice(2);window[cb]=(data)=>{delete window[cb];script.remove();resolve(data)};const script=document.createElement('script');script.src=url+(url.includes('?')?'&':'?')+'callback='+cb;script.onerror=()=>{delete window[cb];script.remove();reject(new Error('통신 실패'))};document.body.appendChild(script);});}
-    function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-    function statusPill(s){const cls=s==='조치완료'?'done':(['접수'].includes(s)?'received':(['검토중','조치필요','조치중'].includes(s)?'ing':''));return `<span class="pill ${cls}">${esc(s||'접수')}</span>`}
-
-    async function loadAllInitial(){if(!checkReady())return;await loadDashboard();await loadSites();await loadOpinions();}
-    async function loadDashboard(){if(!checkReady())return;try{const data=await jsonp(`${getGasUrl()}?action=dashboard&pin=${encodeURIComponent(getPin())}`);if(!data.ok)throw new Error(data.message||'불러오기 실패');siteRows=data.sites||[];renderCompanySummary(data.company||{});renderSiteSummary(siteRows);fillSiteOptions(siteRows);rows=data.recent||[];}catch(e){alert('오류: '+e.message)}}
-    function renderCompanySummary(s){document.getElementById('companySummary').innerHTML=`<div class="stat"><b>${s.total??0}</b><span>전체 접수</span></div><div class="stat red"><b>${s.urgent??0}</b><span>즉시조치</span></div><div class="stat blue"><b>${s.inProgress??0}</b><span>조치/검토중</span></div><div class="stat green"><b>${s.done??0}</b><span>조치완료</span></div><div class="stat"><b>${s.edu??0}</b><span>교육반영</span></div><div class="stat red"><b>${s.notDone??0}</b><span>미완료</span></div>`}
-    function renderSiteSummary(list){const tb=document.getElementById('siteSummaryTable');if(!list.length){tb.innerHTML='<tr><td colspan="9">등록된 현장 또는 접수의견이 없습니다.</td></tr>';return}tb.innerHTML=list.map(s=>`<tr class="click-row" onclick="selectSite('${esc(s.site)}')"><td><span class="pill site">${esc(s.site)}</span></td><td>${esc(s.manager||'-')}</td><td>${s.total}</td><td><span class="pill urgent">${s.urgent}</span></td><td>${s.inProgress}</td><td><span class="pill done">${s.done}</span></td><td>${s.notDone}</td><td>${esc(s.recent||'-')}</td><td><button onclick="event.stopPropagation();selectSite('${esc(s.site)}')">보기</button></td></tr>`).join('')}
-    function fillSiteOptions(list){const sel=document.getElementById('filterSite');const old=sel.value;sel.innerHTML='<option value="">전체 현장</option>'+list.map(s=>`<option>${esc(s.site||s.현장명)}</option>`).join('');sel.value=old;}
-    function selectSite(site){document.getElementById('filterSite').value=site;showMode('hq');loadOpinions();document.getElementById('opinionTable').scrollIntoView({behavior:'smooth',block:'start'});}
-
-    async function loadSites(){if(!checkReady())return;try{const data=await jsonp(`${getGasUrl()}?action=sites&pin=${encodeURIComponent(getPin())}`);if(!data.ok)throw new Error(data.message||'불러오기 실패');siteRows=(data.sites||[]).map(s=>({site:s.현장명, manager:s.관리자, ...s}));renderSiteList(data.sites||[]);fillSiteOptions(siteRows);}catch(e){alert('오류: '+e.message)}}
-    function renderSiteList(list){const tb=document.getElementById('siteListTable');if(!list.length){tb.innerHTML='<tr><td colspan="6">등록 현장이 없습니다. QR을 생성한 뒤 등록하세요.</td></tr>';return}tb.innerHTML=list.map(s=>`<tr><td>${esc(s.현장명)}</td><td>${esc(s.관리자||'-')}</td><td>${esc(s.원청공종||'-')}</td><td>${esc(s.게시위치||'-')}</td><td>${esc(s.사용여부||'-')}</td><td><button onclick="loadSiteToQr('${esc(s.현장명)}','${esc(s.관리자||'')}','${esc(s.원청공종||'')}','${esc(s.게시위치||'')}')">QR 열기</button></td></tr>`).join('')}
-    function loadSiteToQr(site,manager,project,post){showMode('site');document.getElementById('siteName').value=site;document.getElementById('managerName').value=manager;document.getElementById('projectInfo').value=project;document.getElementById('postPlace').value=post;makeQR();}
-
-    function makeQR(){const gas=getGasUrl();if(!gas)return alert('먼저 Apps Script 배포 URL을 입력하세요.');const site=document.getElementById('siteName').value.trim();if(!site)return alert('현장명을 입력하세요.');const manager=document.getElementById('managerName').value.trim();const project=document.getElementById('projectInfo').value.trim();const post=document.getElementById('postPlace').value.trim();currentFormUrl=gas+'?page=form&site='+encodeURIComponent(site);const qr='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(currentFormUrl);document.getElementById('qrTitle').innerText=site+' 종사자 안전보건 의견청취 QR';document.getElementById('qrSub').innerText=[manager,project,post].filter(Boolean).join(' · ');document.getElementById('qrUrlText').innerText=currentFormUrl;document.getElementById('qrImage').src=qr;document.getElementById('openFormBtn').href=currentFormUrl;document.getElementById('qrResult').style.display='block';}
-    async function saveSiteQr(){if(!checkReady())return;const site=document.getElementById('siteName').value.trim();if(!site)return alert('현장명을 입력하세요.');if(!currentFormUrl)makeQR();try{const url=`${getGasUrl()}?action=saveSite&pin=${encodeURIComponent(getPin())}&site=${encodeURIComponent(site)}&manager=${encodeURIComponent(document.getElementById('managerName').value.trim())}&project=${encodeURIComponent(document.getElementById('projectInfo').value.trim())}&postPlace=${encodeURIComponent(document.getElementById('postPlace').value.trim())}&qrUrl=${encodeURIComponent(currentFormUrl)}`;const data=await jsonp(url);if(!data.ok)throw new Error(data.message||'저장 실패');alert(data.message||'저장했습니다.');await loadSites();}catch(e){alert('오류: '+e.message)}}
-
-    async function loadOpinions(){if(!checkReady())return;try{const site=document.getElementById('filterSite').value;const data=await jsonp(`${getGasUrl()}?action=list&pin=${encodeURIComponent(getPin())}&site=${encodeURIComponent(site)}`);if(!data.ok)throw new Error(data.message||'불러오기 실패');rows=data.rows||[];renderOpinionTable(rows);applyLocalFilter(false);}catch(e){alert('오류: '+e.message)}}
-    function applyLocalFilter(showAlert=true){let list=[...rows];const st=document.getElementById('filterStatus').value;const kw=document.getElementById('filterKeyword').value.trim().toLowerCase();if(st)list=list.filter(r=>r.상태===st);if(kw)list=list.filter(r=>(r.의견내용+r.위험장소+r.소속업체+r.직종+r.현장명).toLowerCase().includes(kw));renderOpinionTable(list);if(showAlert){} }
-    function clearFilters(){document.getElementById('filterSite').value='';document.getElementById('filterStatus').value='';document.getElementById('filterKeyword').value='';loadOpinions();}
-    function renderOpinionTable(list){const tb=document.getElementById('opinionTable');if(!list.length){tb.innerHTML='<tr><td colspan="10">조건에 맞는 접수 의견이 없습니다.</td></tr>';return}tb.innerHTML=list.map(r=>`<tr><td>${esc(r.접수일시)}</td><td>${esc(r.현장명)}</td><td>${esc(r.소속업체)}<br><span class="small">${esc(r.직종)}</span></td><td>${esc(r.위험장소)}</td><td>${esc(r.위험유형)}</td><td>${esc(r.의견내용)}</td><td><span class="pill ${r.긴급도==='즉시조치 필요'?'urgent':''}">${esc(r.긴급도)}</span></td><td>${r.사진URL?`<a target="_blank" href="${esc(r.사진URL)}">사진</a>`:'-'}</td><td>${statusPill(r.상태)}</td><td><select onchange="updateStatus('${esc(r.접수번호)}',this.value)"><option value="">상태변경</option><option>검토중</option><option>조치필요</option><option>조치중</option><option>조치완료</option><option>교육반영</option><option>해당없음</option></select></td></tr>`).join('')}
-    async function updateStatus(no,status){if(!status)return;if(!checkReady())return;const memo=prompt('조치내용/비고를 입력하세요.','');const manager=prompt('담당자를 입력하세요. 비워도 됩니다.','');const due=prompt('조치예정일을 입력하세요. 예: 2026-07-05 / 비워도 됩니다.','');try{const data=await jsonp(`${getGasUrl()}?action=update&pin=${encodeURIComponent(getPin())}&no=${encodeURIComponent(no)}&status=${encodeURIComponent(status)}&memo=${encodeURIComponent(memo||'')}&manager=${encodeURIComponent(manager||'')}&due=${encodeURIComponent(due||'')}`);if(!data.ok)throw new Error(data.message||'수정 실패');alert('상태를 변경했습니다.');await loadOpinions();await loadDashboard();}catch(e){alert('오류: '+e.message)}}
-    function exportCsv(){if(!rows.length)return alert('먼저 접수 의견을 불러오세요.');const headers=Object.keys(rows[0]);const csv=[headers.join(',')].concat(rows.map(r=>headers.map(h=>'"'+String(r[h]??'').replace(/"/g,'""')+'"').join(','))).join('\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='동진_전현장_종사자의견청취_관리대장.csv';a.click();URL.revokeObjectURL(a.href)}
-  </script>
-
-  <textarea id="appsScriptCodeStore" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">/**
- * 동진 종사자 안전보건 의견청취 QR 관리시스템 v1.2
- * - 본사 통합 관리자 대시보드
- * - 전현장 현황 / 현장별 필터 / 현장QR 관리 / 조치상태 관리
+<script>
+const INSTALL_CODE = `/************************************************************
+ * 동진 종사자 안전보건 의견청취 QR 관리시스템 - 단일 QR 버전 v2
  *
- * 설치 순서
- * 1) 새 Google Sheet 생성
- * 2) 확장 프로그램 &gt; Apps Script에 이 코드 붙여넣기
- * 3) CONFIG.SHEET_ID, CONFIG.ADMIN_PIN 수정
- * 4) setupSheets() 1회 실행
- * 5) 배포 &gt; 새 배포 &gt; 웹 앱 &gt; 액세스 권한: 모든 사용자
- */
-const CONFIG = {
-  SHEET_ID: &#x27;여기에_구글시트_ID_입력&#x27;,
-  ADMIN_PIN: &#x27;5183&#x27;,
-  SHEET_OPINIONS: &#x27;의견접수&#x27;,
-  SHEET_QR: &#x27;현장QR&#x27;,
-  SHEET_CHECK: &#x27;반기점검&#x27;
-};
+ * 사용 순서
+ * 1) 구글시트 생성
+ * 2) 아래 SHEET_ID에 구글시트 ID 입력
+ * 3) setupSheets() 1회 실행
+ * 4) 배포 > 새 배포 > 웹 앱
+ *    - 실행 사용자: 나
+ *    - 액세스 권한: 모든 사용자
+ ************************************************************/
 
-const HEADERS_OPINIONS = [
-  &#x27;접수번호&#x27;,&#x27;접수일시&#x27;,&#x27;현장명&#x27;,&#x27;소속업체&#x27;,&#x27;직종&#x27;,&#x27;위험장소&#x27;,&#x27;위험유형&#x27;,&#x27;의견내용&#x27;,&#x27;긴급도&#x27;,&#x27;사진URL&#x27;,&#x27;작성자&#x27;,&#x27;연락처&#x27;,&#x27;상태&#x27;,&#x27;검토자&#x27;,&#x27;검토일&#x27;,&#x27;조치내용&#x27;,&#x27;담당자&#x27;,&#x27;조치예정일&#x27;,&#x27;완료일&#x27;,&#x27;비고&#x27;
-];
-const HEADERS_QR = [&#x27;현장명&#x27;,&#x27;관리자&#x27;,&#x27;원청/공종&#x27;,&#x27;게시위치&#x27;,&#x27;QR주소&#x27;,&#x27;생성일&#x27;,&#x27;사용여부&#x27;,&#x27;비고&#x27;];
-const HEADERS_CHECK = [&#x27;점검기간&#x27;,&#x27;현장명&#x27;,&#x27;접수건수&#x27;,&#x27;조치완료&#x27;,&#x27;조치중&#x27;,&#x27;교육반영&#x27;,&#x27;해당없음&#x27;,&#x27;미완료&#x27;,&#x27;점검자&#x27;,&#x27;점검일&#x27;,&#x27;대표이사 보고여부&#x27;,&#x27;비고&#x27;];
+const SHEET_ID = "여기에_구글시트_ID_입력";
+const ADMIN_PIN = "5183";
+
+const SHEET_OPINIONS = "의견접수";
+const SHEET_CHECK = "반기점검";
 
 function setupSheets() {
-  const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
-  setupOneSheet_(ss, CONFIG.SHEET_OPINIONS, HEADERS_OPINIONS);
-  setupOneSheet_(ss, CONFIG.SHEET_QR, HEADERS_QR);
-  setupOneSheet_(ss, CONFIG.SHEET_CHECK, HEADERS_CHECK);
-}
+  const ss = SpreadsheetApp.openById(SHEET_ID);
 
-function setupOneSheet_(ss, name, headers) {
-  let sh = ss.getSheetByName(name) || ss.insertSheet(name);
-  if (sh.getLastRow() === 0) sh.appendRow(headers);
-  const current = sh.getRange(1,1,1,Math.max(sh.getLastColumn(), headers.length)).getDisplayValues()[0];
-  headers.forEach(h =&gt; {
-    if (!current.includes(h)) sh.getRange(1, sh.getLastColumn() + 1).setValue(h);
-  });
-  sh.getRange(1,1,1,sh.getLastColumn()).setFontWeight(&#x27;bold&#x27;).setBackground(&#x27;#eaf2ff&#x27;);
+  let sh = ss.getSheetByName(SHEET_OPINIONS);
+  if (!sh) sh = ss.insertSheet(SHEET_OPINIONS);
+  sh.clear();
+  sh.appendRow([
+    "접수번호", "접수일시", "현장명", "소속업체", "직종", "위험장소", "위험유형",
+    "의견내용", "긴급도", "사진URL", "작성자", "연락처", "상태", "검토자",
+    "검토일", "조치내용", "담당자", "조치예정일", "완료일", "비고"
+  ]);
   sh.setFrozenRows(1);
-  sh.autoResizeColumns(1, Math.min(sh.getLastColumn(), 12));
+
+  let chk = ss.getSheetByName(SHEET_CHECK);
+  if (!chk) chk = ss.insertSheet(SHEET_CHECK);
+  chk.clear();
+  chk.appendRow([
+    "점검기간", "현장명", "접수건수", "즉시조치", "조치완료", "조치중/검토중",
+    "교육반영", "해당없음", "미완료", "점검자", "점검일", "비고"
+  ]);
+  chk.setFrozenRows(1);
+
+  return "시트 설정 완료";
 }
 
 function doGet(e) {
   const p = e.parameter || {};
-  if (p.page === &#x27;form&#x27;) return renderForm_(p.site || &#x27;&#x27;);
-  if (p.action === &#x27;list&#x27;) return jsonp_(listOpinions_(p), p.callback);
-  if (p.action === &#x27;dashboard&#x27;) return jsonp_(dashboard_(p), p.callback);
-  if (p.action === &#x27;sites&#x27;) return jsonp_(sites_(p), p.callback);
-  if (p.action === &#x27;saveSite&#x27;) return jsonp_(saveSite_(p), p.callback);
-  if (p.action === &#x27;update&#x27;) return jsonp_(updateOpinion_(p), p.callback);
-  return HtmlService.createHtmlOutput(&#x27;&lt;h2&gt;동진 종사자 의견청취 API v1.2&lt;/h2&gt;&lt;p&gt;?page=form&amp;site=현장명 으로 접속하세요.&lt;/p&gt;&#x27;);
+
+  if (p.page === "form") {
+    return HtmlService.createHtmlOutput(getWorkerFormHtml())
+      .setTitle("종사자 안전보건 의견청취")
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
+
+  if (p.action === "list") return jsonp_(p.callback, listOpinions_(p));
+  if (p.action === "update") return jsonp_(p.callback, updateOpinion_(p));
+  if (p.action === "summary") return jsonp_(p.callback, getSummary_(p));
+
+  return HtmlService.createHtmlOutput("동진 종사자 의견청취 API가 정상 작동 중입니다.");
 }
 
 function doPost(e) {
-  try {
-    const p = e.parameter || {};
-    const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
-    const sh = ss.getSheetByName(CONFIG.SHEET_OPINIONS);
-    const no = &#x27;OP-&#x27; + Utilities.formatDate(new Date(), &#x27;Asia/Seoul&#x27;, &#x27;yyyyMMdd-HHmmss&#x27;) + &#x27;-&#x27; + Math.floor(Math.random()*900+100);
-    const rowObj = {
-      &#x27;접수번호&#x27;: no,
-      &#x27;접수일시&#x27;: Utilities.formatDate(new Date(), &#x27;Asia/Seoul&#x27;, &#x27;yyyy-MM-dd HH:mm:ss&#x27;),
-      &#x27;현장명&#x27;: p.site || &#x27;&#x27;,
-      &#x27;소속업체&#x27;: p.company || &#x27;&#x27;,
-      &#x27;직종&#x27;: p.job || &#x27;&#x27;,
-      &#x27;위험장소&#x27;: p.place || &#x27;&#x27;,
-      &#x27;위험유형&#x27;: p.riskType || &#x27;&#x27;,
-      &#x27;의견내용&#x27;: p.opinion || &#x27;&#x27;,
-      &#x27;긴급도&#x27;: p.urgency || &#x27;&#x27;,
-      &#x27;사진URL&#x27;: p.photoUrl || &#x27;&#x27;,
-      &#x27;작성자&#x27;: p.writer || &#x27;익명&#x27;,
-      &#x27;연락처&#x27;: p.phone || &#x27;&#x27;,
-      &#x27;상태&#x27;: &#x27;접수&#x27;,
-      &#x27;검토자&#x27;: &#x27;&#x27;,
-      &#x27;검토일&#x27;: &#x27;&#x27;,
-      &#x27;조치내용&#x27;: &#x27;&#x27;,
-      &#x27;담당자&#x27;: &#x27;&#x27;,
-      &#x27;조치예정일&#x27;: &#x27;&#x27;,
-      &#x27;완료일&#x27;: &#x27;&#x27;,
-      &#x27;비고&#x27;: &#x27;&#x27;
-    };
-    appendObject_(sh, rowObj);
-    return HtmlService.createHtmlOutput(successHtml_()).setTitle(&#x27;의견 제출 완료&#x27;);
-  } catch (err) {
-    return HtmlService.createHtmlOutput(&#x27;&lt;h2&gt;저장 오류&lt;/h2&gt;&lt;p&gt;&#x27; + escapeHtml_(err.message) + &#x27;&lt;/p&gt;&#x27;);
-  }
+  const p = e.parameter || {};
+  saveOpinion_(p);
+  return HtmlService.createHtmlOutput(getThanksHtml())
+    .setTitle("의견 제출 완료")
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-function renderForm_(site) {
-  const html = `&lt;!DOCTYPE html&gt;&lt;html lang=&quot;ko&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;UTF-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;종사자 의견청취&lt;/title&gt;&lt;style&gt;
-  body{font-family:system-ui,&#x27;Noto Sans KR&#x27;,sans-serif;background:#f1f5f9;margin:0;color:#0f172a}.wrap{max-width:640px;margin:0 auto;padding:16px 14px 40px}.head{background:linear-gradient(135deg,#0f172a,#2563eb);color:#fff;padding:22px 16px;text-align:center}.head h1{font-size:22px;margin:0}.head p{font-size:13px;opacity:.9;line-height:1.55}.card{background:#fff;border-radius:18px;padding:18px;margin-top:14px;box-shadow:0 8px 24px rgba(15,23,42,.12)}label{display:block;font-weight:800;font-size:13px;margin:12px 0 6px}input,select,textarea{width:100%;box-sizing:border-box;padding:13px;border:1px solid #cbd5e1;border-radius:12px;font-size:15px}textarea{min-height:120px}button{width:100%;border:0;border-radius:14px;padding:15px;margin-top:16px;background:#2563eb;color:#fff;font-weight:900;font-size:16px}.note{font-size:12.5px;color:#64748b;line-height:1.55;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;
-  &lt;div class=&quot;head&quot;&gt;&lt;h1&gt;종사자 안전보건 의견청취&lt;/h1&gt;&lt;p&gt;${escapeHtml_(site)}&lt;br&gt;익명 제출 가능 · 사진 링크 입력 가능&lt;/p&gt;&lt;/div&gt;
-  &lt;div class=&quot;wrap&quot;&gt;&lt;form class=&quot;card&quot; method=&quot;post&quot; action=&quot;${ScriptApp.getService().getUrl()}&quot;&gt;
-    &lt;input type=&quot;hidden&quot; name=&quot;site&quot; value=&quot;${escapeHtml_(site)}&quot;&gt;
-    &lt;div class=&quot;note&quot;&gt;현장에서 위험하다고 느낀 사항, 개선이 필요한 안전시설, 작업방법, 장비운행, 보호구, 통로, 추락·낙하·붕괴·끼임 위험 등을 자유롭게 제출해 주세요. 긴급위험은 즉시 현장 관리자에게 함께 알려주세요.&lt;/div&gt;
-    &lt;label&gt;소속 업체&lt;/label&gt;&lt;input name=&quot;company&quot; placeholder=&quot;예: 철근팀 / 동진토건 / 협력업체명&quot;&gt;
-    &lt;label&gt;직종&lt;/label&gt;&lt;input name=&quot;job&quot; placeholder=&quot;예: 형틀, 철근, 토공, 장비, 신호수&quot;&gt;
-    &lt;label&gt;위험 장소&lt;/label&gt;&lt;input name=&quot;place&quot; required placeholder=&quot;예: B1 계단실, 3공구 흙막이 구간&quot;&gt;
-    &lt;label&gt;위험 유형&lt;/label&gt;&lt;select name=&quot;riskType&quot; required&gt;&lt;option value=&quot;&quot;&gt;선택&lt;/option&gt;&lt;option&gt;추락&lt;/option&gt;&lt;option&gt;낙하&lt;/option&gt;&lt;option&gt;끼임&lt;/option&gt;&lt;option&gt;붕괴&lt;/option&gt;&lt;option&gt;장비&lt;/option&gt;&lt;option&gt;전기&lt;/option&gt;&lt;option&gt;화재&lt;/option&gt;&lt;option&gt;질식&lt;/option&gt;&lt;option&gt;통로&lt;/option&gt;&lt;option&gt;보호구&lt;/option&gt;&lt;option&gt;기타&lt;/option&gt;&lt;/select&gt;
-    &lt;label&gt;위험요인 또는 개선의견&lt;/label&gt;&lt;textarea name=&quot;opinion&quot; required placeholder=&quot;위험한 상황이나 개선이 필요한 내용을 적어주세요.&quot;&gt;&lt;/textarea&gt;
-    &lt;label&gt;긴급도&lt;/label&gt;&lt;select name=&quot;urgency&quot; required&gt;&lt;option&gt;일반 개선&lt;/option&gt;&lt;option&gt;빠른 조치 필요&lt;/option&gt;&lt;option&gt;즉시조치 필요&lt;/option&gt;&lt;/select&gt;
-    &lt;label&gt;사진 URL 선택 입력&lt;/label&gt;&lt;input name=&quot;photoUrl&quot; placeholder=&quot;사진은 카톡/드라이브 등에 올린 뒤 링크 입력 가능&quot;&gt;
-    &lt;label&gt;작성자&lt;/label&gt;&lt;input name=&quot;writer&quot; placeholder=&quot;익명 가능&quot;&gt;
-    &lt;label&gt;연락처 선택 입력&lt;/label&gt;&lt;input name=&quot;phone&quot; placeholder=&quot;회신 필요 시 입력&quot;&gt;
-    &lt;button type=&quot;submit&quot;&gt;의견 제출하기&lt;/button&gt;
-  &lt;/form&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;`;
-  return HtmlService.createHtmlOutput(html).setTitle(&#x27;종사자 의견청취&#x27;).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-}
+function saveOpinion_(p) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sh = ss.getSheetByName(SHEET_OPINIONS) || ss.insertSheet(SHEET_OPINIONS);
+  const now = new Date();
+  const id = "OP-" + Utilities.formatDate(now, "Asia/Seoul", "yyyyMMdd-HHmmss") + "-" + Math.floor(Math.random() * 900 + 100);
 
-function successHtml_() {
-  return `&lt;!DOCTYPE html&gt;&lt;html lang=&quot;ko&quot;&gt;&lt;head&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;style&gt;body{font-family:system-ui,&#x27;Noto Sans KR&#x27;,sans-serif;background:#f8fafc;text-align:center;padding:50px 16px;color:#0f172a}.card{max-width:520px;margin:auto;background:white;border-radius:20px;padding:28px;box-shadow:0 8px 24px rgba(15,23,42,.12)}h1{color:#059669}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;card&quot;&gt;&lt;h1&gt;제출 완료&lt;/h1&gt;&lt;p&gt;안전보건 의견이 접수되었습니다.&lt;/p&gt;&lt;p&gt;재해예방에 필요한 사항은 검토 후 개선조치하겠습니다.&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;`;
+  sh.appendRow([
+    id,
+    now,
+    clean_(p.siteName),
+    clean_(p.company),
+    clean_(p.job),
+    clean_(p.place),
+    clean_(p.riskType),
+    clean_(p.content),
+    clean_(p.urgency),
+    clean_(p.photoUrl),
+    clean_(p.writer) || "익명",
+    clean_(p.phone),
+    "접수",
+    "", "", "", "", "", "", ""
+  ]);
 }
 
 function listOpinions_(p) {
-  if (p.pin !== CONFIG.ADMIN_PIN) return {ok:false, message:&#x27;관리자 PIN이 맞지 않습니다.&#x27;};
-  const site = (p.site || &#x27;&#x27;).trim();
-  const rowsAll = getRows_(CONFIG.SHEET_OPINIONS).reverse();
-  const rows = site ? rowsAll.filter(r =&gt; r.현장명 === site) : rowsAll;
-  return {ok:true, rows, summary: makeSummary_(rows)};
+  if (p.pin !== ADMIN_PIN) return { ok:false, message:"관리자 PIN이 맞지 않습니다." };
+  const rows = getOpinionObjects_();
+  return { ok:true, data: rows.reverse(), summary: buildSummary_(rows) };
 }
 
-function dashboard_(p) {
-  if (p.pin !== CONFIG.ADMIN_PIN) return {ok:false, message:&#x27;관리자 PIN이 맞지 않습니다.&#x27;};
-  const rows = getRows_(CONFIG.SHEET_OPINIONS);
-  const sites = sitesFromData_();
-  const bySite = {};
-  sites.forEach(s =&gt; bySite[s.현장명] = {site:s.현장명, manager:s.관리자||&#x27;&#x27;, total:0, urgent:0, done:0, inProgress:0, notDone:0, recent:&#x27;&#x27;});
-  rows.forEach(r =&gt; {
-    const name = r.현장명 || &#x27;미지정&#x27;;
-    if (!bySite[name]) bySite[name] = {site:name, manager:&#x27;&#x27;, total:0, urgent:0, done:0, inProgress:0, notDone:0, recent:&#x27;&#x27;};
-    const b = bySite[name];
-    b.total++;
-    if (r.긴급도 === &#x27;즉시조치 필요&#x27;) b.urgent++;
-    if (r.상태 === &#x27;조치완료&#x27;) b.done++;
-    if ([&#x27;접수&#x27;,&#x27;검토중&#x27;,&#x27;조치필요&#x27;,&#x27;조치중&#x27;].includes(r.상태)) b.inProgress++;
-    b.notDone = b.total - b.done;
-    if (!b.recent || String(r.접수일시) &gt; String(b.recent)) b.recent = r.접수일시;
-  });
-  const siteRows = Object.values(bySite).sort((a,b)=&gt;b.notDone-a.notDone || b.total-a.total || String(a.site).localeCompare(String(b.site),&#x27;ko&#x27;));
-  return {ok:true, company: makeSummary_(rows), sites: siteRows, recent: rows.slice(-5).reverse()};
-}
-
-function sites_(p) {
-  if (p.pin !== CONFIG.ADMIN_PIN) return {ok:false, message:&#x27;관리자 PIN이 맞지 않습니다.&#x27;};
-  return {ok:true, sites: sitesFromData_()};
-}
-
-function saveSite_(p) {
-  if (p.pin !== CONFIG.ADMIN_PIN) return {ok:false, message:&#x27;관리자 PIN이 맞지 않습니다.&#x27;};
-  const site = (p.site || &#x27;&#x27;).trim();
-  if (!site) return {ok:false, message:&#x27;현장명이 없습니다.&#x27;};
-  const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
-  const sh = ss.getSheetByName(CONFIG.SHEET_QR);
-  const rows = sh.getDataRange().getDisplayValues();
-  const headers = rows[0];
-  const idxSite = headers.indexOf(&#x27;현장명&#x27;);
-  const rowObj = {
-    &#x27;현장명&#x27;: site,
-    &#x27;관리자&#x27;: p.manager || &#x27;&#x27;,
-    &#x27;원청/공종&#x27;: p.project || &#x27;&#x27;,
-    &#x27;게시위치&#x27;: p.postPlace || &#x27;&#x27;,
-    &#x27;QR주소&#x27;: p.qrUrl || &#x27;&#x27;,
-    &#x27;생성일&#x27;: Utilities.formatDate(new Date(), &#x27;Asia/Seoul&#x27;, &#x27;yyyy-MM-dd HH:mm:ss&#x27;),
-    &#x27;사용여부&#x27;: &#x27;사용&#x27;,
-    &#x27;비고&#x27;: p.memo || &#x27;&#x27;
-  };
-  for (let i=1; i&lt;rows.length; i++) {
-    if (rows[i][idxSite] === site) {
-      writeObject_(sh, i+1, rowObj);
-      return {ok:true, message:&#x27;현장QR 정보를 수정했습니다.&#x27;};
-    }
-  }
-  appendObject_(sh, rowObj);
-  return {ok:true, message:&#x27;현장QR 정보를 등록했습니다.&#x27;};
+function getSummary_(p) {
+  if (p.pin !== ADMIN_PIN) return { ok:false, message:"관리자 PIN이 맞지 않습니다." };
+  const rows = getOpinionObjects_();
+  return { ok:true, summary: buildSummary_(rows) };
 }
 
 function updateOpinion_(p) {
-  if (p.pin !== CONFIG.ADMIN_PIN) return {ok:false, message:&#x27;관리자 PIN이 맞지 않습니다.&#x27;};
-  const no = p.no;
-  if (!no) return {ok:false, message:&#x27;접수번호가 없습니다.&#x27;};
-  const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
-  const sh = ss.getSheetByName(CONFIG.SHEET_OPINIONS);
+  if (p.pin !== ADMIN_PIN) return { ok:false, message:"관리자 PIN이 맞지 않습니다." };
+  if (!p.id) return { ok:false, message:"접수번호가 없습니다." };
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sh = ss.getSheetByName(SHEET_OPINIONS);
+  if (!sh) return { ok:false, message:"의견접수 시트가 없습니다." };
+
   const values = sh.getDataRange().getValues();
-  const headers = values[0];
-  const idxNo = headers.indexOf(&#x27;접수번호&#x27;);
-  for (let i=1;i&lt;values.length;i++) {
-    if (String(values[i][idxNo]) === String(no)) {
-      const row = i + 1;
-      setByHeader_(sh, headers, row, &#x27;상태&#x27;, p.status || &#x27;검토중&#x27;);
-      setByHeader_(sh, headers, row, &#x27;검토자&#x27;, p.reviewer || &#x27;관리자&#x27;);
-      setByHeader_(sh, headers, row, &#x27;검토일&#x27;, Utilities.formatDate(new Date(), &#x27;Asia/Seoul&#x27;, &#x27;yyyy-MM-dd HH:mm:ss&#x27;));
-      if (p.memo) setByHeader_(sh, headers, row, &#x27;조치내용&#x27;, p.memo);
-      if (p.manager) setByHeader_(sh, headers, row, &#x27;담당자&#x27;, p.manager);
-      if (p.due) setByHeader_(sh, headers, row, &#x27;조치예정일&#x27;, p.due);
-      if (p.status === &#x27;조치완료&#x27;) setByHeader_(sh, headers, row, &#x27;완료일&#x27;, Utilities.formatDate(new Date(), &#x27;Asia/Seoul&#x27;, &#x27;yyyy-MM-dd&#x27;));
-      return {ok:true};
+  for (let r = 1; r < values.length; r++) {
+    if (String(values[r][0]) === String(p.id)) {
+      if (p.status !== undefined) sh.getRange(r + 1, 13).setValue(clean_(p.status));
+      if (p.reviewer !== undefined) sh.getRange(r + 1, 14).setValue(clean_(p.reviewer));
+      sh.getRange(r + 1, 15).setValue(new Date());
+      if (p.actionText !== undefined) sh.getRange(r + 1, 16).setValue(clean_(p.actionText));
+      if (p.owner !== undefined) sh.getRange(r + 1, 17).setValue(clean_(p.owner));
+      if (p.dueDate !== undefined) sh.getRange(r + 1, 18).setValue(clean_(p.dueDate));
+      if (p.doneDate !== undefined) sh.getRange(r + 1, 19).setValue(clean_(p.doneDate));
+      if (p.memo !== undefined) sh.getRange(r + 1, 20).setValue(clean_(p.memo));
+      return { ok:true, message:"수정 완료" };
     }
   }
-  return {ok:false, message:&#x27;해당 접수번호를 찾지 못했습니다.&#x27;};
+  return { ok:false, message:"해당 접수번호를 찾을 수 없습니다." };
 }
 
-function getRows_(sheetName) {
-  const sh = SpreadsheetApp.openById(CONFIG.SHEET_ID).getSheetByName(sheetName);
-  const values = sh.getDataRange().getDisplayValues();
-  if (values.length &lt; 2) return [];
-  const headers = values.shift();
-  return values.filter(r =&gt; r.join(&#x27;&#x27;)).map(r =&gt; Object.fromEntries(headers.map((h,i)=&gt;[h,r[i] || &#x27;&#x27;])));
+function getOpinionObjects_() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sh = ss.getSheetByName(SHEET_OPINIONS);
+  if (!sh) return [];
+  const values = sh.getDataRange().getValues();
+  if (values.length <= 1) return [];
+
+  return values.slice(1).map(row => ({
+    id: row[0],
+    receivedAt: formatDate_(row[1]),
+    siteName: row[2],
+    company: row[3],
+    job: row[4],
+    place: row[5],
+    riskType: row[6],
+    content: row[7],
+    urgency: row[8],
+    photoUrl: row[9],
+    writer: row[10],
+    phone: row[11],
+    status: row[12] || "접수",
+    reviewer: row[13],
+    reviewDate: formatDate_(row[14]),
+    actionText: row[15],
+    owner: row[16],
+    dueDate: formatDate_(row[17]),
+    doneDate: formatDate_(row[18]),
+    memo: row[19]
+  }));
 }
 
-function sitesFromData_() {
-  const saved = getRows_(CONFIG.SHEET_QR).filter(r =&gt; r.현장명).map(r =&gt; ({현장명:r.현장명, 관리자:r.관리자, 원청공종:r[&#x27;원청/공종&#x27;], 게시위치:r.게시위치, QR주소:r.QR주소, 사용여부:r.사용여부}));
-  const names = new Set(saved.map(r =&gt; r.현장명));
-  getRows_(CONFIG.SHEET_OPINIONS).forEach(r =&gt; { if (r.현장명 &amp;&amp; !names.has(r.현장명)) { names.add(r.현장명); saved.push({현장명:r.현장명, 관리자:&#x27;&#x27;, 원청공종:&#x27;&#x27;, 게시위치:&#x27;&#x27;, QR주소:&#x27;&#x27;, 사용여부:&#x27;사용&#x27;}); } });
-  return saved.sort((a,b)=&gt;String(a.현장명).localeCompare(String(b.현장명),&#x27;ko&#x27;));
+function buildSummary_(rows) {
+  const siteMap = {};
+  const total = {
+    total: rows.length, immediate:0, open:0, done:0, education:0, none:0
+  };
+
+  rows.forEach(r => {
+    const site = r.siteName || "현장명 미입력";
+    if (!siteMap[site]) siteMap[site] = { siteName:site, total:0, immediate:0, open:0, done:0, education:0, none:0, latest:"" };
+    siteMap[site].total++;
+    if (String(r.urgency).indexOf("즉시") >= 0) { siteMap[site].immediate++; total.immediate++; }
+    if (r.status === "조치완료") { siteMap[site].done++; total.done++; }
+    else if (r.status === "교육반영") { siteMap[site].education++; total.education++; }
+    else if (r.status === "해당없음") { siteMap[site].none++; total.none++; }
+    else { siteMap[site].open++; total.open++; }
+    if (!siteMap[site].latest || String(r.receivedAt) > String(siteMap[site].latest)) siteMap[site].latest = r.receivedAt;
+  });
+
+  return { total, sites: Object.keys(siteMap).sort().map(k => siteMap[k]) };
 }
 
-function makeSummary_(rows) {
-  const total = rows.length;
-  const urgent = rows.filter(r =&gt; r.긴급도 === &#x27;즉시조치 필요&#x27;).length;
-  const done = rows.filter(r =&gt; r.상태 === &#x27;조치완료&#x27;).length;
-  const inProgress = rows.filter(r =&gt; [&#x27;접수&#x27;,&#x27;검토중&#x27;,&#x27;조치필요&#x27;,&#x27;조치중&#x27;].includes(r.상태)).length;
-  const edu = rows.filter(r =&gt; r.상태 === &#x27;교육반영&#x27;).length;
-  const none = rows.filter(r =&gt; r.상태 === &#x27;해당없음&#x27;).length;
-  const notDone = total - done;
-  return {total, urgent, done, inProgress, edu, none, notDone};
+function jsonp_(callback, obj) {
+  const cb = callback || "callback";
+  const out = cb + "(" + JSON.stringify(obj) + ");";
+  return ContentService.createTextOutput(out).setMimeType(ContentService.MimeType.JAVASCRIPT);
 }
 
-function appendObject_(sh, obj) {
-  const headers = sh.getRange(1,1,1,sh.getLastColumn()).getDisplayValues()[0];
-  sh.appendRow(headers.map(h =&gt; obj[h] || &#x27;&#x27;));
+function clean_(v) {
+  return v == null ? "" : String(v).trim();
 }
-function writeObject_(sh, row, obj) {
-  const headers = sh.getRange(1,1,1,sh.getLastColumn()).getDisplayValues()[0];
-  headers.forEach((h,i)=&gt;{ if (Object.prototype.hasOwnProperty.call(obj,h)) sh.getRange(row,i+1).setValue(obj[h]); });
+
+function formatDate_(v) {
+  if (!v) return "";
+  if (Object.prototype.toString.call(v) === "[object Date]" && !isNaN(v)) {
+    return Utilities.formatDate(v, "Asia/Seoul", "yyyy-MM-dd HH:mm");
+  }
+  return String(v);
 }
-function setByHeader_(sh, headers, row, header, value) {
-  const idx = headers.indexOf(header);
-  if (idx &gt;= 0) sh.getRange(row, idx + 1).setValue(value);
+
+function getWorkerFormHtml() {
+  const actionUrl = ScriptApp.getService().getUrl();
+  return \`<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>종사자 안전보건 의견청취</title>
+  <style>
+    body{margin:0;background:#f1f5f9;font-family:Arial,'Noto Sans KR',sans-serif;color:#0f172a;}
+    header{background:linear-gradient(135deg,#0f172a,#2563eb);color:white;padding:24px 16px;text-align:center;}
+    h1{font-size:22px;margin:0 0 8px;} p{line-height:1.6;}
+    main{max-width:680px;margin:18px auto;padding:0 14px 40px;}
+    .card{background:white;border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.1);}
+    label{display:block;font-weight:800;margin:14px 0 6px;font-size:14px;}
+    input,select,textarea{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:12px;box-sizing:border-box;font-size:15px;}
+    textarea{min-height:120px;}
+    button{width:100%;margin-top:20px;padding:16px;border:0;border-radius:14px;background:#2563eb;color:white;font-weight:900;font-size:16px;}
+    .notice{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:12px;color:#1e3a8a;font-size:13px;}
+  </style>
+</head>
+<body>
+  <header><h1>종사자 안전보건 의견청취</h1><p>현장의 위험요인·개선의견을 자유롭게 제출해 주세요.</p></header>
+  <main><div class="card">
+    <div class="notice">익명 제출 가능 / 긴급위험은 QR 제출과 함께 현장 관리자에게 즉시 알려주세요.</div>
+    <form method="post" action="\${actionUrl}">
+      <label>현장명 *</label>
+      <input name="siteName" required placeholder="예: 군산 호수공원 IPARK">
+      <label>소속업체</label>
+      <input name="company" placeholder="예: 동진토건, ○○건설">
+      <label>직종</label>
+      <input name="job" placeholder="예: 보통인부, 장비기사, 철근공">
+      <label>위험 장소 *</label>
+      <input name="place" required placeholder="예: B1 계단실, 흙막이 구간, 장비 작업반경">
+      <label>위험 유형 *</label>
+      <select name="riskType" required>
+        <option value="">선택</option><option>추락</option><option>낙하</option><option>끼임</option><option>붕괴</option><option>장비</option><option>전기</option><option>화재</option><option>질식</option><option>통로</option><option>보호구</option><option>기타</option>
+      </select>
+      <label>위험요인 또는 개선의견 *</label>
+      <textarea name="content" required placeholder="위험한 상황이나 개선이 필요한 내용을 적어주세요."></textarea>
+      <label>긴급도 *</label>
+      <select name="urgency" required>
+        <option>일반 개선</option><option>빠른 조치 필요</option><option>즉시조치 필요</option>
+      </select>
+      <label>사진 URL 선택입력</label>
+      <input name="photoUrl" placeholder="사진을 별도 업로드한 경우 링크 입력">
+      <label>작성자</label>
+      <input name="writer" placeholder="익명 가능">
+      <label>연락처</label>
+      <input name="phone" placeholder="회신이 필요한 경우만 입력">
+      <button type="submit">의견 제출하기</button>
+    </form>
+  </div></main>
+</body>
+</html>\`;
 }
-function jsonp_(obj, callback) {
-  const text = callback ? `${callback}(${JSON.stringify(obj)});` : JSON.stringify(obj);
-  return ContentService.createTextOutput(text).setMimeType(callback ? ContentService.MimeType.JAVASCRIPT : ContentService.MimeType.JSON);
+
+function getThanksHtml() {
+  return \`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{font-family:Arial,'Noto Sans KR',sans-serif;background:#f1f5f9;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center}.box{background:white;border-radius:20px;padding:30px;max-width:480px;text-align:center;box-shadow:0 8px 24px rgba(15,23,42,.12)}h1{color:#2563eb}</style></head><body><div class="box"><h1>제출 완료</h1><p>안전보건 의견이 접수되었습니다.</p><p>재해예방에 필요한 사항은 검토 후 조치하겠습니다.</p><button onclick="location.href='?page=form'" style="padding:12px 18px;border:0;border-radius:12px;background:#2563eb;color:white;font-weight:800">추가 의견 제출</button></div></body></html>\`;
 }
-function escapeHtml_(s) {
-  return String(s || &#x27;&#x27;).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, c =&gt; ({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;,&quot;&#x27;&quot;:&#x27;&amp;#39;&#x27;}[c]));
-}
-</textarea>
+`;
+let allOpinions = [];
+document.getElementById('codePreview').textContent = INSTALL_CODE.substring(0, 2200) + '
+...';
+window.addEventListener('load', () => {
+  document.getElementById('gasUrl').value = localStorage.getItem('dongjin_gas_url') || '';
+  document.getElementById('pin').value = localStorage.getItem('dongjin_pin') || '';
+  if (document.getElementById('gasUrl').value) makeSingleQR();
+});
+function showTab(id, btn) { document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); if(btn) btn.classList.add('active'); }
+function showTabById(id) { const tabs = Array.from(document.querySelectorAll('.tab')); const names = {dashboard:0, qr:1, setup:2, guide:3}; showTab(id, tabs[names[id]]); }
+function saveSettings() { localStorage.setItem('dongjin_gas_url', document.getElementById('gasUrl').value.trim()); localStorage.setItem('dongjin_pin', document.getElementById('pin').value.trim()); alert('설정 저장 완료'); makeSingleQR(); }
+function clearSettings() { localStorage.removeItem('dongjin_gas_url'); localStorage.removeItem('dongjin_pin'); location.reload(); }
+function getGas() { return document.getElementById('gasUrl').value.trim(); }
+function getPin() { return document.getElementById('pin').value.trim(); }
+function makeSingleQR() { const gas = getGas(); if(!gas) { alert('먼저 Google Apps Script 웹앱 URL을 입력하고 설정 저장하세요.'); return; } const formUrl = gas + '?page=form'; const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(formUrl); document.getElementById('qrImage').src = qr; document.getElementById('formUrlText').textContent = formUrl; document.getElementById('qrResult').style.display = 'block'; }
+async function copyInstallCode() { try { await navigator.clipboard.writeText(INSTALL_CODE); alert('설치코드가 복사되었습니다. Apps Script Code.gs에 붙여넣으세요.'); } catch(e) { const w = window.open('', '_blank'); w.document.write('<pre style="white-space:pre-wrap">'+INSTALL_CODE.replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))+'</pre>'); } }
+function jsonp(url) { return new Promise((resolve,reject)=>{ const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*1000); window[cb]=(data)=>{ resolve(data); delete window[cb]; script.remove(); }; const script=document.createElement('script'); script.onerror=reject; script.src=url+(url.includes('?')?'&':'?')+'callback='+cb; document.body.appendChild(script); }); }
+async function loadDashboard() { const gas=getGas(), pin=getPin(); if(!gas||!pin) { alert('웹앱 URL과 관리자 PIN을 먼저 저장하세요.'); return; } const res = await jsonp(gas+'?action=list&pin='+encodeURIComponent(pin)); if(!res.ok) { alert(res.message||'불러오기 실패'); return; } allOpinions = res.data || []; renderSummary(res.summary); renderOpinions(); }
+function renderSummary(summary) { const t=summary?.total||{}; stTotal.textContent=t.total||0; stImmediate.textContent=t.immediate||0; stOpen.textContent=t.open||0; stDone.textContent=t.done||0; stEdu.textContent=t.education||0; stNone.textContent=t.none||0; const box=document.getElementById('siteCards'); const sites=summary?.sites||[]; box.innerHTML = sites.length ? sites.map(s=>`<div class="site-card" onclick="filterSite.value='${esc(s.siteName)}';renderOpinions()"><b>${esc(s.siteName)}</b><p>전체 ${s.total}건 / 즉시 ${s.immediate}건 / 조치완료 ${s.done}건 / 미완료 ${s.open}건</p><small>최근 접수: ${esc(s.latest||'')}</small></div>`).join('') : '<p>아직 접수된 현장이 없습니다.</p>'; }
+function renderOpinions() { const site=(filterSite.value||'').toLowerCase(); const status=filterStatus.value; const rows=allOpinions.filter(r=>(!site||String(r.siteName||'').toLowerCase().includes(site))&&(!status||r.status===status)); opinionBody.innerHTML = rows.length ? rows.map(r=>`<tr><td>${esc(r.receivedAt)}</td><td>${esc(r.siteName)}</td><td>${esc(r.place)}</td><td>${esc(r.riskType)}</td><td>${esc(r.urgency)}</td><td>${esc(r.content)}</td><td>${esc(r.status)}</td><td class="no-print"><button onclick="editOpinion('${esc(r.id)}')">상태변경</button></td></tr>`).join('') : '<tr><td colspan="8">표시할 의견이 없습니다.</td></tr>'; }
+async function editOpinion(id) { const r=allOpinions.find(x=>x.id===id); if(!r) return; const status=prompt('상태 입력: 접수 / 검토중 / 조치필요 / 조치중 / 조치완료 / 교육반영 / 해당없음', r.status||'검토중'); if(!status) return; const actionText=prompt('조치내용 또는 검토의견을 입력하세요.', r.actionText||'')||''; const owner=prompt('담당자를 입력하세요.', r.owner||'')||''; const gas=getGas(), pin=getPin(); const url=gas+'?action=update&pin='+encodeURIComponent(pin)+'&id='+encodeURIComponent(id)+'&status='+encodeURIComponent(status)+'&actionText='+encodeURIComponent(actionText)+'&owner='+encodeURIComponent(owner)+'&reviewer='+encodeURIComponent('본사관리자'); const res=await jsonp(url); alert(res.message||'처리 완료'); loadDashboard(); }
+function esc(v) { return String(v??'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+</script>
 </body>
 </html>
