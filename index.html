@@ -974,36 +974,23 @@
         return { photoUrl: "", photoPath: "", photoDataUrl: "", photoUploadMode: "none" };
       }
 
-      setStatus("사진 업로드 중입니다. 잠시만 기다려주세요...");
+      // Firebase Storage가 GitHub Pages 도메인에서 CORS로 막히는 경우가 있어
+      // 사진은 Firestore 문서 내부(photoDataUrl)에 직접 저장합니다.
+      // 이렇게 하면 사진 업로드 실패로 제출이 멈추지 않고, 관리자 화면에서도 바로 미리보기가 됩니다.
+      setStatus("사진을 저장 준비 중입니다. 잠시만 기다려주세요...");
 
-      const safeName = selectedFile.name.replace(/[^\w.\-가-힣]/g, "_");
-      const photoPath = PHOTO_STORAGE_PREFIX + "/" + userId + "/" + Date.now() + "_" + safeName;
-      const storageRef = ref(storage, photoPath);
+      const photoDataUrl = await fileToDataUrl(selectedFile);
 
-      try {
-        await uploadBytes(storageRef, selectedFile, {
-          contentType: selectedFile.type || "image/jpeg"
-        });
-
-        const photoUrl = await getDownloadURL(storageRef);
-        return {
-          photoUrl: photoUrl,
-          photoPath: photoPath,
-          photoDataUrl: "",
-          photoUploadMode: "storage"
-        };
-      } catch (error) {
-        console.warn("Firebase Storage 업로드 실패, Firestore 사진 저장 방식으로 대체합니다.", error);
-        setStatus("Storage 업로드가 막혀 사진을 문서에 직접 저장합니다...");
-
-        const photoDataUrl = await fileToDataUrl(selectedFile);
-        return {
-          photoUrl: "",
-          photoPath: "",
-          photoDataUrl: photoDataUrl,
-          photoUploadMode: "firestore-dataurl"
-        };
+      if (!photoDataUrl) {
+        return { photoUrl: "", photoPath: "", photoDataUrl: "", photoUploadMode: "none" };
       }
+
+      return {
+        photoUrl: "",
+        photoPath: "",
+        photoDataUrl: photoDataUrl,
+        photoUploadMode: "firestore-dataurl"
+      };
     }
 
     async function sendMailAlert(data) {
@@ -1094,6 +1081,7 @@
           content: reportData.content,
           photoUrl: reportData.photoUrl,
           photoPath: reportData.photoPath,
+          photoSaved: reportData.photoDataUrl ? "문서 내 사진 저장" : "",
           createdAtText: createdAtText
         });
 
