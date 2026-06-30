@@ -387,8 +387,7 @@ function getThanksHtml() {
 }
 `;
 let allOpinions = [];
-document.getElementById('codePreview').textContent = INSTALL_CODE.substring(0, 2200) + '
-...';
+document.getElementById('codePreview').textContent = INSTALL_CODE.substring(0, 2200) + '\n...';
 window.addEventListener('load', () => {
   document.getElementById('gasUrl').value = localStorage.getItem('dongjin_gas_url') || '';
   document.getElementById('pin').value = localStorage.getItem('dongjin_pin') || '';
