@@ -805,7 +805,7 @@
       setStatus("사진 업로드 중입니다. 잠시만 기다려주세요...");
 
       const safeName = selectedFile.name.replace(/[^\w.\-가-힣]/g, "_");
-      const path = "reports/" + userId + "/" + Date.now() + "_" + safeName;
+      const path = "workerOpinions/" + userId + "/" + Date.now() + "_" + safeName;
       const storageRef = ref(storage, path);
 
       await uploadBytes(storageRef, selectedFile, {
@@ -873,11 +873,20 @@
           status: "접수",
           createdAt: serverTimestamp(),
           createdAtText: createdAtText,
-          userAgent: navigator.userAgent || ""
+          userAgent: navigator.userAgent || "",
+
+          // 기존 workerOpinions 데이터 구조와 호환용 필드
+          company: "",
+          job: "",
+          place: siteName || "",
+          riskType: category || "",
+          photoPath: photoUrl || "",
+          receivedAt: createdAtText,
+          updatedAt: createdAtText
         };
 
         setStatus("의견을 저장 중입니다...");
-        await addDoc(collection(db, "reports"), reportData);
+        await addDoc(collection(db, "workerOpinions"), reportData);
 
         setStatus("메일 알림을 발송 중입니다...");
 
@@ -973,7 +982,17 @@
         });
       }
 
-      return data.createdAtText || "-";
+      return data.createdAtText || data.receivedAt || data.updatedAt || "-";
+    }
+
+    function getTimeMillis(data) {
+      if (data.createdAt && typeof data.createdAt.toDate === "function") {
+        return data.createdAt.toDate().getTime();
+      }
+
+      const text = data.createdAtText || data.receivedAt || data.updatedAt || "";
+      const parsed = Date.parse(text);
+      return Number.isNaN(parsed) ? 0 : parsed;
     }
 
     function escapeHtml(value) {
@@ -992,8 +1011,7 @@
       try {
         await ensureAnonymousLogin();
 
-        const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
-        const snap = await getDocs(q);
+        const snap = await getDocs(collection(db, "workerOpinions"));
 
         if (snap.empty) {
           reportList.innerHTML = '<div class="empty">접수된 의견이 없습니다.</div>';
@@ -1001,24 +1019,37 @@
           return;
         }
 
+        const docs = [];
+        snap.forEach(function (docSnap) {
+          docs.push({
+            id: docSnap.id,
+            data: docSnap.data()
+          });
+        });
+
+        docs.sort(function (a, b) {
+          return getTimeMillis(b.data) - getTimeMillis(a.data);
+        });
+
         let count = 0;
 
-        snap.forEach(function (docSnap) {
+        docs.forEach(function (item) {
           count++;
-          const data = docSnap.data();
-          const id = docSnap.id;
+          const data = item.data;
+          const id = item.id;
 
           const card = document.createElement("div");
           card.className = "report-card";
 
-          const siteName = escapeHtml(data.siteName || "현장명 미입력");
-          const name = escapeHtml(data.name || "익명");
+          const siteName = escapeHtml(data.siteName || data.place || data.company || "현장명 미입력");
+          const name = escapeHtml(data.name || data.workerName || "익명");
           const phone = escapeHtml(data.phone || "-");
-          const category = escapeHtml(data.category || "기타");
+          const category = escapeHtml(data.category || data.riskType || "기타");
           const content = escapeHtml(data.content || "-");
           const status = escapeHtml(data.status || "접수");
           const createdAtText = escapeHtml(getCreatedAtText(data));
-          const photoUrl = data.photoUrl || "";
+          const rawPhoto = data.photoUrl || data.photoPath || "";
+          const photoUrl = String(rawPhoto).startsWith("http") ? rawPhoto : "";
 
           card.innerHTML = `
             <div class="report-top">
@@ -1074,7 +1105,7 @@
 
           try {
             setAdminStatus("상태를 변경 중입니다...");
-            await updateDoc(doc(db, "reports", id), {
+            await updateDoc(doc(db, "workerOpinions", id), {
               status: newStatus,
               updatedAt: serverTimestamp()
             });
@@ -1105,7 +1136,7 @@
 
           try {
             setAdminStatus("삭제 중입니다...");
-            await deleteDoc(doc(db, "reports", id));
+            await deleteDoc(doc(db, "workerOpinions", id));
             setAdminStatus("삭제되었습니다.", "success");
             await loadReports();
           } catch (error) {
