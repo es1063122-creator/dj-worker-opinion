@@ -799,21 +799,25 @@
 
     async function uploadPhotoIfNeeded(userId) {
       if (!selectedFile) {
-        return "";
+        return { photoUrl: "", photoPath: "" };
       }
 
       setStatus("사진 업로드 중입니다. 잠시만 기다려주세요...");
 
       const safeName = selectedFile.name.replace(/[^\w.\-가-힣]/g, "_");
-      const path = "workerOpinions/" + userId + "/" + Date.now() + "_" + safeName;
-      const storageRef = ref(storage, path);
+      const photoPath = "workerOpinions/" + userId + "/" + Date.now() + "_" + safeName;
+      const storageRef = ref(storage, photoPath);
 
       await uploadBytes(storageRef, selectedFile, {
         contentType: selectedFile.type || "image/jpeg"
       });
 
-      const downloadUrl = await getDownloadURL(storageRef);
-      return downloadUrl;
+      const photoUrl = await getDownloadURL(storageRef);
+
+      return {
+        photoUrl: photoUrl,
+        photoPath: photoPath
+      };
     }
 
     async function sendMailAlert(data) {
@@ -853,22 +857,27 @@
       try {
         const user = await ensureAnonymousLogin();
 
-        let photoUrl = "";
+        let photoResult = { photoUrl: "", photoPath: "" };
         if (selectedFile) {
-          photoUrl = await uploadPhotoIfNeeded(user.uid);
+          photoResult = await uploadPhotoIfNeeded(user.uid);
         }
+
+        const photoUrl = photoResult.photoUrl || "";
+        const photoPath = photoResult.photoPath || "";
 
         const createdAtText = new Date().toLocaleString("ko-KR", {
           timeZone: "Asia/Seoul"
         });
 
         const reportData = {
+          // 새 화면용 필드
           siteName: siteName || "",
           name: name || "익명",
           phone: phone || "",
           category: category || "",
           content: content || "",
           photoUrl: photoUrl || "",
+          photoPath: photoPath || "",
           uid: user.uid,
           status: "접수",
           createdAt: serverTimestamp(),
@@ -880,7 +889,6 @@
           job: "",
           place: siteName || "",
           riskType: category || "",
-          photoPath: photoUrl || "",
           receivedAt: createdAtText,
           updatedAt: createdAtText
         };
@@ -897,6 +905,7 @@
           category: reportData.category,
           content: reportData.content,
           photoUrl: reportData.photoUrl,
+          photoPath: reportData.photoPath,
           createdAtText: createdAtText
         });
 
@@ -975,24 +984,49 @@
       }
     }
 
-    function getCreatedAtText(data) {
-      if (data.createdAt && typeof data.createdAt.toDate === "function") {
-        return data.createdAt.toDate().toLocaleString("ko-KR", {
+    function timestampToText(value) {
+      if (value && typeof value.toDate === "function") {
+        return value.toDate().toLocaleString("ko-KR", {
           timeZone: "Asia/Seoul"
         });
       }
 
-      return data.createdAtText || data.receivedAt || data.updatedAt || "-";
+      if (value && typeof value.seconds === "number") {
+        return new Date(value.seconds * 1000).toLocaleString("ko-KR", {
+          timeZone: "Asia/Seoul"
+        });
+      }
+
+      return value || "";
+    }
+
+    function timestampToMillis(value) {
+      if (value && typeof value.toDate === "function") {
+        return value.toDate().getTime();
+      }
+
+      if (value && typeof value.seconds === "number") {
+        return value.seconds * 1000;
+      }
+
+      const parsed = Date.parse(value || "");
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+
+    function getCreatedAtText(data) {
+      return timestampToText(data.createdAt) ||
+        timestampToText(data.receivedAt) ||
+        timestampToText(data.updatedAt) ||
+        data.createdAtText ||
+        "-";
     }
 
     function getTimeMillis(data) {
-      if (data.createdAt && typeof data.createdAt.toDate === "function") {
-        return data.createdAt.toDate().getTime();
-      }
-
-      const text = data.createdAtText || data.receivedAt || data.updatedAt || "";
-      const parsed = Date.parse(text);
-      return Number.isNaN(parsed) ? 0 : parsed;
+      return timestampToMillis(data.createdAt) ||
+        timestampToMillis(data.receivedAt) ||
+        timestampToMillis(data.updatedAt) ||
+        timestampToMillis(data.createdAtText) ||
+        0;
     }
 
     function escapeHtml(value) {
@@ -1002,6 +1036,30 @@
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    async function resolvePhotoUrl(data) {
+      const photoUrl = data.photoUrl || "";
+      const photoPath = data.photoPath || "";
+
+      if (photoUrl && String(photoUrl).startsWith("http")) {
+        return photoUrl;
+      }
+
+      if (photoPath && String(photoPath).startsWith("http")) {
+        return photoPath;
+      }
+
+      if (photoPath) {
+        try {
+          return await getDownloadURL(ref(storage, photoPath));
+        } catch (error) {
+          console.warn("사진 URL 변환 실패:", error);
+          return "";
+        }
+      }
+
+      return "";
     }
 
     async function loadReports() {
@@ -1033,7 +1091,7 @@
 
         let count = 0;
 
-        docs.forEach(function (item) {
+        for (const item of docs) {
           count++;
           const data = item.data;
           const id = item.id;
@@ -1048,8 +1106,7 @@
           const content = escapeHtml(data.content || "-");
           const status = escapeHtml(data.status || "접수");
           const createdAtText = escapeHtml(getCreatedAtText(data));
-          const rawPhoto = data.photoUrl || data.photoPath || "";
-          const photoUrl = String(rawPhoto).startsWith("http") ? rawPhoto : "";
+          const photoUrl = await resolvePhotoUrl(data);
 
           card.innerHTML = `
             <div class="report-top">
@@ -1084,7 +1141,7 @@
           `;
 
           reportList.appendChild(card);
-        });
+        }
 
         setAdminStatus("총 " + count + "건이 접수되었습니다.", "success");
 
