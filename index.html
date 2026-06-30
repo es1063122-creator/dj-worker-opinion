@@ -59,7 +59,7 @@
     </div>
   </section>
 
-  <section id="guide" class="section"><div class="card"><h2>초보 설치가이드</h2><div class="step"><h3>1) Firebase 프로젝트 만들기</h3><p>Firebase 콘솔에서 프로젝트를 만들고 웹앱을 추가합니다. 표시되는 firebaseConfig 값을 복사합니다.</p></div><div class="step"><h3>2) Authentication 익명 로그인 켜기</h3><p>Authentication → Sign-in method → <b>Anonymous</b>를 사용 설정합니다. 근로자는 로그인 화면을 보지 않습니다.</p></div><div class="step"><h3>3) Firestore Database 만들기</h3><p>Firestore Database를 만들고 컬렉션 이름은 자동으로 <code>workerOpinions</code>를 사용합니다.</p></div><div class="step"><h3>4) Storage 만들기</h3><p>Storage를 만들면 사진 첨부파일이 <code>workerOpinionPhotos/</code> 폴더에 저장됩니다.</p></div><div class="step"><h3>5) 보안 규칙</h3><p>초기 테스트용 규칙은 아래처럼 사용합니다. 운영 전에는 관리자 로그인 방식으로 강화하는 것이 좋습니다.</p><pre>Firestore rules:
+  <section id="guide" class="section"><div class="card"><h2>초보 설치가이드</h2><div class="step"><h3>1) Firebase 프로젝트 만들기</h3><p>Firebase 콘솔에서 프로젝트를 만들고 웹앱을 추가합니다. 표시되는 firebaseConfig 값을 복사합니다.</p></div><div class="step"><h3>2) Authentication 익명 로그인 켜기</h3><p>Authentication → Sign-in method → <b>Anonymous</b>를 사용 설정합니다. 근로자는 로그인 화면을 보지 않습니다.</p></div><div class="step"><h3>3) Firestore Database 만들기</h3><p>Firestore Database를 만들고 컬렉션 이름은 자동으로 <code>workerOpinions</code>를 사용합니다.</p></div><div class="step"><h3>4) Storage 만들기</h3><p>Storage를 만들면 사진 첨부파일이 <code>workerOpinionPhotos/</code> 폴더에 저장됩니다. 사진 선택창은 갤러리/사진 보관함에서 기존 사진을 불러올 수 있게 설정되어 있습니다.</p></div><div class="step"><h3>5) 보안 규칙</h3><p>초기 테스트용 규칙은 아래처럼 사용합니다. 운영 전에는 관리자 로그인 방식으로 강화하는 것이 좋습니다.</p><pre>Firestore rules:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -91,7 +91,9 @@ service firebase.storage {
       <label>위험유형</label><select name="riskType"><option value="">선택입력</option><option>추락</option><option>낙하</option><option>끼임</option><option>붕괴</option><option>장비</option><option>전기</option><option>화재</option><option>질식</option><option>통로</option><option>보호구</option><option>기타</option></select>
       <label>위험요인 또는 개선의견 *</label><textarea name="content" required placeholder="개선의견이 없으면 개선의견없음이라고 적어주세요.\n위험한 상황이나 개선이 필요한 내용을 적어주세요."></textarea>
       <label>긴급도</label><select name="urgency"><option value="">선택입력</option><option>즉시조치 필요</option><option>빠른 조치 필요</option><option>일반 개선</option></select>
-      <label>사진 첨부</label><input id="photoFile" type="file" accept="image/*" capture="environment"><p class="small">선택입력입니다. 휴대폰에서는 사진 촬영 또는 앨범 선택이 가능합니다.</p>
+      <label>사진 첨부 <span class="small">(선택)</span></label>
+      <input id="photoFile" type="file" accept="image/*">
+      <p class="small">휴대폰에서 누르면 <b>사진 보관함/갤러리</b>에서 찍어둔 사진을 선택하거나, 기종에 따라 <b>카메라 촬영</b>도 선택할 수 있습니다.</p>
       <label>작성자</label><input name="writer" placeholder="익명 가능">
       <label>연락처</label><input name="phone" placeholder="회신 필요 시 입력">
       <br><br><button type="submit" class="btn-green">제출하기</button><p id="submitStatus" class="status"></p>
@@ -139,6 +141,77 @@ async function updateStatus(id,status){if(!await initFirebaseFromPage())return;a
 function downloadCSV(){const headers=['접수일','현장명','소속','직종','장소','유형','의견내용','긴급도','사진URL','작성자','연락처','상태'];const lines=[headers.join(',')].concat(allOpinions.map(x=>[dateText(x.receivedAt),x.siteName,x.company,x.job,x.place,x.riskType,x.content,x.urgency,x.photoUrl,x.writer,x.phone,x.status].map(v=>'"'+String(v||'').replaceAll('"','""')+'"').join(',')));const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='종사자의견청취.csv';a.click();}
 function saveConfigLocal(){const cfg={apiKey:cfgApiKey.value,authDomain:cfgAuthDomain.value,projectId:cfgProjectId.value,storageBucket:cfgStorageBucket.value,appId:cfgAppId.value};localStorage.setItem('dj_firebase_config',JSON.stringify(cfg));alert('임시 저장 완료');}
 function copyFirebaseSnippet(){const cfg={apiKey:cfgApiKey.value,authDomain:cfgAuthDomain.value,projectId:cfgProjectId.value,storageBucket:cfgStorageBucket.value,appId:cfgAppId.value};const txt='const FIREBASE_CONFIG = '+JSON.stringify(cfg,null,2)+';';snippetBox.textContent=txt;navigator.clipboard?.writeText(txt);}
+
+function formatFileSize(bytes){
+  if(!bytes && bytes !== 0) return '';
+  const mb = bytes / 1024 / 1024;
+  return mb >= 1 ? mb.toFixed(1) + 'MB' : Math.round(bytes/1024) + 'KB';
+}
+function fileExtFromType(type){
+  if(type === 'image/png') return 'png';
+  if(type === 'image/webp') return 'webp';
+  return 'jpg';
+}
+async function compressImageFile(file, maxSize = 1600, quality = 0.72){
+  if(!file || !file.type || !file.type.startsWith('image/')) return file;
+  // 1.5MB 이하 파일은 그대로 업로드
+  if(file.size <= 1.5 * 1024 * 1024) return file;
+
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error('사진 읽기 실패'));
+    reader.readAsDataURL(file);
+  });
+
+  const img = await new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error('사진 변환 실패'));
+    image.src = dataUrl;
+  });
+
+  let { width, height } = img;
+  const scale = Math.min(1, maxSize / Math.max(width, height));
+  width = Math.max(1, Math.round(width * scale));
+  height = Math.max(1, Math.round(height * scale));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, width, height);
+
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+  if(!blob) return file;
+  const newName = (file.name || 'photo').replace(/\.[^.]+$/, '') + '_compressed.jpg';
+  return new File([blob], newName, { type: 'image/jpeg', lastModified: Date.now() });
+}
+function uploadFileWithProgress(ref, file, onProgress){
+  return new Promise((resolve, reject) => {
+    const task = ref.put(file);
+    let lastProgressAt = Date.now();
+    const timer = setInterval(() => {
+      if(Date.now() - lastProgressAt > 90000){
+        clearInterval(timer);
+        try { task.cancel(); } catch(e) {}
+        reject(new Error('사진 업로드 시간이 너무 오래 걸립니다. 작은 사진으로 다시 시도하거나 와이파이 상태를 확인하세요.'));
+      }
+    }, 5000);
+    task.on('state_changed', snap => {
+      lastProgressAt = Date.now();
+      const pct = snap.totalBytes ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0;
+      onProgress && onProgress(pct, snap.bytesTransferred, snap.totalBytes);
+    }, err => {
+      clearInterval(timer);
+      reject(err);
+    }, () => {
+      clearInterval(timer);
+      resolve(task.snapshot);
+    });
+  });
+}
+
 async function handleSubmit(e){
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]');
@@ -165,13 +238,20 @@ async function handleSubmit(e){
 
     let photoUrl='';
     let photoPath='';
-    const file=document.getElementById('photoFile').files[0];
-    if(file){
-      submitStatus.textContent='사진 업로드 중입니다...';
-      const safeName=file.name.replace(/[^a-zA-Z0-9_.가-힣-]/g,'_');
+    const originalFile=document.getElementById('photoFile').files[0];
+    if(originalFile){
+      if(originalFile.size > 25 * 1024 * 1024){
+        throw new Error('사진 용량이 너무 큽니다. 25MB 이하 사진으로 다시 첨부해 주세요.');
+      }
+      submitStatus.textContent='사진 압축 중입니다... ('+formatFileSize(originalFile.size)+')';
+      const file = await compressImageFile(originalFile);
+      submitStatus.textContent='사진 업로드 중입니다... 0% ('+formatFileSize(file.size)+')';
+      const safeName=(file.name || 'photo.jpg').replace(/[^a-zA-Z0-9_.가-힣-]/g,'_');
       photoPath='workerOpinionPhotos/'+new Date().toISOString().slice(0,10)+'/'+Date.now()+'_'+safeName;
       const ref=storage.ref(photoPath);
-      await ref.put(file);
+      await uploadFileWithProgress(ref, file, (pct, sent, total)=>{
+        submitStatus.textContent='사진 업로드 중입니다... '+pct+'% ('+formatFileSize(sent)+' / '+formatFileSize(total)+')';
+      });
       photoUrl=await ref.getDownloadURL();
     }
 
