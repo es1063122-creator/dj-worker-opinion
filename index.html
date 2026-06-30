@@ -2,14 +2,15 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>동진토건 종사자 의견청취 QR 관리 - 전현장 공통 QR</title>
+  <title>동진토건(주) 종사자 의견청취</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root { --navy:#0f172a; --blue:#2563eb; --green:#059669; --orange:#f59e0b; --bg:#f1f5f9; --line:#cbd5e1; }
     * { box-sizing:border-box; }
     body { margin:0; font-family:Arial,'Noto Sans KR',sans-serif; background:var(--bg); color:var(--navy); }
-    header { background:linear-gradient(135deg,#0f172a,#2563eb); color:white; padding:28px 16px; text-align:center; }
-    header h1 { margin:0; font-size:30px; font-weight:900; letter-spacing:-.3px; } header p { margin:12px 0 0; opacity:.98; font-size:16px; font-weight:800; }
+    header { background:#ffffff; color:#000; padding:30px 16px 20px; text-align:center; border-bottom:1px solid #e2e8f0; }
+    header h1 { margin:0; font-size:36px; font-weight:1000; letter-spacing:-.6px; color:#000; }
+    header p { display:none; }
     main { max-width:1180px; margin:18px auto 60px; padding:0 14px; }
     .card { background:white; border:1px solid #dbe3ef; border-radius:18px; padding:20px; margin-bottom:16px; box-shadow:0 8px 24px rgba(15,23,42,.08); }
     .tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
@@ -27,24 +28,52 @@
     .notice { background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:14px; padding:14px; line-height:1.65; }
     .warn { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; border-radius:14px; padding:14px; line-height:1.65; }
     table { width:100%; border-collapse:collapse; font-size:13px; } th,td { border-bottom:1px solid #e2e8f0; padding:10px 8px; text-align:left; vertical-align:top; } th { background:#f8fafc; }
-    .qrbox { text-align:center; border:2px dashed #cbd5e1; border-radius:18px; padding:24px; background:#f8fafc; } .qrbox h2 { font-size:26px; font-weight:900; margin-bottom:14px; } .qrbox p { font-size:16px; line-height:1.7; } .qrbox img { width:260px; height:260px; margin:8px 0; } .poster-place { display:inline-block; margin:12px 0; padding:12px 18px; border-radius:14px; background:#dbeafe; color:#1e3a8a; font-size:18px!important; font-weight:900; } .poster-note { font-size:18px!important; font-weight:900; color:#0f172a; }
+    .qrbox { text-align:center; border:2px dashed #cbd5e1; border-radius:18px; padding:26px; background:#fff; }
+    .qrbox h2 { font-size:34px; font-weight:1000; margin:0 0 22px; color:#000; letter-spacing:-.5px; }
+    .qrbox p { font-size:18px; line-height:1.75; }
+    .qrbox img { width:270px; height:270px; margin:12px 0 18px; }
+    .poster-note { font-size:19px!important; font-weight:900; color:#111827; max-width:760px; margin-left:auto; margin-right:auto; }
+    .poster-small { font-size:17px!important; font-weight:900; color:#111827; }
     .site-card { border:1px solid #e2e8f0; border-radius:14px; padding:14px; background:#f8fafc; cursor:pointer; } .site-card:hover { border-color:#2563eb; }
     pre { white-space:pre-wrap; background:#0f172a; color:#e5e7eb; border-radius:14px; padding:14px; max-height:320px; overflow:auto; }
     .step { border-left:5px solid #2563eb; padding:14px; background:#f8fafc; border-radius:12px; margin:12px 0; }
-    @media(max-width:800px) { .grid,.grid2 { grid-template-columns:1fr; } header h1{font-size:23px;} header p{font-size:14px;} }
-    @media print { .no-print,.tabs,.settings { display:none!important; } body{background:white;} .card{box-shadow:none;border:0;} }
+    @media(max-width:800px) { .grid,.grid2 { grid-template-columns:1fr; } header h1{font-size:25px;} header p{font-size:14px;} }
+    @page { size:A4 portrait; margin:10mm; }
+    @media print {
+      body { background:white!important; margin:0!important; }
+      body * { visibility:hidden!important; }
+      #qrResult, #qrResult * { visibility:visible!important; }
+      #qrResult {
+        display:block!important;
+        position:absolute!important;
+        left:0!important; top:0!important;
+        width:100%!important;
+        min-height:auto!important;
+        border:0!important;
+        box-shadow:none!important;
+        background:white!important;
+        padding:8mm 8mm 6mm!important;
+        border-radius:0!important;
+        page-break-after:avoid!important;
+      }
+      #qrResult h2 { font-size:30px!important; margin:0 0 14mm!important; color:#000!important; font-weight:1000!important; }
+      #qrResult .poster-note { font-size:16px!important; line-height:1.65!important; margin:0 auto 9mm!important; color:#111!important; font-weight:800!important; }
+      #qrResult img { width:78mm!important; height:78mm!important; margin:4mm auto 8mm!important; display:block!important; }
+      #formUrlText, .screen-only, .no-print, .tabs, .settings, header, button { display:none!important; visibility:hidden!important; }
+      main, .card { margin:0!important; padding:0!important; max-width:none!important; box-shadow:none!important; border:0!important; background:white!important; }
+    }
   </style>
 </head>
 <body>
 <header>
-  <h1>동진토건 종사자 안전보건 의견청취 QR 관리</h1>
-  <p>전현장 공통 QR · 근로자가 설문지에 현장명을 직접 입력 · 본사는 현장별로 자동 집계</p>
+  <h1>동진토건(주) 종사자 의견청취</h1>
+  <p></p>
 </header>
 <main>
   <div class="card settings no-print">
     <div class="tabs">
       <button class="tab active" onclick="showTab('dashboard', this)">🏢 본사 관리자</button>
-      <button class="tab" onclick="showTab('qr', this)">📱 전현장 공통 QR</button>
+      <button class="tab" onclick="showTab('qr', this)">📱 QR 안내문</button>
       <button class="tab" onclick="showTab('setup', this)">⚙️ 최초 설정</button>
       <button class="tab" onclick="showTab('guide', this)">📖 초보 설치가이드</button>
     </div>
@@ -84,16 +113,17 @@
 
   <section id="qr" class="section">
     <div class="card">
-      <h2>전현장 공통 QR</h2>
-      <div class="notice"><b>전현장 공통 QR은 1개만 사용합니다.</b><br>아래 QR을 모든 현장의 <b>TBM장 · 출입구 · 휴게실 · 안전교육장 · 현장 게시판</b>에 동일하게 게시하세요. 설문지에서 근로자가 현장명을 직접 입력합니다.</div>
-      <p><button class="btn-green" onclick="makeSingleQR()">전현장 공통 QR 생성</button> <button class="btn-dark" onclick="window.print()">A4 안내문 출력</button></p>
+      <div class="no-print" style="margin-bottom:14px;">
+        <button class="btn-green" onclick="makeSingleQR()">QR 생성</button>
+        <button class="btn-dark" onclick="window.print()">A4 안내문 출력</button>
+      </div>
       <div id="qrResult" class="qrbox" style="display:none">
-        <h2>동진토건 종사자 안전보건 의견청취 QR</h2>
+        <h2>동진토건(주) 종사자 의견청취</h2>
         <p class="poster-note">현장에서 위험하다고 느낀 사항, 개선이 필요한 안전시설, 작업방법, 장비운행, 보호구, 통로, 추락·낙하·붕괴·끼임 위험 등을 자유롭게 제보해 주세요.</p>
-        <p class="poster-place">게시장소: TBM장 · 현장 출입구 · 휴게실 · 안전교육장 · 현장 게시판</p>
-        <img id="qrImage" alt="단일 QR 코드">
-        <p id="formUrlText" style="word-break:break-all;font-size:12px"></p>
-        <p class="poster-note"><b>익명 제출 가능 · 사진 첨부 가능 · 현장명 필수 입력 · 긴급위험은 즉시 현장 관리자에게 함께 보고</b></p>
+        <img id="qrImage" alt="종사자 의견청취 QR 코드">
+        <p id="formUrlText" class="screen-only" style="word-break:break-all;font-size:12px;color:#64748b"></p>
+        <p class="poster-small">익명 제출 가능 · 사진 첨부 가능 · 현장명 필수 입력</p>
+        <p class="poster-small">긴급위험은 즉시 현장 관리자에게 함께 보고</p>
       </div>
     </div>
   </section>
@@ -101,7 +131,7 @@
   <section id="setup" class="section">
     <div class="card">
       <h2>0. 최초 설정</h2>
-      <div class="notice">설치 순서: 구글시트 만들기 → Apps Script 만들기 → 설치코드 복사/붙여넣기 → SHEET_ID 입력 → setupSheets() 실행 → 웹앱 배포 URL 저장 → 전현장 공통 QR 생성</div>
+      <div class="notice">설치 순서: 구글시트 만들기 → Apps Script 만들기 → 설치코드 복사/붙여넣기 → SHEET_ID 입력 → setupSheets() 실행 → 웹앱 배포 URL 저장 → QR 생성</div>
       <p>
         <a class="btn btn-green" target="_blank" href="https://sheets.new">① 구글시트 만들기</a>
         <a class="btn" target="_blank" href="https://script.new">② Apps Script 만들기</a>
@@ -122,7 +152,7 @@
       <div class="step"><h3>4) SHEET_ID 입력</h3><p>코드 맨 위 <code>const SHEET_ID = "여기에_구글시트_ID_입력";</code> 부분에 구글시트 ID만 넣습니다. 주소 전체를 넣으면 안 됩니다.</p></div>
       <div class="step"><h3>5) setupSheets() 실행</h3><p>Apps Script 상단 함수 선택에서 <b>setupSheets</b> 선택 후 실행합니다. 권한 승인 후 구글시트에 <b>의견접수, 반기점검</b> 시트가 생기면 정상입니다.</p></div>
       <div class="step"><h3>6) 웹앱 배포 URL 저장</h3><p>Apps Script에서 <b>배포 → 새 배포 → 웹 앱</b>을 선택합니다. 실행 사용자: <b>나</b>, 액세스 권한: <b>모든 사용자</b>로 배포합니다. 나온 URL을 이 관리화면 상단의 Google Apps Script 웹앱 URL에 저장합니다.</p></div>
-      <div class="step"><h3>7) 테스트</h3><p>전현장 공통 QR 화면에서 QR을 생성하고 제출화면을 열어 의견 1건을 넣습니다. 그 다음 본사 관리자에서 전체 새로고침을 눌러 접수 내용을 확인합니다.</p></div>
+      <div class="step"><h3>7) 테스트</h3><p>단일 QR 안내문 화면에서 QR을 생성하고 제출화면을 열어 의견 1건을 넣습니다. 그 다음 본사 관리자에서 전체 새로고침을 눌러 접수 내용을 확인합니다.</p></div>
     </div>
   </section>
 </main>
@@ -422,7 +452,7 @@ function saveSettings() { localStorage.setItem('dongjin_gas_url', document.getEl
 function clearSettings() { localStorage.removeItem('dongjin_gas_url'); localStorage.removeItem('dongjin_pin'); location.reload(); }
 function getGas() { return document.getElementById('gasUrl').value.trim(); }
 function getPin() { return document.getElementById('pin').value.trim(); }
-function makeSingleQR() { const gas = getGas(); if(!gas) { alert('먼저 Google Apps Script 웹앱 URL을 입력하고 설정 저장하세요.'); return; } const formUrl = gas + '?page=form'; const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(formUrl); document.getElementById('qrImage').src = qr; document.getElementById('formUrlText').textContent = formUrl; document.getElementById('qrResult').style.display = 'block'; }
+function makeSingleQR() { const gas = getGas(); if(!gas) { alert('먼저 Google Apps Script 웹앱 URL을 입력하고 설정 저장하세요.'); return; } const formUrl = gas + '?page=form'; const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=360x360&data=' + encodeURIComponent(formUrl); document.getElementById('qrImage').src = qr; document.getElementById('formUrlText').textContent = formUrl; document.getElementById('qrResult').style.display = 'block'; }
 async function copyInstallCode() { try { await navigator.clipboard.writeText(INSTALL_CODE); alert('설치코드가 복사되었습니다. Apps Script Code.gs에 붙여넣으세요.'); } catch(e) { const w = window.open('', '_blank'); w.document.write('<pre style="white-space:pre-wrap">'+INSTALL_CODE.replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))+'</pre>'); } }
 function jsonp(url) { return new Promise((resolve,reject)=>{ const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*1000); window[cb]=(data)=>{ resolve(data); delete window[cb]; script.remove(); }; const script=document.createElement('script'); script.onerror=reject; script.src=url+(url.includes('?')?'&':'?')+'callback='+cb; document.body.appendChild(script); }); }
 async function loadDashboard() { const gas=getGas(), pin=getPin(); if(!gas||!pin) { alert('웹앱 URL과 관리자 PIN을 먼저 저장하세요.'); return; } const res = await jsonp(gas+'?action=list&pin='+encodeURIComponent(pin)); if(!res.ok) { alert(res.message||'불러오기 실패'); return; } allOpinions = res.data || []; renderSummary(res.summary); renderOpinions(); }
