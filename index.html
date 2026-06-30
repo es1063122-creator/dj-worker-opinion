@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>동진토건(주) 종사자 의견청취 v3.5</title>
+  <title>동진토건(주) 종사자 의견청취 v3.6</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root{--blue:#2563eb;--green:#059669;--bg:#f1f5f9;--line:#cbd5e1;--navy:#0f172a;--red:#dc2626;}
@@ -17,6 +17,7 @@
     table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #e2e8f0;padding:10px 8px;text-align:left;vertical-align:top}th{background:#f8fafc}.stat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:16px}.stat b{display:block;font-size:28px;color:#2563eb;margin-top:4px}
     .qrbox{text-align:center;border:2px dashed #cbd5e1;border-radius:18px;padding:26px;background:#fff}.qrbox h2{font-size:34px;font-weight:1000;margin:0 0 22px;color:#000;letter-spacing:-.5px}.qrbox p{font-size:18px;line-height:1.75}.qrbox img{width:270px;height:270px;margin:12px 0 18px}.poster-note{font-size:19px!important;font-weight:900;color:#111827;max-width:760px;margin-left:auto;margin-right:auto}.poster-small{font-size:17px!important;font-weight:900;color:#111827}.small{font-size:12px;color:#64748b}.status{font-weight:900;color:#2563eb}
     .form-only header h1{font-size:28px}.submit-wrap{max-width:720px;margin:18px auto}.hidden{display:none!important}.step{border-left:5px solid #2563eb;padding:14px;background:#f8fafc;border-radius:12px;margin:12px 0}code{background:#eef2ff;padding:2px 6px;border-radius:6px}
+    .photo-modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}.photo-modal.open{display:flex}.photo-modal-content{max-width:96vw;max-height:92vh;text-align:center}.photo-modal img{max-width:96vw;max-height:82vh;border-radius:10px;background:#fff}.photo-modal .bar{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}.photo-modal button,.photo-modal a{border:0;border-radius:10px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:900;text-decoration:none;cursor:pointer}.photo-modal .close{background:#dc2626}.photo-modal .download{background:#059669}
     @media(max-width:800px){.grid,.grid2{grid-template-columns:1fr}header h1{font-size:25px}.qrbox img{width:230px;height:230px}}
     @page{size:A4 portrait;margin:10mm}@media print{body{background:white!important;margin:0!important}body *{visibility:hidden!important}#qrResult,#qrResult *{visibility:visible!important}#qrResult{display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;border:0!important;box-shadow:none!important;background:white!important;padding:8mm!important;border-radius:0!important}#qrResult h2{font-size:30px!important;margin:0 0 14mm!important;color:#000!important;font-weight:1000!important}#qrResult .poster-note{font-size:16px!important;line-height:1.65!important;margin:0 auto 9mm!important;color:#111!important;font-weight:800!important}#qrResult img{width:78mm!important;height:78mm!important;margin:4mm auto 8mm!important;display:block!important}.no-print,header,button,#formUrlText{display:none!important;visibility:hidden!important}main,.card{margin:0!important;padding:0!important;max-width:none!important;box-shadow:none!important;border:0!important;background:white!important}}
   </style>
@@ -91,6 +92,16 @@ service cloud.firestore {
   </div>
 </div>
 
+<div id="photoModal" class="photo-modal" onclick="closePhotoModal(event)">
+  <div class="photo-modal-content" onclick="event.stopPropagation()">
+    <img id="photoModalImg" alt="첨부사진">
+    <div class="bar">
+      <a id="photoDownloadLink" class="download" download="첨부사진.jpg">사진 다운로드</a>
+      <button class="close" onclick="closePhotoModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -126,7 +137,34 @@ async function loadOpinions(){if(!checkPin())return;if(!await initFirebaseFromPa
 function renderStats(){const sites=new Set(allOpinions.map(x=>x.siteName||'미입력'));document.getElementById('stAll').textContent=allOpinions.length;document.getElementById('stUrgent').textContent=allOpinions.filter(x=>(x.urgency||'').includes('즉시')).length;document.getElementById('stDone').textContent=allOpinions.filter(x=>x.status==='조치완료').length;document.getElementById('stEdu').textContent=allOpinions.filter(x=>x.status==='교육반영').length;document.getElementById('stOpen').textContent=allOpinions.filter(x=>!['조치완료','교육반영','해당없음'].includes(x.status)).length;document.getElementById('stSites').textContent=sites.size;let map={};allOpinions.forEach(x=>{let s=x.siteName||'미입력';if(!map[s])map[s]={all:0,urgent:0,done:0,open:0};map[s].all++;if((x.urgency||'').includes('즉시'))map[s].urgent++;if(x.status==='조치완료')map[s].done++;if(!['조치완료','교육반영','해당없음'].includes(x.status))map[s].open++;});document.getElementById('siteSummary').innerHTML=Object.entries(map).map(([s,v])=>`<div class="notice" style="margin:8px 0"><b>${s}</b> · 전체 ${v.all}건 · 즉시 ${v.urgent}건 · 조치완료 ${v.done}건 · 미완료 ${v.open}건</div>`).join('')||'데이터 없음';}
 function dateText(ts){try{return ts?.toDate?ts.toDate().toLocaleString('ko-KR'):'';}catch(e){return '';}}
 function renderTable(){let q=(document.getElementById('searchText')?.value||'').toLowerCase();let st=document.getElementById('statusFilter')?.value||'';let rows=allOpinions.filter(x=>(!st||x.status===st)&&(!q||JSON.stringify({...x,photoData:''}).toLowerCase().includes(q)));document.getElementById('opinionTable').innerHTML=rows.map(x=>`<tr><td>${dateText(x.receivedAt)}</td><td>${x.siteName||''}</td><td>${x.place||''}</td><td>${x.riskType||''}</td><td>${(x.content||'').replace(/</g,'&lt;')}</td><td>${x.urgency||''}</td><td>${x.photoData?`<button class="btn-gray" onclick="openPhoto('${x.id}')">사진보기</button>`:''}</td><td>${x.status||'접수'}</td><td><select onchange="updateStatus('${x.id}',this.value)"><option>${x.status||'접수'}</option><option>검토중</option><option>조치필요</option><option>조치중</option><option>조치완료</option><option>교육반영</option><option>해당없음</option></select></td></tr>`).join('')||'<tr><td colspan="9">데이터 없음</td></tr>';}
-function openPhoto(id){const item=allOpinions.find(x=>x.id===id);if(!item||!item.photoData){alert('사진이 없습니다.');return;}const w=window.open('','_blank');w.document.write('<!doctype html><html><head><title>첨부사진</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="'+item.photoData+'" style="max-width:100%;max-height:100vh"></body></html>');w.document.close();}
+function normalizePhotoData(data){
+  if(!data) return '';
+  data = String(data).trim();
+  if(data.startsWith('data:image/')) return data;
+  // 혹시 과거 데이터가 base64 본문만 저장된 경우 보정
+  if(data.length > 100 && /^[A-Za-z0-9+/=\s]+$/.test(data)) return 'data:image/jpeg;base64,' + data.replace(/\s/g,'');
+  return data;
+}
+function openPhoto(id){
+  const item=allOpinions.find(x=>x.id===id);
+  const photoData = normalizePhotoData(item?.photoData);
+  if(!item||!photoData){alert('사진이 없습니다.');return;}
+  const modal=document.getElementById('photoModal');
+  const img=document.getElementById('photoModalImg');
+  const link=document.getElementById('photoDownloadLink');
+  img.onerror=function(){alert('사진 데이터를 불러오지 못했습니다. 새로 제출한 사진인지 확인해 주세요.');};
+  img.src=photoData;
+  link.href=photoData;
+  link.download=(item.photoName||'첨부사진.jpg');
+  modal.classList.add('open');
+}
+function closePhotoModal(e){
+  if(e && e.target && e.target.id !== 'photoModal') return;
+  const modal=document.getElementById('photoModal');
+  const img=document.getElementById('photoModalImg');
+  if(modal) modal.classList.remove('open');
+  if(img) img.src='';
+}
 async function updateStatus(id,status){if(!await initFirebaseFromPage())return;await db.collection('workerOpinions').doc(id).update({status,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});allOpinions=allOpinions.map(x=>x.id===id?{...x,status}:x);renderStats();renderTable();}
 function downloadCSV(){const headers=['접수일','현장명','소속','직종','장소','유형','의견내용','긴급도','사진첨부','작성자','연락처','상태'];const lines=[headers.join(',')].concat(allOpinions.map(x=>[dateText(x.receivedAt),x.siteName,x.company,x.job,x.place,x.riskType,x.content,x.urgency,x.photoData?'첨부됨':'',x.writer,x.phone,x.status].map(v=>'"'+String(v||'').replaceAll('"','""')+'"').join(',')));const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='종사자의견청취.csv';a.click();}
 function saveConfigLocal(){const cfg={apiKey:cfgApiKey.value,authDomain:cfgAuthDomain.value,projectId:cfgProjectId.value,storageBucket:cfgStorageBucket.value,appId:cfgAppId.value};localStorage.setItem('dj_firebase_config',JSON.stringify(cfg));alert('임시 저장 완료');}
