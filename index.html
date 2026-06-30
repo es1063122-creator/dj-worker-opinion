@@ -117,6 +117,7 @@ const FIREBASE_CONFIG = {
   measurementId: "G-7QN2JD5QSW"
 };
 const ADMIN_PIN_DEFAULT = '5183';
+const NOTIFY_EMAILS = ['es5183@djenc.co.kr'];
 let db=null, auth=null, allOpinions=[];
 function configReady(c){return c && c.apiKey && !String(c.apiKey).startsWith('여기에') && c.projectId && !String(c.projectId).startsWith('여기에');}
 async function initFirebaseFromPage(){
@@ -209,6 +210,45 @@ async function imageFileToCompressedDataUrl(file, maxSize = 900, quality = 0.55)
   return out;
 }
 
+function escapeHtmlText(v){
+  return String(v||'').replace(/[&<>\"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]));
+}
+function buildEmailHtml(data, opinionId){
+  const adminUrl = location.origin + location.pathname;
+  const photoText = data.photoData ? '있음' : '없음';
+  return `
+    <div style="font-family:Arial,'Noto Sans KR',sans-serif;line-height:1.7;color:#111">
+      <h2 style="margin:0 0 12px;color:#0f172a">동진토건(주) 종사자 의견 접수</h2>
+      <table style="border-collapse:collapse;width:100%;max-width:720px">
+        <tr><th style="text-align:left;background:#f1f5f9;padding:8px;border:1px solid #e2e8f0">현장명</th><td style="padding:8px;border:1px solid #e2e8f0">${escapeHtmlText(data.siteName)}</td></tr>
+        <tr><th style="text-align:left;background:#f1f5f9;padding:8px;border:1px solid #e2e8f0">위험장소</th><td style="padding:8px;border:1px solid #e2e8f0">${escapeHtmlText(data.place)}</td></tr>
+        <tr><th style="text-align:left;background:#f1f5f9;padding:8px;border:1px solid #e2e8f0">위험유형</th><td style="padding:8px;border:1px solid #e2e8f0">${escapeHtmlText(data.riskType)}</td></tr>
+        <tr><th style="text-align:left;background:#f1f5f9;padding:8px;border:1px solid #e2e8f0">긴급도</th><td style="padding:8px;border:1px solid #e2e8f0">${escapeHtmlText(data.urgency)}</td></tr>
+        <tr><th style="text-align:left;background:#f1f5f9;padding:8px;border:1px solid #e2e8f0">소속/직종</th><td style="padding:8px;border:1px solid #e2e8f0">${escapeHtmlText(data.company)} / ${escapeHtmlText(data.job)}</td></tr>
+        <tr><th style="text-align:left;background:#f1f5f9;padding:8px;border:1px solid #e2e8f0">사진첨부</th><td style="padding:8px;border:1px solid #e2e8f0">${photoText}</td></tr>
+      </table>
+      <h3 style="margin:18px 0 6px">의견내용</h3>
+      <div style="white-space:pre-wrap;border:1px solid #e2e8f0;border-radius:10px;padding:12px;background:#f8fafc">${escapeHtmlText(data.content)}</div>
+      <p style="margin-top:18px"><a href="${adminUrl}" style="display:inline-block;background:#2563eb;color:white;text-decoration:none;padding:10px 14px;border-radius:8px">본사 관리자 화면 열기</a></p>
+      <p style="font-size:12px;color:#64748b">문서ID: ${escapeHtmlText(opinionId)}</p>
+    </div>`;
+}
+function buildEmailText(data, opinionId){
+  return `[동진토건(주) 종사자 의견 접수]\n\n현장명: ${data.siteName||''}\n위험장소: ${data.place||''}\n위험유형: ${data.riskType||''}\n긴급도: ${data.urgency||''}\n소속/직종: ${(data.company||'')} / ${(data.job||'')}\n사진첨부: ${data.photoData ? '있음' : '없음'}\n\n의견내용:\n${data.content||''}\n\n본사 관리자 화면: ${location.origin + location.pathname}\n문서ID: ${opinionId}`;
+}
+async function createEmailNotification(data, opinionId){
+  if(!NOTIFY_EMAILS.length) return;
+  await db.collection('mail').add({
+    to: NOTIFY_EMAILS,
+    message: {
+      subject: `[동진토건 종사자 의견 접수] ${data.siteName || '현장명 미입력'}`,
+      text: buildEmailText(data, opinionId),
+      html: buildEmailHtml(data, opinionId)
+    },
+    opinionId,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
 async function handleSubmit(e){
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]');
@@ -247,7 +287,7 @@ async function handleSubmit(e){
     }
 
     submitStatus.textContent= photoData ? '사진 포함 의견 저장 중입니다...' : '의견 저장 중입니다...';
-    await db.collection('workerOpinions').add({
+    const opinionData = {
       siteName,
       company:fd.get('company')||'',
       job:fd.get('job')||'',
@@ -262,11 +302,23 @@ async function handleSubmit(e){
       status:'접수',
       receivedAt:firebase.firestore.FieldValue.serverTimestamp(),
       userAgent:navigator.userAgent
-    });
+    };
+    const opinionRef = await db.collection('workerOpinions').add(opinionData);
+
+    let mailOk = true;
+    try{
+      submitStatus.textContent='의견 저장 완료 · 이메일 알림 요청 중입니다...';
+      await createEmailNotification(opinionData, opinionRef.id);
+    }catch(mailErr){
+      mailOk = false;
+      console.warn('email notification failed:', mailErr);
+    }
 
     e.target.reset();
-    submitStatus.style.color = '#059669';
-    submitStatus.textContent='제출 완료되었습니다. 안전보건 의견이 접수되었습니다.';
+    submitStatus.style.color = mailOk ? '#059669' : '#b45309';
+    submitStatus.textContent = mailOk
+      ? '제출 완료되었습니다. 안전보건 의견이 접수되었고 이메일 알림이 요청되었습니다.'
+      : '제출 완료되었습니다. 단, 이메일 알림 요청은 실패했습니다. 관리자 화면에서 확인해 주세요.';
   }catch(err){
     console.error('submit failed:', err);
     submitStatus.style.color = '#b91c1c';
