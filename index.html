@@ -241,7 +241,7 @@ function saveOpinion_(p) {
     clean_(p.place),
     clean_(p.riskType),
     clean_(p.content),
-    clean_(p.urgency) || "일반 개선",
+    clean_(p.urgency),
     photoUrl,
     clean_(p.writer) || "익명",
     clean_(p.phone),
@@ -400,33 +400,33 @@ function getWorkerFormHtml() {
 <body>
   <header><h1>동진토건 종사자 안전보건 의견청취</h1><p>현장의 위험요인·개선의견을 자유롭게 제출해 주세요.</p></header>
   <main><div class="card">
-    <div class="notice">익명 제출 가능 / 사진 첨부 가능 / 긴급위험은 QR 제출과 함께 현장 관리자에게 즉시 알려주세요.</div>
+    <div class="notice"><b>필수 입력:</b> 현장명, 위험요인 또는 개선의견<br><b>선택 입력:</b> 소속업체, 직종, 위험장소, 위험유형, 긴급도, 사진, 작성자, 연락처<br>익명 제출 가능 / 사진 첨부 가능 / 긴급위험은 QR 제출과 함께 현장 관리자에게 즉시 알려주세요.</div>
     <form method="post" action="\${actionUrl}" enctype="multipart/form-data">
       <label>현장명 *</label>
       <input name="siteName" required placeholder="예: 군산 호수공원 IPARK">
-      <label>소속업체</label>
+      <label>소속업체 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
       <input name="company" placeholder="예: 동진토건, ○○건설">
-      <label>직종</label>
+      <label>직종 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
       <input name="job" placeholder="예: 보통인부, 장비기사, 철근공">
-      <label>위험 장소</label>
+      <label>위험 장소 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
       <input name="place" placeholder="예: B1 계단실, 흙막이 구간, 장비 작업반경">
-      <label>위험 유형</label>
+      <label>위험 유형 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
       <select name="riskType">
         <option value="">선택</option><option>추락</option><option>낙하</option><option>끼임</option><option>붕괴</option><option>장비</option><option>전기</option><option>화재</option><option>질식</option><option>통로</option><option>보호구</option><option>기타</option>
       </select>
       <label>위험요인 또는 개선의견 *</label>
       <div class="notice" style="margin:6px 0 8px;">개선의견이 없으면 <b>개선의견없음</b>이라고 적어주세요. 위험한 상황이나 개선이 필요한 내용을 적어주세요.</div>
       <textarea name="content" required placeholder="예: 계단실 난간이 흔들림 / 장비 작업반경 접근통제 필요 / 개선의견없음"></textarea>
-      <label>긴급도</label>
+      <label>긴급도 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
       <select name="urgency">
-        <option>일반 개선</option><option>빠른 조치 필요</option><option>즉시조치 필요</option>
+        <option value="">선택</option><option>일반 개선</option><option>빠른 조치 필요</option><option>즉시조치 필요</option>
       </select>
-      <label>사진 첨부(선택)</label>
+      <label>사진 첨부 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
       <input type="file" name="photoFile" accept="image/*" capture="environment">
-      <div class="notice" style="margin-top:8px;">사진은 선택사항입니다. 위험장소 사진이 있으면 <b>파일 선택</b>을 눌러 사진을 첨부할 수 있습니다.</div>
-      <label>작성자</label>
+      <div class="notice" style="margin-top:8px;">사진은 선택사항입니다. 휴대폰에서는 <b>파일 선택</b>을 누르면 카메라 촬영 또는 사진 선택으로 첨부할 수 있습니다.</div>
+      <label>작성자 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
       <input name="writer" placeholder="익명 가능">
-      <label>연락처</label>
+      <label>연락처 <span style="color:#64748b;font-weight:600;">(선택)</span></label>
       <input name="phone" placeholder="회신이 필요한 경우만 입력">
       <button type="submit">의견 제출하기</button>
     </form>
