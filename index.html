@@ -2,14 +2,14 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>동진 종사자 의견청취 QR 관리 - 단일 QR</title>
+  <title>동진토건 종사자 의견청취 QR 관리 - 전현장 공통 QR</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root { --navy:#0f172a; --blue:#2563eb; --green:#059669; --orange:#f59e0b; --bg:#f1f5f9; --line:#cbd5e1; }
     * { box-sizing:border-box; }
     body { margin:0; font-family:Arial,'Noto Sans KR',sans-serif; background:var(--bg); color:var(--navy); }
     header { background:linear-gradient(135deg,#0f172a,#2563eb); color:white; padding:28px 16px; text-align:center; }
-    header h1 { margin:0; font-size:25px; } header p { margin:10px 0 0; opacity:.9; }
+    header h1 { margin:0; font-size:30px; font-weight:900; letter-spacing:-.3px; } header p { margin:12px 0 0; opacity:.98; font-size:16px; font-weight:800; }
     main { max-width:1180px; margin:18px auto 60px; padding:0 14px; }
     .card { background:white; border:1px solid #dbe3ef; border-radius:18px; padding:20px; margin-bottom:16px; box-shadow:0 8px 24px rgba(15,23,42,.08); }
     .tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
@@ -27,24 +27,24 @@
     .notice { background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:14px; padding:14px; line-height:1.65; }
     .warn { background:#fffbeb; border:1px solid #fcd34d; color:#92400e; border-radius:14px; padding:14px; line-height:1.65; }
     table { width:100%; border-collapse:collapse; font-size:13px; } th,td { border-bottom:1px solid #e2e8f0; padding:10px 8px; text-align:left; vertical-align:top; } th { background:#f8fafc; }
-    .qrbox { text-align:center; border:2px dashed #cbd5e1; border-radius:18px; padding:20px; background:#f8fafc; } .qrbox img { width:240px; height:240px; }
+    .qrbox { text-align:center; border:2px dashed #cbd5e1; border-radius:18px; padding:24px; background:#f8fafc; } .qrbox h2 { font-size:26px; font-weight:900; margin-bottom:14px; } .qrbox p { font-size:16px; line-height:1.7; } .qrbox img { width:260px; height:260px; margin:8px 0; } .poster-place { display:inline-block; margin:12px 0; padding:12px 18px; border-radius:14px; background:#dbeafe; color:#1e3a8a; font-size:18px!important; font-weight:900; } .poster-note { font-size:18px!important; font-weight:900; color:#0f172a; }
     .site-card { border:1px solid #e2e8f0; border-radius:14px; padding:14px; background:#f8fafc; cursor:pointer; } .site-card:hover { border-color:#2563eb; }
     pre { white-space:pre-wrap; background:#0f172a; color:#e5e7eb; border-radius:14px; padding:14px; max-height:320px; overflow:auto; }
     .step { border-left:5px solid #2563eb; padding:14px; background:#f8fafc; border-radius:12px; margin:12px 0; }
-    @media(max-width:800px) { .grid,.grid2 { grid-template-columns:1fr; } header h1{font-size:21px;} }
+    @media(max-width:800px) { .grid,.grid2 { grid-template-columns:1fr; } header h1{font-size:23px;} header p{font-size:14px;} }
     @media print { .no-print,.tabs,.settings { display:none!important; } body{background:white;} .card{box-shadow:none;border:0;} }
   </style>
 </head>
 <body>
 <header>
-  <h1>동진 종사자 안전보건 의견청취 QR 관리</h1>
-  <p>단일 QR 방식 · 근로자가 설문지에 현장명을 직접 입력 · 본사는 현장별로 자동 집계</p>
+  <h1>동진토건 종사자 안전보건 의견청취 QR 관리</h1>
+  <p>전현장 공통 QR · 근로자가 설문지에 현장명을 직접 입력 · 본사는 현장별로 자동 집계</p>
 </header>
 <main>
   <div class="card settings no-print">
     <div class="tabs">
       <button class="tab active" onclick="showTab('dashboard', this)">🏢 본사 관리자</button>
-      <button class="tab" onclick="showTab('qr', this)">📱 단일 QR 안내문</button>
+      <button class="tab" onclick="showTab('qr', this)">📱 전현장 공통 QR</button>
       <button class="tab" onclick="showTab('setup', this)">⚙️ 최초 설정</button>
       <button class="tab" onclick="showTab('guide', this)">📖 초보 설치가이드</button>
     </div>
@@ -58,7 +58,7 @@
   <section id="dashboard" class="section active">
     <div class="card">
       <h2>본사 통합 대시보드</h2>
-      <div class="notice">QR은 하나만 사용합니다. 근로자가 설문지 첫 항목에 <b>현장명</b>을 입력하면 본사 화면에서 현장별로 자동 분류됩니다.</div>
+      <div class="notice">전현장 공통 QR 1개만 사용합니다. 근로자가 설문지 첫 항목에 <b>현장명</b>을 입력하면 본사 화면에서 현장별로 자동 분류됩니다.</div>
       <div class="grid" style="margin-top:12px">
         <div class="stat">전체 접수<b id="stTotal">0</b></div>
         <div class="stat">즉시조치<b id="stImmediate">0</b></div>
@@ -85,14 +85,15 @@
   <section id="qr" class="section">
     <div class="card">
       <h2>전현장 공통 QR</h2>
-      <div class="warn"><b>이번 버전은 현장별 QR을 만들지 않습니다.</b><br>아래 QR 하나를 모든 현장 TBM장, 출입구, 휴게실, 게시판에 동일하게 붙이면 됩니다. 설문지에서 근로자가 현장명을 직접 입력합니다.</div>
-      <p><button class="btn-green" onclick="makeSingleQR()">단일 QR 생성</button> <button class="btn-dark" onclick="window.print()">A4 안내문 출력</button></p>
+      <div class="notice"><b>전현장 공통 QR은 1개만 사용합니다.</b><br>아래 QR을 모든 현장의 <b>TBM장 · 출입구 · 휴게실 · 안전교육장 · 현장 게시판</b>에 동일하게 게시하세요. 설문지에서 근로자가 현장명을 직접 입력합니다.</div>
+      <p><button class="btn-green" onclick="makeSingleQR()">전현장 공통 QR 생성</button> <button class="btn-dark" onclick="window.print()">A4 안내문 출력</button></p>
       <div id="qrResult" class="qrbox" style="display:none">
-        <h2>종사자 안전보건 의견청취 QR</h2>
-        <p>현장에서 위험하다고 느낀 사항, 개선이 필요한 안전시설, 작업방법, 장비운행, 보호구, 통로, 추락·낙하·붕괴·끼임 위험 등을 자유롭게 제보해 주세요.</p>
+        <h2>동진토건 종사자 안전보건 의견청취 QR</h2>
+        <p class="poster-note">현장에서 위험하다고 느낀 사항, 개선이 필요한 안전시설, 작업방법, 장비운행, 보호구, 통로, 추락·낙하·붕괴·끼임 위험 등을 자유롭게 제보해 주세요.</p>
+        <p class="poster-place">게시장소: TBM장 · 현장 출입구 · 휴게실 · 안전교육장 · 현장 게시판</p>
         <img id="qrImage" alt="단일 QR 코드">
         <p id="formUrlText" style="word-break:break-all;font-size:12px"></p>
-        <p><b>익명 제출 가능 · 사진 URL 입력 가능 · 긴급위험은 즉시 관리자에게 함께 보고</b></p>
+        <p class="poster-note"><b>익명 제출 가능 · 사진 첨부 가능 · 현장명 필수 입력 · 긴급위험은 즉시 현장 관리자에게 함께 보고</b></p>
       </div>
     </div>
   </section>
@@ -100,7 +101,7 @@
   <section id="setup" class="section">
     <div class="card">
       <h2>0. 최초 설정</h2>
-      <div class="notice">설치 순서: 구글시트 만들기 → Apps Script 만들기 → 설치코드 복사/붙여넣기 → SHEET_ID 입력 → setupSheets() 실행 → 웹앱 배포 URL 저장</div>
+      <div class="notice">설치 순서: 구글시트 만들기 → Apps Script 만들기 → 설치코드 복사/붙여넣기 → SHEET_ID 입력 → setupSheets() 실행 → 웹앱 배포 URL 저장 → 전현장 공통 QR 생성</div>
       <p>
         <a class="btn btn-green" target="_blank" href="https://sheets.new">① 구글시트 만들기</a>
         <a class="btn" target="_blank" href="https://script.new">② Apps Script 만들기</a>
@@ -121,14 +122,14 @@
       <div class="step"><h3>4) SHEET_ID 입력</h3><p>코드 맨 위 <code>const SHEET_ID = "여기에_구글시트_ID_입력";</code> 부분에 구글시트 ID만 넣습니다. 주소 전체를 넣으면 안 됩니다.</p></div>
       <div class="step"><h3>5) setupSheets() 실행</h3><p>Apps Script 상단 함수 선택에서 <b>setupSheets</b> 선택 후 실행합니다. 권한 승인 후 구글시트에 <b>의견접수, 반기점검</b> 시트가 생기면 정상입니다.</p></div>
       <div class="step"><h3>6) 웹앱 배포 URL 저장</h3><p>Apps Script에서 <b>배포 → 새 배포 → 웹 앱</b>을 선택합니다. 실행 사용자: <b>나</b>, 액세스 권한: <b>모든 사용자</b>로 배포합니다. 나온 URL을 이 관리화면 상단의 Google Apps Script 웹앱 URL에 저장합니다.</p></div>
-      <div class="step"><h3>7) 테스트</h3><p>단일 QR 안내문에서 QR을 생성하고 제출화면을 열어 의견 1건을 넣습니다. 그 다음 본사 관리자에서 전체 새로고침을 눌러 접수 내용을 확인합니다.</p></div>
+      <div class="step"><h3>7) 테스트</h3><p>전현장 공통 QR 화면에서 QR을 생성하고 제출화면을 열어 의견 1건을 넣습니다. 그 다음 본사 관리자에서 전체 새로고침을 눌러 접수 내용을 확인합니다.</p></div>
     </div>
   </section>
 </main>
 
 <script>
 const INSTALL_CODE = `/************************************************************
- * 동진 종사자 안전보건 의견청취 QR 관리시스템 - 단일 QR 버전 v2
+ * 동진토건 종사자 안전보건 의견청취 QR 관리시스템 - 전현장 공통 QR 버전 v2.3
  *
  * 사용 순서
  * 1) 구글시트 생성
@@ -183,7 +184,7 @@ function doGet(e) {
   if (p.action === "update") return jsonp_(p.callback, updateOpinion_(p));
   if (p.action === "summary") return jsonp_(p.callback, getSummary_(p));
 
-  return HtmlService.createHtmlOutput("동진 종사자 의견청취 API가 정상 작동 중입니다.");
+  return HtmlService.createHtmlOutput("동진토건 종사자 의견청취 API가 정상 작동 중입니다.");
 }
 
 function doPost(e) {
@@ -199,6 +200,7 @@ function saveOpinion_(p) {
   const sh = ss.getSheetByName(SHEET_OPINIONS) || ss.insertSheet(SHEET_OPINIONS);
   const now = new Date();
   const id = "OP-" + Utilities.formatDate(now, "Asia/Seoul", "yyyyMMdd-HHmmss") + "-" + Math.floor(Math.random() * 900 + 100);
+  const photoUrl = savePhoto_(p.photoFile, id);
 
   sh.appendRow([
     id,
@@ -209,13 +211,32 @@ function saveOpinion_(p) {
     clean_(p.place),
     clean_(p.riskType),
     clean_(p.content),
-    clean_(p.urgency),
-    clean_(p.photoUrl),
+    clean_(p.urgency) || "일반 개선",
+    photoUrl,
     clean_(p.writer) || "익명",
     clean_(p.phone),
     "접수",
     "", "", "", "", "", "", ""
   ]);
+}
+
+function savePhoto_(fileBlob, opinionId) {
+  try {
+    if (!fileBlob || typeof fileBlob.getBytes !== "function") return "";
+    if (fileBlob.getBytes().length === 0) return "";
+
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const parent = DriveApp.getFileById(ss.getId()).getParents();
+    const folder = parent.hasNext() ? parent.next() : DriveApp.getRootFolder();
+
+    const ext = fileBlob.getContentType().split("/")[1] || "jpg";
+    const safeName = opinionId + "_photo." + ext.replace(/[^a-zA-Z0-9]/g, "");
+    const file = folder.createFile(fileBlob).setName(safeName);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    return file.getUrl();
+  } catch (err) {
+    return "사진 저장 오류: " + err.message;
+  }
 }
 
 function listOpinions_(p) {
@@ -332,7 +353,7 @@ function getWorkerFormHtml() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>종사자 안전보건 의견청취</title>
+  <title>동진토건 종사자 안전보건 의견청취</title>
   <style>
     body{margin:0;background:#f1f5f9;font-family:Arial,'Noto Sans KR',sans-serif;color:#0f172a;}
     header{background:linear-gradient(135deg,#0f172a,#2563eb);color:white;padding:24px 16px;text-align:center;}
@@ -347,30 +368,32 @@ function getWorkerFormHtml() {
   </style>
 </head>
 <body>
-  <header><h1>종사자 안전보건 의견청취</h1><p>현장의 위험요인·개선의견을 자유롭게 제출해 주세요.</p></header>
+  <header><h1>동진토건 종사자 안전보건 의견청취</h1><p>현장의 위험요인·개선의견을 자유롭게 제출해 주세요.</p></header>
   <main><div class="card">
-    <div class="notice">익명 제출 가능 / 긴급위험은 QR 제출과 함께 현장 관리자에게 즉시 알려주세요.</div>
-    <form method="post" action="\${actionUrl}">
+    <div class="notice">익명 제출 가능 / 사진 첨부 가능 / 긴급위험은 QR 제출과 함께 현장 관리자에게 즉시 알려주세요.</div>
+    <form method="post" action="\${actionUrl}" enctype="multipart/form-data">
       <label>현장명 *</label>
       <input name="siteName" required placeholder="예: 군산 호수공원 IPARK">
       <label>소속업체</label>
       <input name="company" placeholder="예: 동진토건, ○○건설">
       <label>직종</label>
       <input name="job" placeholder="예: 보통인부, 장비기사, 철근공">
-      <label>위험 장소 *</label>
-      <input name="place" required placeholder="예: B1 계단실, 흙막이 구간, 장비 작업반경">
-      <label>위험 유형 *</label>
-      <select name="riskType" required>
+      <label>위험 장소</label>
+      <input name="place" placeholder="예: B1 계단실, 흙막이 구간, 장비 작업반경">
+      <label>위험 유형</label>
+      <select name="riskType">
         <option value="">선택</option><option>추락</option><option>낙하</option><option>끼임</option><option>붕괴</option><option>장비</option><option>전기</option><option>화재</option><option>질식</option><option>통로</option><option>보호구</option><option>기타</option>
       </select>
       <label>위험요인 또는 개선의견 *</label>
-      <textarea name="content" required placeholder="위험한 상황이나 개선이 필요한 내용을 적어주세요."></textarea>
-      <label>긴급도 *</label>
-      <select name="urgency" required>
+      <div class="notice" style="margin:6px 0 8px;">개선의견이 없으면 <b>개선의견없음</b>이라고 적어주세요. 위험한 상황이나 개선이 필요한 내용을 적어주세요.</div>
+      <textarea name="content" required placeholder="예: 계단실 난간이 흔들림 / 장비 작업반경 접근통제 필요 / 개선의견없음"></textarea>
+      <label>긴급도</label>
+      <select name="urgency">
         <option>일반 개선</option><option>빠른 조치 필요</option><option>즉시조치 필요</option>
       </select>
-      <label>사진 URL 선택입력</label>
-      <input name="photoUrl" placeholder="사진을 별도 업로드한 경우 링크 입력">
+      <label>사진 첨부(선택)</label>
+      <input type="file" name="photoFile" accept="image/*" capture="environment">
+      <div class="notice" style="margin-top:8px;">사진은 선택사항입니다. 위험장소 사진이 있으면 <b>파일 선택</b>을 눌러 사진을 첨부할 수 있습니다.</div>
       <label>작성자</label>
       <input name="writer" placeholder="익명 가능">
       <label>연락처</label>
